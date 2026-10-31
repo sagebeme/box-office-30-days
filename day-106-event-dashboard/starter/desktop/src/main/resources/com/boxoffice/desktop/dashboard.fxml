@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  The dashboard's layout. Open it in Scene Builder to drag things around,
+  or edit it here. Each fx:id matches an @FXML field in DashboardController.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.boxoffice.desktop.DashboardController"
+            styleClass="dashboard">
+    <top>
+        <HBox styleClass="header" spacing="16">
+            <VBox>
+                <Label fx:id="title" styleClass="title"/>
+                <Label fx:id="when" styleClass="when"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox styleClass="takings-box">
+                <Label text="Takings" styleClass="caption"/>
+                <Label fx:id="takings" styleClass="takings"/>
+            </VBox>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+            <Label text="Tickets" styleClass="caption"/>
+            <ListView fx:id="types" styleClass="types" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+</BorderPane>
