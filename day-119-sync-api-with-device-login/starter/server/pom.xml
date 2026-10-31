@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The sync server: a Spring Boot web app that every gate laptop sends its
+  sales to when it has internet. It runs on a server (or, to practise, on
+  your own laptop), never at the gate.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.boxoffice</groupId>
+        <artifactId>box-office</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>server</artifactId>
+    <name>Box Office sync server</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--
+              Spring Boot's own BOM: one tested version of every Spring library.
+              Our parent pom is our own, so we import Boot's BOM here instead of
+              making spring-boot-starter-parent our parent.
+            -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- A web server and @RestController. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <!-- SQL with JdbcClient: no ORM, the same SQL you wrote for SQLite. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <!-- Flyway again, run by Spring Boot at start-up. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <!-- H2: a database written in Java. A file on disk to practise, in memory for the tests. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- The gate's own sync code, to test a real gate against the real server. -->
+        <dependency>
+            <groupId>com.boxoffice</groupId>
+            <artifactId>core</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <!-- The server logs with Spring Boot's logger; core's "say nothing" logger would fight it. -->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-nop</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>boxoffice-server</finalName>
+        <plugins>
+            <!-- Builds target/boxoffice-server.jar with everything inside: java -jar runs it. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

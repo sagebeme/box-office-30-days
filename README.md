@@ -105,11 +105,19 @@ java -jar desktop/target/boxoffice-desktop.jar
 
 Both read and write `gate.db` in the folder you run them from (`--db=other.db` picks another file). To try a starter before its tests pass, build it with `../../mvnw package -DskipTests`.
 
+From Day 119 there's also the sync server, which the gates send their sales to. It runs on your laptop too, in its own terminal:
+
+```bash
+BOXOFFICE_ADMIN_KEY=pick-a-long-secret java -jar server/target/boxoffice-server.jar
+```
+
+On Windows PowerShell, run `$env:BOXOFFICE_ADMIN_KEY="pick-a-long-secret"` first, then the `java -jar` line. The server keeps its data in `sync-server-db.mv.db` in the folder you start it from. Each day's README says which commands talk to it.
+
 The app and the CLI run on a *practice clock* set to the night of the event, so the gate still sells whatever today's date is. A real gate would use the real clock: Day 103 explains why the clock is passed in.
 
 ## The course
 
-Each line is the day's milestone, then the idea it teaches. Days 101–110 are ready; the rest are planned.
+Each line is the day's milestone, then the idea it teaches. Days 101–120 are ready; the rest are planned.
 
 ### Phase 1 · Days 101–105 · Foundations for real software
 
@@ -130,22 +138,22 @@ A JavaFX app gate staff can run all night without it freezing, losing a sale or 
 - [Day 108](day-108-sell-without-the-mouse): Sell a ticket without touching the mouse (keyboard-first forms, validation)
 - [Day 109](day-109-never-freeze-the-screen): Never freeze the screen (`Task`, the JavaFX application thread)
 - [Day 110](day-110-qr-tickets-and-scanner-check-in): QR tickets and USB scanner check-in (QR generation, scanner input as keystrokes)
-- Day 111: Power-cut proof (transactions, SQLite WAL, crash recovery)
-- Day 112: Receipts and PDF exports (`PrinterJob`, PDF generation)
-- Day 113: Box Office v1 (TestFX headless UI tests)
+- [Day 111](day-111-power-cut-proof): Power-cut proof (transactions, SQLite WAL, crash recovery)
+- [Day 112](day-112-receipts-and-pdf-exports): Receipts and PDF exports (`PrinterJob`, PDF generation)
+- [Day 113](day-113-box-office-v1): Box Office v1 (TestFX headless UI tests)
 
 ### Phase 3 · Days 114–118 · Concurrency and the network
 
-- Day 114: Bulk SMS reminders (virtual threads, Africa's Talking sandbox)
-- Day 115: A client that survives bad Wi-Fi (`HttpClient` timeouts, retries, backoff)
-- Day 116: Queue now, sync later (the outbox pattern)
-- Day 117: Two gates, no internet (LAN sync)
-- Day 118: The night we oversold (race conditions, locks, atomics, many-thread tests)
+- [Day 114](day-114-bulk-sms-reminders): Bulk SMS reminders (virtual threads, Africa's Talking sandbox)
+- [Day 115](day-115-surviving-bad-wifi): A client that survives bad Wi-Fi (`HttpClient` timeouts, retries, backoff)
+- [Day 116](day-116-queue-now-sync-later): Queue now, sync later (the outbox pattern)
+- [Day 117](day-117-two-gates-no-internet): Two gates, no internet (LAN sync)
+- [Day 118](day-118-the-night-we-oversold): The night we oversold (race conditions, locks, atomics, many-thread tests)
 
 ### Phase 4 · Days 119–124 · Sync server and ticket site (the one web phase)
 
-- Day 119: Sync API with device login (Spring Boot, tokens per gate laptop)
-- Day 120: Two gates sell the last ticket (conflict resolution, idempotency)
+- [Day 119](day-119-sync-api-with-device-login): Sync API with device login (Spring Boot, tokens per gate laptop)
+- [Day 120](day-120-two-gates-sell-the-last-ticket): Two gates sell the last ticket (conflict resolution, idempotency)
 - Day 121: Public ticket site (Thymeleaf + htmx)
 - Day 122: Pay with M-Pesa (Daraja sandbox, STK push, callback)
 - Day 123: Security pass (rate limits, secrets, input validation)
