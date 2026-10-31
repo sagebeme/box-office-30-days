@@ -1,0 +1,94 @@
+/* The gate's look: big, plain and readable from a step back, at night. */
+
+.dashboard {
+    -fx-font-size: 15px;
+    -fx-background-color: #f6f4ef;
+}
+
+.header {
+    -fx-padding: 16;
+    -fx-background-color: #1f2a37;
+}
+
+.header .label {
+    -fx-text-fill: #f6f4ef;
+}
+
+.title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.when {
+    -fx-opacity: 0.8;
+}
+
+.caption {
+    -fx-font-size: 12px;
+    -fx-text-fill: #5b6470;
+}
+
+.header .caption {
+    -fx-text-fill: #c9ced6;
+}
+
+.takings {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.types .list-cell {
+    -fx-font-size: 16px;
+    -fx-padding: 8 10;
+}
+
+.sell {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.message {
+    -fx-font-size: 16px;
+}
+
+.problem {
+    -fx-text-fill: #9a3b12;
+}
+
+.qr-caption {
+    -fx-font-family: monospace;
+    -fx-font-size: 16px;
+}
+
+.scan-field {
+    -fx-font-size: 28px;
+    -fx-font-family: monospace;
+}
+
+/* Big and coloured, so the person checking tickets doesn't have to read it. */
+.check-in-result {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-padding: 24;
+    -fx-background-radius: 6;
+}
+
+.check-in-waiting {
+    -fx-background-color: #e4e1d8;
+    -fx-text-fill: #5b6470;
+}
+
+.check-in-admitted {
+    -fx-background-color: #1f7a3a;
+    -fx-text-fill: white;
+}
+
+.check-in-already-in {
+    -fx-background-color: #b7791f;
+    -fx-text-fill: white;
+}
+
+.check-in-not-found {
+    -fx-background-color: #a12a2a;
+    -fx-text-fill: white;
+}
