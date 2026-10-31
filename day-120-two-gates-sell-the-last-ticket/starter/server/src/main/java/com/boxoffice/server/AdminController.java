@@ -38,7 +38,8 @@ class AdminController {
     Map<String, String> register(@RequestHeader(name = "X-Admin-Key", required = false) String key,
                                  @RequestBody Registration registration) {
         if (adminKey.isBlank()) {
-            throw new ApiProblem(HttpStatus.SERVICE_UNAVAILABLE,
+            // 500, not 503: 503 means "try again soon", and the gate would retry it for nothing.
+            throw new ApiProblem(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Start the server with BOXOFFICE_ADMIN_KEY set to register gates");
         }
         if (key == null || !Tokens.same(key, adminKey)) {
