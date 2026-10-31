@@ -1,0 +1,23 @@
+# Runs the same check you can run on your own machine: tools/verify.sh.
+# For every day it checks that the solution passes the tests, and that the
+# untouched starter compiles but fails them.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    name: Every day's solution passes, every starter fails
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Verify every day
+        run: tools/verify.sh

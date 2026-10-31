@@ -1,0 +1,24 @@
+# Maven builds
+target/
+*.class
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+.DS_Store
+
+# Secrets (from Day 114 on)
+.env
+*.local.properties
+
+# The gate's database, made when you run the app or the CLI (Day 104 and later)
+*.db
+*.db-wal
+*.db-shm
+
+# Logs from tools/verify.sh
+.verify-*.log
