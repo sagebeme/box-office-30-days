@@ -1,0 +1,4 @@
+# Send Docker nothing but the jar. An allow-list: anything new (a .env, a
+# database, a key) stays out unless it's added here on purpose.
+*
+!server/target/boxoffice-server.jar
