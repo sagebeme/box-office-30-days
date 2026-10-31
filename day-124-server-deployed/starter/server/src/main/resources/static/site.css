@@ -1,0 +1,132 @@
+/* The ticket site. Fans open it on a phone, so phone first. */
+:root {
+    --ink: #1d1b16;
+    --paper: #fbf8f1;
+    --line: #ddd5c4;
+    --accent: #b5401f;
+    --muted: #6d6658;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.5 system-ui, sans-serif;
+}
+
+main {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.1;
+}
+
+h2 {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.1rem;
+}
+
+.when,
+.note,
+.phone {
+    color: var(--muted);
+}
+
+.offers {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.offers li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.offers .name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.offers .left {
+    width: 100%;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.offers .sold-out .left {
+    color: var(--accent);
+}
+
+label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+input,
+select,
+button {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    font: inherit;
+}
+
+button {
+    margin-top: 1.5rem;
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+}
+
+.problem {
+    margin: 0.25rem 0 0;
+    color: var(--accent);
+    font-size: 0.9rem;
+}
+
+.summary .reference strong {
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+}
+
+button.quiet {
+    border-color: var(--line);
+    background: transparent;
+    color: var(--ink);
+    font-weight: 400;
+}
+
+.practice {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1rem 1rem;
+    border: 1px dashed var(--muted);
+    border-radius: 6px;
+}
+
+.practice p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.tickets {
+    padding-left: 1.2rem;
+    font: 600 1.1rem/1.6 ui-monospace, monospace;
+}
