@@ -22,3 +22,7 @@ target/
 
 # Logs from tools/verify.sh
 .verify-*.log
+
+# The sync server's practice database (H2), from Day 119.
+*.mv.db
+*.trace.db
