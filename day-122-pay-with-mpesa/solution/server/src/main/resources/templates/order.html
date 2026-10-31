@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Order ' + ${order.reference}">Order</title>
+    <link rel="stylesheet" href="/site.css">
+    <script src="/webjars/htmx.org/2.0.4/dist/htmx.min.js" defer></script>
+</head>
+<body>
+<main>
+    <!-- The summary piece: htmx swaps it in where the order form was. -->
+    <section id="order" class="summary" th:fragment="summary">
+        <h2>Your order</h2>
+        <p class="reference">Order <strong th:text="${order.reference}">K7MP-Q3XW</strong></p>
+        <p>
+            <span th:text="${order.quantity}">2</span> ×
+            <span th:text="${order.type}">REG</span> for
+            <span th:text="${order.buyer}">Otieno</span>:
+            <strong th:text="${order.amount.format()}">KES 3,000</strong>
+        </p>
+        <p class="note">Keep the order reference. Nobody can see this order without it.</p>
+
+        <!--
+          The payment piece. While the order is waiting, htmx asks for it again
+          every 3 seconds; the server only lets it swap once something changed.
+          Once it's settled, the new piece has no hx-trigger, so the asking
+          stops by itself.
+        -->
+        <div id="payment" th:fragment="status">
+            <th:block th:if="${order.waiting()}">
+                <h3>Your tickets are held for 10 minutes</h3>
+                <!-- No polling while there's a problem to read: the next answer would hide it. -->
+                <p class="problem" th:if="${payProblem}" th:text="${payProblem}">Couldn't reach M-Pesa</p>
+                <div th:unless="${payProblem}" th:attr="hx-get=@{/orders/{r}/status(r=${order.reference},while='AWAITING_PAYMENT')}"
+                     hx-trigger="every 3s" hx-target="#payment" hx-swap="outerHTML">
+                    <p>
+                        Check your phone (<span th:text="${order.maskedPhone()}">0712 ••• 678</span>)
+                        and enter your M-Pesa PIN to pay <strong th:text="${order.amount.format()}">KES 3,000</strong>.
+                    </p>
+                </div>
+                <button class="quiet" th:attr="hx-post=@{/orders/{r}/pay(r=${order.reference})}"
+                        hx-target="#payment" hx-swap="outerHTML">No prompt? Send it again</button>
+                <div class="practice" th:if="${practice}">
+                    <p>Practice mode: no real M-Pesa, no real money.</p>
+                    <button th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference})}"
+                            hx-target="#payment" hx-swap="outerHTML">Pretend to pay</button>
+                    <button class="quiet" th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference},result=1032)}"
+                            hx-target="#payment" hx-swap="outerHTML">Pretend to cancel</button>
+                </div>
+            </th:block>
+
+            <th:block th:if="${order.status.name() == 'PAID'}">
+                <h3>Paid. Enjoy the night!</h3>
+                <p>M-Pesa receipt <strong th:text="${order.receipt}">QK12ABC3DE</strong></p>
+                <p>Show these at the gate:</p>
+                <ul class="tickets">
+                    <li th:each="code : ${tickets}" th:text="${code}">W-REG-0001</li>
+                </ul>
+            </th:block>
+
+            <th:block th:if="${order.status.name() == 'FLAGGED'}">
+                <h3>We've got your payment and are checking it</h3>
+                <p th:text="${order.detail}">Paid KES 1,500 for an order of KES 3,000</p>
+                <p>Your places are kept for you. If you don't hear from us soon, quote order
+                    <strong th:text="${order.reference}">K7MP-Q3XW</strong> to the organiser.</p>
+            </th:block>
+
+            <th:block th:if="${order.status.name() == 'CANCELLED' or order.status.name() == 'FAILED' or order.status.name() == 'EXPIRED'}">
+                <h3>Not paid</h3>
+                <p th:text="${order.detail}">You cancelled the M-Pesa payment</p>
+                <p>Your places are free again. <a href="/">Order again</a></p>
+            </th:block>
+        </div>
+    </section>
+</main>
+</body>
+</html>
