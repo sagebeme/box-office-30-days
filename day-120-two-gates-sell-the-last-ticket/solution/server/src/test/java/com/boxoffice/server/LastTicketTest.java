@@ -69,6 +69,9 @@ class LastTicketTest {
         assertThat(sendSale(mvc, gateB, "b-last", saleOf("B", "VIP", 20, 1)))
                 .hasStatus(HttpStatus.CONFLICT)
                 .bodyJson().extractingPath("$.result").isEqualTo("oversold");
+        // The verdict is kept, not worked out again: one row for the sale, saying OVERSOLD.
+        assertThat(db.sql("select result from sales where idempotency_key = 'b-last'").query(String.class).list())
+                .containsExactly("OVERSOLD");
         assertThat(sendSale(mvc, gateA, "a-last", saleOf("A", "VIP", 31, 1)))
                 .hasStatusOk()
                 .bodyJson().extractingPath("$.result").isEqualTo("duplicate");

@@ -122,12 +122,12 @@ class RushTest {
         Turnstile turnstile = new Turnstile();
 
         rush(1, () -> {
-            for (int i = 0; i < 50_000; i++) {
+            for (int i = 0; i < 200_000; i++) {
                 turnstile.admit();
             }
             return null;
         });
 
-        assertThat(turnstile.count()).isEqualTo(TILLS * 50_000L);
+        assertThat(turnstile.count()).isEqualTo(TILLS * 200_000L);
     }
 }
