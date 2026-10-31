@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.{png,jpg,jpeg,gif,ico,webp,pdf,zip,jar,woff,woff2} binary
+# Windows scripts must keep Windows line endings or cmd.exe misreads them
+*.cmd text eol=crlf
