@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  desktop: the window the gate staff use all night. JavaFX comes from Maven
+  like any other library, so there's no SDK to download and no module path to
+  set up. `mvnw package` builds desktop/target/boxoffice-desktop.jar.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.boxoffice</groupId>
+        <artifactId>box-office</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>desktop</artifactId>
+    <name>Box Office desktop</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.boxoffice</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <!-- Maven picks the right JavaFX files for Windows, macOS or Linux by itself. -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- TestFX: clicks and types into a real window from a test, like a person (or a scanner) would. -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Monocle: a pretend screen, so JavaFX tests run with no monitor (and in CI). -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Tests start JavaFX on Monocle's pretend screen, drawn in software. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <glass.platform>Monocle</glass.platform>
+                        <monocle.platform>Headless</monocle.platform>
+                        <prism.order>sw</prism.order>
+                        <testfx.robot>glass</testfx.robot>
+                        <testfx.headless>true</testfx.headless>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <!-- Packs our code, JavaFX and every library into one runnable jar. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- Named, so the installer profile below can add to it. -->
+                        <id>fat-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>boxoffice-desktop</finalName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- Main, not BoxOfficeApp: see the comment in Main.java. -->
+                                    <mainClass>com.boxoffice.desktop.Main</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/versions/*/module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--
+      Day 128: installers.
+
+        ../../mvnw package -Pinstaller                         desktop/target/installer/BoxOffice, a folder that runs as is
+        ../../mvnw package -Pinstaller -Dinstaller.type=deb    a .deb for Ubuntu and Debian
+        ../../mvnw package -Pinstaller -Dinstaller.type=msi    a Windows installer (needs WiX 3 on the PATH)
+        ../../mvnw package -Pinstaller -Dinstaller.type=dmg    a Mac disk image
+
+      Each one is built on the system it's for: jpackage can't make a Windows
+      installer on Linux. That's Day 129's job for CI.
+    -->
+    <profiles>
+        <profile>
+            <id>installer</id>
+            <properties>
+                <installer.type>app-image</installer.type>
+                <!-- The type's own options, set by the profiles below. -->
+                <installer.options></installer.options>
+            </properties>
+            <build>
+                <plugins>
+                    <!--
+                      sqlite-jdbc carries its native library for 25 systems, 24 MB of them.
+                      An installer is for one system, so keep that one's and drop the rest.
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>fat-jar</id>
+                                <configuration>
+                                    <filters combine.children="append">
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <includes>
+                                                <include>org/sqlite/*.class</include>
+                                                <include>org/sqlite/*/*.class</include>
+                                                <include>org/sqlite/*/*/*.class</include>
+                                                <include>sqlite-jdbc.properties</include>
+                                                <include>META-INF/**</include>
+                                                <!-- TODO Day 128, step 5: keep only org/sqlite/native/${sqlite.native}/**, not every system's. -->
+                                                <include>org/sqlite/native/**</include>
+                                            </includes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- jlink and jpackage refuse to write over last time's output. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>remove-old-installer</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                                <configuration>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <fileset>
+                                            <directory>${project.build.directory}/runtime</directory>
+                                        </fileset>
+                                        <fileset>
+                                            <directory>${project.build.directory}/installer</directory>
+                                        </fileset>
+                                        <fileset>
+                                            <directory>${project.build.directory}/installer-input</directory>
+                                        </fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- jpackage copies everything in its input folder into the app: give it only the jar. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>installer-input</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/installer-input</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>boxoffice-desktop.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <!--
+                              A Java runtime with only the modules Box Office uses: about 56 MB
+                              instead of a whole JDK. The list comes from
+                                jdeps &#45;&#45;print-module-deps &#45;&#45;ignore-missing-deps target/boxoffice-desktop.jar
+                              plus jdk.crypto.ec, which HTTPS needs but no class names directly.
+                            -->
+                            <execution>
+                                <id>jlink</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jlink</executable>
+                                    <arguments>
+                                        <argument>--add-modules</argument>
+                                        <!--
+                                          TODO Day 128, step 4: run jdeps (the command in the comment above) on
+                                          target/boxoffice-desktop.jar, put its list here with jdk.crypto.ec added,
+                                          then add four more arguments that shrink the runtime: strip debug
+                                          information, no header files, no man pages, and compress=zip-6.
+                                        -->
+                                        <argument>java.base</argument>
+                                        <argument>--output</argument>
+                                        <argument>${project.build.directory}/runtime</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <!--
+                              TODO Day 128, step 6: the main class below is the wrong one. Which class
+                              did Day 106 make for the jar to start, and why? Put that one here.
+                            -->
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${java.home}/bin/jpackage</executable>
+                                    <commandlineArgs>--type ${installer.type} --name BoxOffice --app-version ${project.version} --vendor "Box Office course" --description "Sells and checks in tickets at the gate" --input ${project.build.directory}/installer-input --main-jar boxoffice-desktop.jar --main-class com.boxoffice.desktop.BoxOfficeApp --runtime-image ${project.build.directory}/runtime --dest ${project.build.directory}/installer ${installer.options}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Each installer type's own options. -->
+        <profile>
+            <id>deb</id>
+            <activation>
+                <property>
+                    <name>installer.type</name>
+                    <value>deb</value>
+                </property>
+            </activation>
+            <properties>
+                <installer.options>--linux-package-name boxoffice --linux-shortcut --linux-menu-group Office</installer.options>
+            </properties>
+        </profile>
+        <profile>
+            <id>rpm</id>
+            <activation>
+                <property>
+                    <name>installer.type</name>
+                    <value>rpm</value>
+                </property>
+            </activation>
+            <properties>
+                <installer.options>--linux-package-name boxoffice --linux-shortcut --linux-menu-group Office</installer.options>
+            </properties>
+        </profile>
+        <profile>
+            <id>msi</id>
+            <activation>
+                <property>
+                    <name>installer.type</name>
+                    <value>msi</value>
+                </property>
+            </activation>
+            <properties>
+                <!-- The same upgrade id in every version, so 1.1 replaces 1.0 instead of installing beside it. -->
+                <installer.options>--win-menu --win-shortcut --win-dir-chooser --win-per-user-install --win-upgrade-uuid 7f3c2a64-5b0e-4f2d-9a51-6c1d8e0b4a77</installer.options>
+            </properties>
+        </profile>
+        <profile>
+            <id>dmg</id>
+            <activation>
+                <property>
+                    <name>installer.type</name>
+                    <value>dmg</value>
+                </property>
+            </activation>
+            <properties>
+                <installer.options>--mac-package-identifier com.boxoffice.desktop</installer.options>
+            </properties>
+        </profile>
+
+        <!-- Which of sqlite-jdbc's native libraries this computer needs, found from the system Maven runs on. -->
+        <profile>
+            <id>sqlite-linux-x64</id>
+            <activation>
+                <os>
+                    <name>Linux</name>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <sqlite.native>Linux/x86_64</sqlite.native>
+            </properties>
+        </profile>
+        <profile>
+            <id>sqlite-linux-arm64</id>
+            <activation>
+                <os>
+                    <name>Linux</name>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <sqlite.native>Linux/aarch64</sqlite.native>
+            </properties>
+        </profile>
+        <profile>
+            <id>sqlite-mac-arm64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <sqlite.native>Mac/aarch64</sqlite.native>
+            </properties>
+        </profile>
+        <profile>
+            <id>sqlite-mac-x64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>x86_64</arch>
+                </os>
+            </activation>
+            <properties>
+                <sqlite.native>Mac/x86_64</sqlite.native>
+            </properties>
+        </profile>
+        <profile>
+            <id>sqlite-windows-x64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <sqlite.native>Windows/x86_64</sqlite.native>
+            </properties>
+        </profile>
+    </profiles>
+</project>
