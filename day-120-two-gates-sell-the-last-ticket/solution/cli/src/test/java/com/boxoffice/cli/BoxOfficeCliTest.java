@@ -286,7 +286,9 @@ class BoxOfficeCliTest {
             assertThat(run.exitCode()).isZero();
             assertThat(run.out().strip()).isEqualTo("Got 1 sale (1 ticket) from gate A");
         }
-        assertThat(run("report").out()).contains("VIP");
+        try (TicketStore store = TicketStore.open(folder.resolve("gate.db"))) {
+            assertThat(store.findTicket(SampleEvent.ID, "A-VIP-0001")).isPresent();
+        }
     }
 
     @Test

@@ -22,6 +22,7 @@ class RetryPolicyTest {
     void neverWaitsLongerThanTheLongestWait() {
         assertThat(policy.delayBefore(6, 1.0)).isEqualTo(Duration.ofSeconds(8));
         assertThat(policy.delayBefore(9, 1.0)).isEqualTo(Duration.ofSeconds(8));
+        assertThat(policy.delayBefore(66, 1.0)).isEqualTo(Duration.ofSeconds(8));
         assertThat(policy.delayBefore(100, 1.0)).isEqualTo(Duration.ofSeconds(8));
     }
 

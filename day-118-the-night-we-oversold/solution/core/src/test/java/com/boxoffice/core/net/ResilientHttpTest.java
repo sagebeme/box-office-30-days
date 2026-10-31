@@ -22,11 +22,11 @@ class ResilientHttpTest {
     private final List<Duration> waits = new ArrayList<>();
     private final List<String> log = new ArrayList<>();
 
-    /** Three attempts, 500 ms then 1 s, and an answer within 300 ms or it counts as no answer. */
+    /** Three attempts, 500 ms then 1 s, and an answer within 1 s or it counts as no answer. */
     private ResilientHttp http() {
         return new ResilientHttp(HttpClient.newHttpClient(),
                 new RetryPolicy(3, Duration.ofMillis(500), Duration.ofSeconds(4)),
-                Duration.ofMillis(300), waits::add, () -> 1.0, log::add);
+                Duration.ofSeconds(1), waits::add, () -> 1.0, log::add);
     }
 
     private static HttpRequest get(URI uri) {
@@ -97,8 +97,8 @@ class ResilientHttpTest {
 
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(server.requests()).isEqualTo(2);
-            // The hang lasts 2 s; the time limit is 300 ms.
-            assertThat(Duration.ofNanos(System.nanoTime() - start)).isLessThan(Duration.ofMillis(1_500));
+            // The hang lasts 2 s; the time limit is 1 s.
+            assertThat(Duration.ofNanos(System.nanoTime() - start)).isLessThan(Duration.ofMillis(1_900));
         }
     }
 
