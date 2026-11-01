@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Order ' + ${order.reference}">Order</title>
+    <link rel="stylesheet" href="/site.css">
+    <script src="/webjars/htmx.org/2.0.4/dist/htmx.min.js" defer></script>
+</head>
+<body>
+<main>
+    <!-- The summary piece: htmx swaps it in where the order form was. -->
+    <section id="order" class="summary" th:fragment="summary">
+        <h2>Your tickets are held</h2>
+        <p class="reference">Order <strong th:text="${order.reference}">K7MP-Q3XW</strong></p>
+        <p>
+            <span th:text="${order.quantity}">2</span> ×
+            <span th:text="${order.type}">REG</span> for
+            <span th:text="${order.buyer}">Otieno</span>:
+            <strong th:text="${order.amount.format()}">KES 3,000</strong>
+        </p>
+        <p class="phone">We'll ask <span th:text="${order.maskedPhone()}">0712 ••• 678</span> to pay with M-Pesa.</p>
+        <p class="note">Keep the order reference. Nobody can see this order without it.</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Runs the server image on your laptop the way it runs on a real server:
+#
+#   ../../mvnw package -DskipTests
+#   docker compose up --build
+#
+# Secrets go in a file called .env next to this one (Git ignores it):
+#   BOXOFFICE_ADMIN_KEY=...
+#   MPESA_MODE=sandbox
+#   MPESA_CONSUMER_KEY=...   and the rest from Day 122
+services:
+  server:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # No proxy in front of it on your laptop.
+      BOXOFFICE_TRUSTED_PROXIES: "0"
+    volumes:
+      - server-data:/data
+    restart: unless-stopped
+
+volumes:
+  server-data:
