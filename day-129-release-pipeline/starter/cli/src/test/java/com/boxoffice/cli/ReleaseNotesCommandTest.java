@@ -79,4 +79,20 @@ class ReleaseNotesCommandTest {
         assertThat(run.exitCode()).isEqualTo(1);
         assertThat(run.err().strip()).isEqualTo("Not a version like 1.2.3: latest");
     }
+
+    @Test
+    void aBadHeadingVersionSaysSoToo() throws IOException {
+        Run run = run("release-notes", "--last", "v1.0.0", "--version", "banana", "--commits", log("fix: a").toString());
+
+        assertThat(run.exitCode()).isEqualTo(1);
+        assertThat(run.err().strip()).isEqualTo("Not a version like 1.2.3: banana");
+    }
+
+    @Test
+    void helpWorks() {
+        Run run = run("release-notes", "--help");
+
+        assertThat(run.exitCode()).isZero();
+        assertThat(run.out()).contains("--last").contains("--version").contains("--commits");
+    }
 }

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.boxoffice.core.net.ResilientHttp;
 import com.boxoffice.core.net.RetryPolicy;
+import com.boxoffice.core.release.Bump;
+import com.boxoffice.core.release.SemVer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -27,6 +29,10 @@ class UpdateCommandTest {
     // 21:00 in Nairobi on the night, and a quiet Tuesday a week later.
     private static final Clock NINE_PM = Clock.fixed(Instant.parse("2026-11-14T18:00:00Z"), ZoneOffset.UTC);
     private static final Clock TUESDAY = Clock.fixed(Instant.parse("2026-11-17T09:00:00Z"), ZoneOffset.UTC);
+
+    // Whatever the pom says, so the tests still pass after a version bump.
+    private static final SemVer THIS = SemVer.parse(System.getProperty("boxoffice.version"));
+    private static final SemVer NEXT = THIS.bump(Bump.MINOR);
 
     @TempDir
     Path folder;
@@ -66,20 +72,20 @@ class UpdateCommandTest {
     }
 
     private void publishOneOne() {
-        github.publishes("v1.1.0", "## Box Office 1.1.0\n\n### New\n- the gate updates itself", Map.of(
-                "boxoffice_1.1.0_amd64.deb", "deb installer",
-                "BoxOffice-1.1.0.msi", "msi installer",
-                "BoxOffice-1.1.0.dmg", "dmg installer"));
+        github.publishes("v" + NEXT, "## Box Office " + NEXT + "\n\n### New\n- the gate updates itself", Map.of(
+                "boxoffice_" + NEXT + "_amd64.deb", "deb installer",
+                "BoxOffice-" + NEXT + ".msi", "msi installer",
+                "BoxOffice-" + NEXT + ".dmg", "dmg installer"));
     }
 
     @Test
     void saysWhenItsUpToDate() {
-        github.publishes("v1.0.0", "", Map.of("boxoffice_1.0.0_amd64.deb", "deb"));
+        github.publishes("v" + THIS, "", Map.of("boxoffice_" + THIS + "_amd64.deb", "deb"));
 
         Run run = run(TUESDAY, "update");
 
         assertThat(run.exitCode()).isZero();
-        assertThat(run.out().strip()).isEqualTo("Box Office 1.0.0 is up to date");
+        assertThat(run.out().strip()).isEqualTo("Box Office " + THIS + " is up to date");
     }
 
     @Test
@@ -89,7 +95,7 @@ class UpdateCommandTest {
         Run run = run(TUESDAY, "update");
 
         assertThat(run.exitCode()).isZero();
-        assertThat(run.out()).startsWith("Box Office 1.1.0 is out (you have 1.0.0)")
+        assertThat(run.out()).startsWith("Box Office " + NEXT + " is out (you have " + THIS + ")")
                 .contains("- the gate updates itself")
                 .contains("Run `update --download <folder>` to fetch ");
         assertThat(github.requests()).noneMatch(request -> request.contains("/files/"));
@@ -123,7 +129,8 @@ class UpdateCommandTest {
     @Test
     void aTamperedDownloadIsRefused() {
         publishOneOne();
-        github.corrupts("boxoffice_1.1.0_amd64.deb").corrupts("BoxOffice-1.1.0.msi").corrupts("BoxOffice-1.1.0.dmg");
+        github.corrupts("boxoffice_" + NEXT + "_amd64.deb").corrupts("BoxOffice-" + NEXT + ".msi")
+                .corrupts("BoxOffice-" + NEXT + ".dmg");
 
         Run run = run(TUESDAY, "update", "--download", folder.resolve("installers").toString());
 
@@ -135,7 +142,7 @@ class UpdateCommandTest {
     void noReleasesYet() {
         Run run = run(TUESDAY, "update");
 
-        assertThat(run.out().strip()).isEqualTo("Box Office 1.0.0: no releases published yet");
+        assertThat(run.out().strip()).isEqualTo("Box Office " + THIS + ": no releases published yet");
     }
 
     @Test
@@ -152,6 +159,6 @@ class UpdateCommandTest {
     void theVersionComesFromTheBuild() {
         Run run = run(TUESDAY, "--version");
 
-        assertThat(run.out().strip()).isEqualTo("Box Office 1.0.0");
+        assertThat(run.out().strip()).isEqualTo("Box Office " + THIS);
     }
 }

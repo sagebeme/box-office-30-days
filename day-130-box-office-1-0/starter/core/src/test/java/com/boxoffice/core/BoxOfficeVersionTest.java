@@ -10,7 +10,7 @@ class BoxOfficeVersionTest {
     @Test
     void knowsItsOwnVersion() {
         // The version in pom.xml, filled in by Maven: change the pom and this follows.
-        assertThat(BoxOffice.version()).isEqualTo("1.0.0");
-        assertThat(SemVer.parse(BoxOffice.version())).isEqualTo(new SemVer(1, 0, 0));
+        assertThat(BoxOffice.version()).isEqualTo(System.getProperty("boxoffice.version"));
+        assertThat(SemVer.parse(BoxOffice.version())).isNotNull();
     }
 }

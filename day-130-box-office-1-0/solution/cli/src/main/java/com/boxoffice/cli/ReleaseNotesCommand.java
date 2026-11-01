@@ -25,12 +25,15 @@ import picocli.CommandLine.Spec;
  * git log --format=%s v1.0.0..HEAD | java -jar cli/target/boxoffice.jar release-notes --last v1.0.0
  * </pre>
  */
-@Command(name = "release-notes", description = "Prints the next version's release notes, from commit subjects.",
-        mixinStandardHelpOptions = true)
+@Command(name = "release-notes", description = "Prints the next version's release notes, from commit subjects.")
 final class ReleaseNotesCommand implements Callable<Integer> {
 
     @Spec
     CommandSpec spec;
+
+    // Not mixinStandardHelpOptions: that brings its own --version, which this command needs for itself.
+    @Option(names = {"-h", "--help"}, usageHelp = true, description = "Show this help message and exit.")
+    boolean help;
 
     @Option(names = "--last", required = true, description = "The version released last, e.g. v1.0.0.")
     String last;
@@ -46,8 +49,10 @@ final class ReleaseNotesCommand implements Callable<Integer> {
         PrintWriter out = spec.commandLine().getOut();
         PrintWriter err = spec.commandLine().getErr();
         SemVer lastVersion;
+        SemVer chosen;
         try {
             lastVersion = SemVer.parse(last);
+            chosen = version == null ? null : SemVer.parse(version);
         } catch (IllegalArgumentException e) {
             err.println(e.getMessage());
             return 1;
@@ -62,7 +67,7 @@ final class ReleaseNotesCommand implements Callable<Integer> {
             err.println("Nothing to release since " + lastVersion + ": no feat or fix commits");
             return 1;
         }
-        out.print(ReleaseNotes.render(version == null ? next : SemVer.parse(version), parsed));
+        out.print(ReleaseNotes.render(chosen == null ? next : chosen, parsed));
         out.flush();
         return 0;
     }

@@ -40,7 +40,7 @@ class HealthTest {
     @Test
     void infoSaysWhichVersionIsRunning() {
         assertThat(mvc.get().uri("/actuator/info")).hasStatusOk()
-                .bodyJson().extractingPath("$.build.version").isEqualTo("1.0.0");
+                .bodyJson().extractingPath("$.build.version").isEqualTo(System.getProperty("boxoffice.version"));
     }
 
     @Test

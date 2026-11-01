@@ -56,10 +56,21 @@ public final class Downloader {
             // Only a checked file gets the installer's name.
             return Files.move(part, done, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
+            deleteQuietly(part);
             throw new UpdateException("Couldn't download " + installer.name() + ": " + e.getMessage(), e);
         } catch (InterruptedException e) {
+            deleteQuietly(part);
             Thread.currentThread().interrupt();
             throw new UpdateException("Stopped", e);
+        }
+    }
+
+    /** A half-downloaded file is no use to anyone: don't leave it lying in the folder. */
+    private static void deleteQuietly(Path part) {
+        try {
+            Files.deleteIfExists(part);
+        } catch (IOException ignored) {
+            // The error being reported already says the download failed.
         }
     }
 
