@@ -7,7 +7,7 @@ Every day ships with tests. When a day's tests pass, the day is done, and the ap
 - **Days 101–130**, after Part 1 (Days 1–100: [100-java-basics-advance](https://github.com/sagebeme/100-java-basics-advance))
 - **One app**, tested every day
 - **About 2–3 hours a day**
-- **Runs on your own computer.** No cloud account and no web hosting. The only web phase is Days 119–124.
+- **Runs on your own computer.** No web hosting needed. The only web phase is Days 119–124, and it runs on your laptop too. Days 125–127 talk to Claude, which needs an Anthropic API key (each question costs a little); every test there runs offline without one.
 
 ## The app, and the gate it has to survive
 
@@ -25,6 +25,7 @@ Every requirement the gate has becomes a day:
 | Work offline and sync when the connection comes back | 115–117 |
 | Let two gates agree, and let the server settle the last ticket | 117, 120 |
 | Take M-Pesa from fans buying online | 122 |
+| Answer staff questions about the night, without guessing | 125–127 |
 | Install like real software and update itself | 128–130 |
 
 ## What you need
@@ -108,16 +109,42 @@ Both read and write `gate.db` in the folder you run them from (`--db=other.db` p
 From Day 119 there's also the sync server, which the gates send their sales to. It runs on your laptop too, in its own terminal:
 
 ```bash
-BOXOFFICE_ADMIN_KEY=pick-a-long-secret java -jar server/target/boxoffice-server.jar
+BOXOFFICE_ADMIN_KEY=change-me-to-a-long-random-secret-123 java -jar server/target/boxoffice-server.jar
 ```
 
-On Windows PowerShell, run `$env:BOXOFFICE_ADMIN_KEY="pick-a-long-secret"` first, then the `java -jar` line. The server keeps its data in `sync-server-db.mv.db` in the folder you start it from. Each day's README says which commands talk to it.
+On Windows PowerShell, run `$env:BOXOFFICE_ADMIN_KEY="change-me-to-a-long-random-secret-123"` first, then the `java -jar` line. Pick your own key: from Day 123 the server refuses one shorter than 24 characters. `openssl rand -base64 32` makes a good one. The server keeps its data in `sync-server-db.mv.db` in the folder you start it from. Each day's README says which commands talk to it. From Day 121 it also serves the ticket site at http://localhost:8080/, and M-Pesa runs in practice mode (pretend payments) unless you set it up for the Daraja sandbox (Day 122).
+
+From Day 124 the server also runs in Docker, the way it would on a real server (needs [Docker](https://docs.docker.com/get-docker/)). Put its secrets in a `.env` file beside `compose.yaml` (Git ignores it), then, after `../../mvnw package`:
+
+```bash
+docker compose up --build
+```
+
+The image runs in production mode, which refuses practice M-Pesa, so the `.env` needs the Daraja sandbox settings from Day 122. Day 124 shows them.
+
+From Day 125 the CLI can answer questions about the night. Get a key at [console.anthropic.com](https://console.anthropic.com) and keep it in an environment variable, never in your code or Git:
+
+```bash
+export ANTHROPIC_API_KEY=your-key-here
+```
+
+```bash
+java -jar cli/target/boxoffice.jar ask "How many VIPs are in?"
+```
+
+On Windows PowerShell, use `$env:ANTHROPIC_API_KEY="your-key-here"`. `ask --fake` answers without a key, so you can try it for free.
+
+From Day 128 the desktop app builds into an installer for the system you're on (a `.deb` on Ubuntu or Debian, `.msi` on Windows with WiX 3, `.dmg` on a Mac):
+
+```bash
+../../mvnw package -Pinstaller -Dinstaller.type=deb
+```
 
 The app and the CLI run on a *practice clock* set to the night of the event, so the gate still sells whatever today's date is. A real gate would use the real clock: Day 103 explains why the clock is passed in.
 
 ## The course
 
-Each line is the day's milestone, then the idea it teaches. Days 101–120 are ready; the rest are planned.
+Each line is the day's milestone, then the idea it teaches. All 30 days are ready.
 
 ### Phase 1 · Days 101–105 · Foundations for real software
 
@@ -154,22 +181,22 @@ A JavaFX app gate staff can run all night without it freezing, losing a sale or 
 
 - [Day 119](day-119-sync-api-with-device-login): Sync API with device login (Spring Boot, tokens per gate laptop)
 - [Day 120](day-120-two-gates-sell-the-last-ticket): Two gates sell the last ticket (conflict resolution, idempotency)
-- Day 121: Public ticket site (Thymeleaf + htmx)
-- Day 122: Pay with M-Pesa (Daraja sandbox, STK push, callback)
-- Day 123: Security pass (rate limits, secrets, input validation)
-- Day 124: Server deployed (Docker, per-environment config, health checks)
+- [Day 121](day-121-public-ticket-site): Public ticket site (Thymeleaf + htmx)
+- [Day 122](day-122-pay-with-mpesa): Pay with M-Pesa (Daraja sandbox, STK push, callback)
+- [Day 123](day-123-security-pass): Security pass (rate limits, secrets, input validation)
+- [Day 124](day-124-server-deployed): Server deployed (Docker, per-environment config, health checks)
 
 ### Phase 5 · Days 125–127 · AI in the app
 
-- Day 125: Ask about tonight's sales (the Anthropic Java SDK, streaming)
-- Day 126: An assistant that can look things up (tool use over Box Office data)
-- Day 127: Evals (test the AI feature in JUnit)
+- [Day 125](day-125-ask-about-tonights-sales): Ask about tonight's sales (the Anthropic Java SDK, streaming)
+- [Day 126](day-126-an-assistant-that-looks-things-up): An assistant that can look things up (tool use over Box Office data)
+- [Day 127](day-127-evals): Evals (test the AI feature in JUnit)
 
 ### Phase 6 · Days 128–130 · Ship it
 
-- Day 128: Installers small enough for a data bundle (`jpackage`, `jlink`, WiX on Windows)
-- Day 129: A release pipeline (CI builds for Windows, Mac and Linux, GitHub Releases, code signing)
-- Day 130: Box Office 1.0 (auto-update, release notes, then one feature of your own)
+- [Day 128](day-128-installers): Installers small enough for a data bundle (`jpackage`, `jlink`, WiX on Windows)
+- [Day 129](day-129-release-pipeline): A release pipeline (CI builds for Windows, Mac and Linux, GitHub Releases, code signing)
+- [Day 130](day-130-box-office-1-0): Box Office 1.0 (auto-update, release notes, then one feature of your own)
 
 ## Getting unstuck
 
