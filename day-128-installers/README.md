@@ -220,7 +220,7 @@ It builds `String`s, not `Path`s: a `Path` on Linux can't hold a Windows path li
 
 6. **Start the right class.** Find the TODO marked `step 6`, above the `jpackage` execution. In its `<commandlineArgs>`, `--main-class com.boxoffice.desktop.BoxOfficeApp` is the wrong one. Change it to `--main-class com.boxoffice.desktop.Main` and delete the TODO comment. Run `InstallerProfileTest`: all 7 pass.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 486 tests in all and `BUILD SUCCESS`. The tests don't run jlink or jpackage (they take minutes); `InstallerProfileTest` reads the pom with **XPath**, a way of pointing at parts of an XML file, like `/project/profiles/profile[id='installer']`. It also checks that each `sqlite-...` profile's folder really exists in sqlite-jdbc's jar: a typo there would build an app with no database driver for its own system.
+7. **Run all the tests.** `../../mvnw test`. You should see 491 tests in all and `BUILD SUCCESS`. The tests don't run jlink or jpackage (they take minutes); `InstallerProfileTest` reads the pom with **XPath**, a way of pointing at parts of an XML file, like `/project/profiles/profile[id='installer']`. It also checks that each `sqlite-...` profile's folder really exists in sqlite-jdbc's jar: a typo there would build an app with no database driver for its own system.
 
 8. **Build the app image and look inside.** Follow "Run it and test it" below.
 
@@ -248,7 +248,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=InstallerProfileTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **240 tests** in `core` (including AppPaths 8), **56** in `cli` (LiveEval 1 skipped), **48** in `desktop` (including InstallerProfile 7) and **142** in `sync server`, **486** in all:
+Success looks like this, with **240 tests** in `core` (including AppPaths 8), **56** in `cli` (LiveEval 1 skipped), **48** in `desktop` (including InstallerProfile 7) and **147** in `sync server`, **491** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -412,7 +412,7 @@ Open the `.dmg` in `desktop/target/installer/` and drag BoxOffice to Application
 - [ ] Can say where each system keeps app data, and why an installed app can't keep `gate.db` next to itself
 - [ ] Can say why the main class is `Main`, and why the upgrade UUID never changes
 - [ ] Can say why each installer is built on its own system, and what an unsigned installer means for the gate staff
-- [ ] All 486 tests pass
+- [ ] All 491 tests pass
 - [ ] Built the app image and checked its size with `du`
 - [ ] Built the installer for your own system
 - [ ] Committed your work to Git (not `gate.db`, and not `desktop/target/` with its jars, runtime and installers)

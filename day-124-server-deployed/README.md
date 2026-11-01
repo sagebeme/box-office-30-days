@@ -157,7 +157,7 @@ return Health.up()
 
 ## Steps
 
-1. **Open the starter and run the tests.** `cd day-124-server-deployed/starter`, then `../../mvnw test`. `core`, `cli` and `desktop` pass. In `sync server` you should see `Tests run: 142, Failures: 10` and `BUILD FAILURE`:
+1. **Open the starter and run the tests.** `cd day-124-server-deployed/starter`, then `../../mvnw test`. `core`, `cli` and `desktop` pass. In `sync server` you should see `Tests run: 147, Failures: 10` and `BUILD FAILURE`:
    - `DeploymentFilesTest.theServerDoesntRunAsRoot`: `Expecting actual not to be empty` (there's no `USER` line yet, step 6), and `itRunsTheProdProfileWithItsDataInAVolume` (step 6);
    - `HealthTest.infoSaysWhichVersionIsRunning`: `[HTTP status code] expected: 200 but was: 404` (step 3);
    - `HealthTest.livenessAndReadinessAreSeparate`: `Expecting: "{"status":"UP"}" To match JSON path: "$.components.db.status"` (step 3);
@@ -221,7 +221,7 @@ return Health.up()
 
    Run today's server tests: `Tests run: 22, Failures: 0` and `BUILD SUCCESS`.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 398 tests in all and `BUILD SUCCESS`.
+7. **Run all the tests.** `../../mvnw test`. You should see 403 tests in all and `BUILD SUCCESS`.
 
 8. **Run it the way a real server does.** Follow "Run it and test it" below: the dev profile on your laptop, then the Docker image, a new container on the same volume, and Docker Compose.
 
@@ -247,7 +247,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=HealthTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **185 tests** in `core`, **30** in `cli`, **41** in `desktop` and **142** in `sync server` (including DeploymentFiles 5, Health 4, Production 5, StartupChecks 8), **398** in all:
+Success looks like this, with **185 tests** in `core`, **30** in `cli`, **41** in `desktop` and **147** in `sync server` (including DeploymentFiles 5, Health 4, Production 5, StartupChecks 8), **403** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -456,7 +456,7 @@ It builds the image, makes a volume called `<folder>_server-data`, reads `.env` 
 - [ ] Can say why secrets come from the environment and a `.env` that's never committed, and never from the Dockerfile
 - [ ] Can say what a volume is for
 - [ ] Can say why a real deploy has HTTPS in front, and why that makes `trusted-proxies` 1
-- [ ] All 398 tests pass
+- [ ] All 403 tests pass
 - [ ] Built the image, ran it as `boxoffice`, saw readiness say `UP`, and synced a sale that survived a new container
 - [ ] Committed your work to Git (not `.env`, `gate.db`, `sync-server-db.mv.db` or a `prod-data` folder, and never your admin key or M-Pesa keys)
 

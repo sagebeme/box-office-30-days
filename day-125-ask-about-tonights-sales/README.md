@@ -227,7 +227,7 @@ The SDK already retries a couple of times on its own before it gives up, so by t
 
    The problems go to `err`, so they stay out of the answer itself.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 422 tests in all and `BUILD SUCCESS`.
+7. **Run all the tests.** `../../mvnw test`. You should see 427 tests in all and `BUILD SUCCESS`.
 
 8. **Ask about the night.** Follow "Run it and test it" below: first with `--fake`, then, if you have a key, the real Claude.
 
@@ -253,7 +253,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=AnthropicClaudeTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **196 tests** in `core` (including SalesSnapshot 4, SalesQuestions 7), **43** in `cli` (including AnthropicClaude 6, AskCommand 7), **41** in `desktop` and **142** in `sync server`, **422** in all:
+Success looks like this, with **196 tests** in `core` (including SalesSnapshot 4, SalesQuestions 7), **43** in `cli` (including AnthropicClaude 6, AskCommand 7), **41** in `desktop` and **147** in `sync server`, **427** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -394,7 +394,7 @@ The first is a wrong or deleted key. The second comes after the SDK has tried a 
 - [ ] Can say why the stop reason is read before the text is trusted
 - [ ] Can say what effort LOW and the fallback header do
 - [ ] Wrote `facts`, the question check, the request, the streaming and `finish`
-- [ ] All 422 tests pass
+- [ ] All 427 tests pass
 - [ ] Ran `ask --fake` and saw the facts, with no names in them
 - [ ] Can say why `ANTHROPIC_API_KEY` is in an environment variable, and what a question costs
 - [ ] Committed your work to Git (not `gate.db`, and never an API key)

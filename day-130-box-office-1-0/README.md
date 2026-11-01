@@ -215,7 +215,7 @@ The night is on: updates wait until Kilele Nights ends at Sun 15 Nov, 04:00
 
    Run `DownloaderTest`: all 6 pass, including `followsGitHubsRedirect`, which checks your download went to `/download/...` and then to `/files/...`, like GitHub's.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 542 tests in all and `BUILD SUCCESS`.
+7. **Run all the tests.** `../../mvnw test`. You should see 547 tests in all and `BUILD SUCCESS`.
 
 8. **Ask the real GitHub.** Follow "Run it and test it" below. It's one read-only request to GitHub, with no key.
 
@@ -241,7 +241,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=DownloaderTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **274 tests** in `core` (including BoxOfficeVersion 1, Checksums 3, Downloader 6, GitHubReleases 6, UpdateChecker 6), **78** in `cli` (including UpdateCommand 8; the live eval from Day 127 is skipped), **48** in `desktop` and **142** in `sync server`, **542** in all:
+Success looks like this, with **274 tests** in `core` (including BoxOfficeVersion 1, Checksums 3, Downloader 6, GitHubReleases 6, UpdateChecker 6), **78** in `cli` (including UpdateCommand 8; the live eval from Day 127 is skipped), **48** in `desktop` and **147** in `sync server`, **547** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -366,7 +366,7 @@ Write your feature's own README in the same shape as the course's: the brief, ne
 - [ ] Can say why a download goes to `.part` first, and when it gets its real name
 - [ ] Can say why the update waits for the night to end, and why that needs the real clock
 - [ ] Wrote `sha256`, `parse`, `check`, `duringTheEvent` and the check in `download`
-- [ ] All 542 tests pass
+- [ ] All 547 tests pass
 - [ ] Ran `update` against the real GitHub and read its answer
 - [ ] Picked one feature of your own, and wrote its first test
 - [ ] Committed your work to Git (not `gate.db`, not a downloaded `installers/` folder, and never a key or certificate)

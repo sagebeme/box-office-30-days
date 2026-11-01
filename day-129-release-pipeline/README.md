@@ -253,7 +253,7 @@ The signing step only runs when `WINDOWS_CERTIFICATE` isn't empty, so without th
 
    Use spaces, never tabs: YAML doesn't allow tabs. Delete the two TODO comments.
 
-6. **Run all the tests.** `../../mvnw test`. You should see 512 tests in all and `BUILD SUCCESS`.
+6. **Run all the tests.** `../../mvnw test`. You should see 517 tests in all and `BUILD SUCCESS`.
 
 7. **Write the notes for a pretend release.** Follow "Run it and test it" below: you make a throwaway Git repository with a few commits and a tag, and pipe its log into `release-notes`.
 
@@ -281,7 +281,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=ReleaseWorkflowTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **252 tests** in `core` (including ConventionalCommit 5, SemVer 5, ReleaseNotes 2), **70** in `cli` (including ReleaseNotesCommand 6, ReleaseWorkflow 8; the live eval from Day 127 is skipped), **48** in `desktop` and **142** in `sync server`, **512** in all:
+Success looks like this, with **252 tests** in `core` (including ConventionalCommit 5, SemVer 5, ReleaseNotes 2), **70** in `cli` (including ReleaseNotesCommand 6, ReleaseWorkflow 8; the live eval from Day 127 is skipped), **48** in `desktop` and **147** in `sync server`, **517** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -421,7 +421,7 @@ Both end with exit code 1, so a workflow step that runs them stops there. Delete
 - [ ] Can say why 1.10.0 is newer than 1.9.0, and how `SemVer` gets it right
 - [ ] Can say why each installer is built on its own system, and why only the publishing job may write
 - [ ] Can say what code signing protects against, and why macOS signing isn't wired in yet
-- [ ] All 512 tests pass
+- [ ] All 517 tests pass
 - [ ] Wrote notes for a pretend release, and saw a `!` make it 2.0.0
 - [ ] Committed your work to Git (not `gate.db`, and never a `.pfx` certificate or its password)
 

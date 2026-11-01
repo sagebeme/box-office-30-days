@@ -183,7 +183,7 @@ That second test is the lesson of the day. `full-phone` only checks what must **
 
    Run `GateEvalsTest`: all 5 pass.
 
-6. **Run all the tests.** `../../mvnw test`. You should see 471 tests in all and `BUILD SUCCESS`. One of them, `LiveEvalTest`, is skipped: `Tests run: 1, Failures: 0, Errors: 0, Skipped: 1`. That's right: it only runs when you ask (see below).
+6. **Run all the tests.** `../../mvnw test`. You should see 476 tests in all and `BUILD SUCCESS`. One of them, `LiveEvalTest`, is skipped: `Tests run: 1, Failures: 0, Errors: 0, Skipped: 1`. That's right: it only runs when you ask (see below).
 
 7. **Run `eval`.** Follow "Run it and test it" below. Without a key you'll see what it says; with a key of your own, you'll see the real Claude's score.
 
@@ -209,7 +209,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=GateEvalsTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **232 tests** in `core` (including Graders 8, EvalRunner 5, GateEvals 5), **56** in `cli` (including EvalCommand 4 and LiveEval 1, skipped), **41** in `desktop` and **142** in `sync server`, **471** in all:
+Success looks like this, with **232 tests** in `core` (including Graders 8, EvalRunner 5, GateEvals 5), **56** in `cli` (including EvalCommand 4 and LiveEval 1, skipped), **41** in `desktop` and **147** in `sync server`, **476** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -357,7 +357,7 @@ It prints the scorecard either way, and fails below 6 of 8. Everyday `mvnw test`
 - [ ] Can say why the bar is 80% (75% live), not 100%
 - [ ] Can say when to run the evals, and why not on every build
 - [ ] Can say what "LLM as judge" would add, and what it would cost
-- [ ] All 471 tests pass, with `LiveEvalTest` skipped
+- [ ] All 476 tests pass, with `LiveEvalTest` skipped
 - [ ] Ran `eval` and read its output (with your own key, if you have one)
 - [ ] Committed your work to Git (not `gate.db`, and never your API key or a `.env` file)
 

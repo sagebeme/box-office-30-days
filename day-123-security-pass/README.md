@@ -235,7 +235,7 @@ Compare with `MessageDigest.isEqual(sent.getBytes(StandardCharsets.UTF_8), venue
 
    Run `../../mvnw test -Dtest=LanSyncTest -Dsurefire.failIfNoSpecifiedTests=false`: all 13 pass.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 382 tests in all and `BUILD SUCCESS`.
+7. **Run all the tests.** `../../mvnw test`. You should see 387 tests in all and `BUILD SUCCESS`.
 
 8. **Knock on the doors yourself.** Follow "Run it and test it" below: the headers, a 429, a faked `X-Forwarded-For`, a too-short admin key, and a stranger at the LAN feed.
 
@@ -261,7 +261,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=SecurityPassTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **185 tests** in `core` (including LanSync 13), **30** in `cli` (BoxOfficeCli 27, PracticeServer 3), **41** in `desktop` and **126** in `sync server` (CallbackAddress 3, CallerIp 6, DarajaClient 12, DeviceLogin 9, GateToServer 3, HeldPlaces 5, LastTicket 5, MpesaCallback 5, Payments 12, PayOnTheSite 6, RaceToTheServer 1, RateLimiter 6, RateLimit 6, SecurityPass 10, StartupChecks 6, StkCallback 8, StkPassword 6, SyncApi 5, TicketSite 12), **382** in all:
+Success looks like this, with **185 tests** in `core` (including LanSync 13), **30** in `cli` (BoxOfficeCli 27, PracticeServer 3), **41** in `desktop` and **131** in `sync server` (CallbackAddress 3, CallerIp 6, DarajaClient 12, DeviceLogin 9, GateToServer 3, HeldPlaces 5, LastTicket 5, MpesaCallback 5, Payments 12, PayOnTheSite 9, PromptFails 2, RaceToTheServer 1, RateLimiter 6, RateLimit 6, SecurityPass 10, StartupChecks 6, StkCallback 8, StkPassword 6, SyncApi 5, TicketSite 12), **387** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -475,7 +475,7 @@ Couldn't pull from http://127.0.0.1:8100: The other gate has a different venue k
 - [ ] Can say what each security header stops, and why our CSP can be strict
 - [ ] Can name the three checks that make an unsigned M-Pesa callback trustworthy
 - [ ] Wrote the bucket, `CallerIp.of`, `SaleChecks`, the headers and the venue key check
-- [ ] All 382 tests pass
+- [ ] All 387 tests pass
 - [ ] Saw a 429 with `Retry-After`, and a 401 from the LAN feed, with `curl -i`
 - [ ] Committed your work to Git (not `a.db`, `b.db`, `c.db` or `sync-server-db.mv.db`, and never your admin key, callback secret or venue key)
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * The public ticket site. A @Controller, not a @RestController: each method
@@ -62,7 +63,7 @@ class TicketSite {
     @PostMapping("/events/{id}/orders")
     String order(@PathVariable String id, @ModelAttribute OrderForm form, Model model,
                  @RequestHeader(name = "HX-Request", required = false) String htmx,
-                 HttpServletResponse response) {
+                 HttpServletResponse response, RedirectAttributes redirect) {
         var event = catalogue.event(id);
         if (event.isEmpty()) {
             return notFound(response, model, "No event called " + id);
@@ -71,12 +72,14 @@ class TicketSite {
         return switch (orders.place(id, form)) {
             case Orders.Placed.Done done -> {
                 // Day 122: straight away, ask M-Pesa to prompt the fan's phone.
-                payments.requestPayment(done.order().reference())
-                        .ifPresent(problem -> model.addAttribute("payProblem", problem));
+                var payProblem = payments.requestPayment(done.order().reference());
                 if (!fromHtmx) {
                     // Post, then redirect, then get: reloading the order page can't place the order twice.
+                    // The model is gone after a redirect; a flash attribute lives for exactly one more page.
+                    payProblem.ifPresent(problem -> redirect.addFlashAttribute("payProblem", problem));
                     yield "redirect:/orders/" + done.order().reference();
                 }
+                payProblem.ifPresent(problem -> model.addAttribute("payProblem", problem));
                 showOrder(model, done.order());
                 yield "order :: summary";
             }
@@ -126,11 +129,19 @@ class TicketSite {
 
     /** "No prompt? Send it again." */
     @PostMapping("/orders/{reference}/pay")
-    String payAgain(@PathVariable String reference, Model model, HttpServletResponse response) {
+    String payAgain(@PathVariable String reference, Model model,
+                    @RequestHeader(name = "HX-Request", required = false) String htmx,
+                    HttpServletResponse response, RedirectAttributes redirect) {
         if (orders.find(reference).isEmpty()) {
             return notFound(response, model, "No order " + reference);
         }
-        payments.requestPayment(reference).ifPresent(problem -> model.addAttribute("payProblem", problem));
+        var payProblem = payments.requestPayment(reference);
+        if (!"true".equals(htmx)) {
+            // No JavaScript: the button was a plain form, so answer with the whole page.
+            payProblem.ifPresent(problem -> redirect.addFlashAttribute("payProblem", problem));
+            return "redirect:/orders/" + reference;
+        }
+        payProblem.ifPresent(problem -> model.addAttribute("payProblem", problem));
         showOrder(model, orders.find(reference).orElseThrow());
         return "order :: status";
     }

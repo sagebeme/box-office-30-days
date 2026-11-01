@@ -41,6 +41,7 @@ You write five pieces: the STK password, keeping Daraja's token, reading a callb
 
 - **M-Pesa**: Safaricom's mobile money. Most fans at Kilele Nights pay with it.
 - **Daraja**: Safaricom's API for M-Pesa ("daraja" is Swahili for "bridge").
+- **Flash attribute**: a value Spring keeps for exactly one redirect, so the next page can still show it.
 - **STK push**: a request from our server that makes M-Pesa show a "pay this much, enter your PIN" prompt on the fan's phone. (STK is the SIM Toolkit, the menu on the SIM card that shows it.)
 - **Callback**: an address on **our** server that Safaricom calls when it knows the result. We give Daraja the address with every STK push.
 - **Shortcode**: our M-Pesa business number: a paybill or a till. The sandbox's shared paybill is `174379`.
@@ -81,7 +82,7 @@ In `server/src/main/java/com/boxoffice/server/`:
 - `order.html`: the payment piece, which asks again every 3 seconds while the order waits, and shows the tickets once it's paid.
 - `V4__payments.sql`: the `stk_requests` table, and `receipt` and `detail` on `orders`. Tickets can now come from an order (`order_reference`) instead of a gate's sale.
 - `application.properties`: the M-Pesa settings, each from an environment variable (see "What you'll use").
-- Tests: `StkPasswordTest` (6), `DarajaClientTest` (12, against `FakeDaraja`, a small pretend Safaricom on your own laptop), `StkCallbackTest` (8), `PaymentsTest` (12), `MpesaCallbackTest` (5) and `PayOnTheSiteTest` (6).
+- Tests: `StkPasswordTest` (6), `DarajaClientTest` (12, against `FakeDaraja`, a small pretend Safaricom on your own laptop), `StkCallbackTest` (8), `PaymentsTest` (12), `MpesaCallbackTest` (5), `PayOnTheSiteTest` (9) and `PromptFailsTest` (2, where a pretend Safaricom is down).
 
 New, for you to finish: `StkPassword` (step 2), keeping the token in `DarajaClient.token` (step 3), `StkCallback.item` (step 4), `Payments.settle` (step 5) and `MpesaCallback.receive` (step 6). The TODOs are labelled with their step numbers.
 
@@ -196,18 +197,18 @@ The course doesn't do this, and you don't need to: it needs accounts, a tunnel a
 
 ## Steps
 
-1. **Open the starter and run the tests.** `cd day-122-pay-with-mpesa/starter`, then `../../mvnw test`. `core` (181), `cli` (28) and `desktop` (41) pass. `sync server` fails with `Tests run: 89, Failures: 12, Errors: 26` and `BUILD FAILURE`. Every failure says `Not written yet: Day 122, step` and a number:
+1. **Open the starter and run the tests.** `cd day-122-pay-with-mpesa/starter`, then `../../mvnw test`. `core` (181), `cli` (28) and `desktop` (41) pass. `sync server` fails with `Tests run: 94, Failures: 13, Errors: 26` and `BUILD FAILURE`. Every failure says `Not written yet: Day 122, step` and a number:
    - `StkPasswordTest` (3 of 6) and `DarajaClientTest` (11 of 12): `java.lang.UnsupportedOperationException: Not written yet: Day 122, step 2`. Some say `Expecting actual throwable to be an instance of: com.boxoffice.server.mpesa.DarajaException but was: java.lang.UnsupportedOperationException: Not written yet: Day 122, step 2`;
-   - `StkCallbackTest` (7), `PaymentsTest` (11) and two `PayOnTheSiteTest` tests: `Not written yet: Day 122, step 4`;
+   - `StkCallbackTest` (7), `PaymentsTest` (11) and three `PayOnTheSiteTest` tests: `Not written yet: Day 122, step 4`;
    - `MpesaCallbackTest` (4): `Request failed unexpectedly: jakarta.servlet.ServletException: Request processing failed: java.lang.UnsupportedOperationException: Not written yet: Day 122, step 6`.
 
    To run only today's tests, which is quicker:
 
    ```
-   ../../mvnw test -Dtest="StkPasswordTest,DarajaClientTest,StkCallbackTest,PaymentsTest,MpesaCallbackTest,PayOnTheSiteTest" -Dsurefire.failIfNoSpecifiedTests=false
+   ../../mvnw test -Dtest="StkPasswordTest,DarajaClientTest,StkCallbackTest,PaymentsTest,MpesaCallbackTest,PayOnTheSiteTest,PromptFailsTest" -Dsurefire.failIfNoSpecifiedTests=false
    ```
 
-   On Windows: `..\..\mvnw.cmd test "-Dtest=StkPasswordTest,DarajaClientTest,StkCallbackTest,PaymentsTest,MpesaCallbackTest,PayOnTheSiteTest" "-Dsurefire.failIfNoSpecifiedTests=false"`. You should see `Tests run: 49, Failures: 12, Errors: 26`. Use this command after each step below.
+   On Windows: `..\..\mvnw.cmd test "-Dtest=StkPasswordTest,DarajaClientTest,StkCallbackTest,PaymentsTest,MpesaCallbackTest,PayOnTheSiteTest,PromptFailsTest" "-Dsurefire.failIfNoSpecifiedTests=false"`. You should see `Tests run: 54, Failures: 13, Errors: 26`. Use this command after each step below.
 
 2. **The timestamp and the password.** Open `starter/server/src/main/java/com/boxoffice/server/mpesa/StkPassword.java`. In `timestamp`, replace the `throw` with `return STAMP.format(now.atOffset(EAT));`. In `password`, return the base64 of `shortcode + passkey + timestamp`, as UTF-8 bytes: `Base64.getEncoder().encodeToString((shortcode + passkey + timestamp).getBytes(StandardCharsets.UTF_8))`.
 
@@ -228,7 +229,7 @@ The course doesn't do this, and you don't need to: it needs accounts, a tunnel a
 
    Keep the checks in that order: the `EXPIRED` check must come before "not waiting", or a late payment would be `ALREADY_SETTLED` and quietly forgotten.
 
-   Run today's tests: `PaymentsTest` (12) and `PayOnTheSiteTest` (6) pass. Only four `MpesaCallbackTest` tests fail, with `Not written yet: Day 122, step 6`.
+   Run today's tests: `PaymentsTest` (12), `PayOnTheSiteTest` (9) and `PromptFailsTest` (2) pass. Only four `MpesaCallbackTest` tests fail, with `Not written yet: Day 122, step 6`.
 
 6. **The callback that always says "Accepted".** Open `MpesaCallback.java` and find `receive`. Replace the `throw` with:
    - `String expected = settings.callbackSecret();`. If `expected` is `null` or blank, or `!Tokens.same(secret, expected)`: `log.warn("M-Pesa callback with the wrong secret: ignored");` and `return ACCEPTED;`.
@@ -237,7 +238,7 @@ The course doesn't do this, and you don't need to: it needs accounts, a tunnel a
    - `catch (RuntimeException e)`: our own failure. `log.error("M-Pesa callback failed on our side", e);`. (The `IllegalArgumentException` catch must come first: it's a kind of `RuntimeException`, and Java refuses a catch that can never be reached.)
    - `return ACCEPTED;` at the end, whatever happened.
 
-7. **Run all the tests.** `../../mvnw test`. You should see 339 tests in all and `BUILD SUCCESS`.
+7. **Run all the tests.** `../../mvnw test`. You should see 344 tests in all and `BUILD SUCCESS`.
 
 8. **Order and pretend to pay.** Follow "Run it and test it" below: order in the browser, press "Pretend to pay", and see your tickets. Then do it again from `curl`.
 
@@ -263,7 +264,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=PaymentsTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **181 tests** in `core`, **28** in `cli`, **41** in `desktop` and **89** in `sync server` (DarajaClient 12, DeviceLogin 9, GateToServer 3, HeldPlaces 5, LastTicket 5, MpesaCallback 5, PayOnTheSite 6, Payments 12, RaceToTheServer 1, StkCallback 8, StkPassword 6, SyncApi 5, TicketSite 12), **339** in all:
+Success looks like this, with **181 tests** in `core`, **28** in `cli`, **41** in `desktop` and **94** in `sync server` (DarajaClient 12, DeviceLogin 9, GateToServer 3, HeldPlaces 5, LastTicket 5, MpesaCallback 5, PayOnTheSite 9, Payments 12, PromptFails 2, RaceToTheServer 1, StkCallback 8, StkPassword 6, SyncApi 5, TicketSite 12), **344** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -339,13 +340,33 @@ $ curl http://localhost:8080/orders/2FYQ-N5WN
                         and enter your M-Pesa PIN to pay <strong>KES 3,000</strong>.
                     </p>
                 </div>
-                <button class="quiet" hx-target="#payment" hx-swap="outerHTML" hx-post="/orders/2FYQ-N5WN/pay">No prompt? Send it again</button>
+                <!-- Each button is a real form, so it works with JavaScript off; htmx just makes it smoother. -->
+                <form method="post" action="/orders/2FYQ-N5WN/pay"
+                      hx-target="#payment" hx-swap="outerHTML" hx-post="/orders/2FYQ-N5WN/pay">
+                    <button class="quiet">No prompt? Send it again</button>
+                </form>
                 <div class="practice">
                     <p>Practice mode: no real M-Pesa, no real money.</p>
-                    <button hx-target="#payment" hx-swap="outerHTML" hx-post="/practice/orders/2FYQ-N5WN/pay">Pretend to pay</button>
-                    <button class="quiet" hx-target="#payment" hx-swap="outerHTML" hx-post="/practice/orders/2FYQ-N5WN/pay?result=1032">Pretend to cancel</button>
+                    <form method="post" action="/practice/orders/2FYQ-N5WN/pay"
+                          hx-target="#payment" hx-swap="outerHTML" hx-post="/practice/orders/2FYQ-N5WN/pay">
+                        <button>Pretend to pay</button>
+                    </form>
+                    <form method="post" action="/practice/orders/2FYQ-N5WN/pay?result=1032"
+                          hx-target="#payment" hx-swap="outerHTML" hx-post="/practice/orders/2FYQ-N5WN/pay?result=1032">
+                        <button class="quiet">Pretend to cancel</button>
+                    </form>
                 </div>
 ```
+
+Every button sits in a real `<form method="post">`, just like Day 121's order form. With JavaScript, htmx sends it in the background and swaps in the payment piece. Without JavaScript, the browser posts the form, and the server answers with a redirect back to the order page (`TicketSite` and `PracticePayments` check the `HX-Request` header to tell which one they got):
+
+```
+$ curl -i -X POST http://localhost:8080/practice/orders/2FYQ-N5WN/pay
+HTTP/1.1 302
+Location: http://localhost:8080/orders/2FYQ-N5WN
+```
+
+If M-Pesa can't be reached, the fan has to be told. After a plain form post the server redirects, and a redirect starts a new request, so anything put in the model is lost. That's why the problem goes in a **flash attribute** (`RedirectAttributes.addFlashAttribute`), which lives for exactly one more page: the order page then shows the problem instead of "Check your phone". `PromptFailsTest` checks this with a pretend Safaricom that's always down.
 
 What the page's every-3-seconds question gets while nothing has changed: `HX-Reswap: none`, "leave the page alone":
 
@@ -453,7 +474,7 @@ Stop the server with Ctrl+C. `sync-server-db.mv.db` is in `.gitignore`.
 - [ ] Can say why the callback always answers "Accepted", and what the secret in its address is for
 - [ ] Can say what happens to a payment that arrives after its order expired, and why
 - [ ] Can list what the real sandbox needs
-- [ ] All 339 tests pass
+- [ ] All 344 tests pass
 - [ ] Ordered on the site, pretended to pay, and saw `W-REG-...` tickets
 - [ ] Committed your work to Git (not `sync-server-db.mv.db`, and never an admin key, consumer key, consumer secret, passkey or callback secret)
 

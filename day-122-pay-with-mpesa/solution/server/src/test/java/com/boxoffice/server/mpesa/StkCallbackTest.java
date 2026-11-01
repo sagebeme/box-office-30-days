@@ -71,10 +71,13 @@ class StkCallbackTest {
     void anItemWithNoValueIsTreatedAsMissing() {
         StkCallback callback = StkCallback.parse("""
                 {"Body":{"stkCallback":{"CheckoutRequestID":"ws_CO_4","ResultCode":0,"ResultDesc":"ok",\
-                "CallbackMetadata":{"Item":[{"Name":"Amount"},{"Name":"MpesaReceiptNumber","Value":"QK1"}]}}}}""");
+                "CallbackMetadata":{"Item":[{"Name":"Amount"},{"Name":"MpesaReceiptNumber"},\
+                {"Name":"PhoneNumber","Value":254712345678}]}}}}""");
 
         assertThat(callback.amount()).isEqualTo(Optional.empty());
-        assertThat(callback.receipt()).contains("QK1");
+        // Not Optional.of(""): an item with no Value is no receipt at all.
+        assertThat(callback.receipt()).isEmpty();
+        assertThat(callback.phone()).contains("254712345678");
     }
 
     @Test

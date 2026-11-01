@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -31,6 +32,7 @@ class PracticePayments {
 
     @PostMapping("/practice/orders/{reference}/pay")
     String pretend(@PathVariable String reference, @RequestParam(defaultValue = "0") int result, Model model,
+                   @RequestHeader(name = "HX-Request", required = false) String htmx,
                    HttpServletResponse response) {
         var order = orders.find(reference);
         var checkout = payments.latestCheckout(reference);
@@ -40,6 +42,10 @@ class PracticePayments {
             return "not-found";
         }
         payments.settle(StkCallback.parse(callback(checkout.get(), result, order.get())));
+        if (!"true".equals(htmx)) {
+            // A plain form post, with JavaScript off: show the whole order page again.
+            return "redirect:/orders/" + reference;
+        }
         model.addAttribute("order", orders.find(reference).orElseThrow());
         model.addAttribute("tickets", payments.tickets(reference));
         model.addAttribute("practice", true);

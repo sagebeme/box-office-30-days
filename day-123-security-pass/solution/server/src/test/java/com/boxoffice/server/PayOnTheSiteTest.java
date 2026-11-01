@@ -71,7 +71,7 @@ class PayOnTheSiteTest {
 
     @Test
     void aCancelledPaymentSaysSoAndFreesThePlaces() {
-        assertThat(mvc.post().uri("/practice/orders/" + reference + "/pay?result=1032"))
+        assertThat(mvc.post().uri("/practice/orders/" + reference + "/pay?result=1032").header("HX-Request", "true"))
                 .bodyText()
                 .contains("Not paid", "You cancelled the M-Pesa payment", "Order again");
 
@@ -84,6 +84,33 @@ class PayOnTheSiteTest {
                 .hasStatusOk()
                 .bodyText()
                 .contains("Check your phone");
+
+        assertThat(db.sql("select count(*) from stk_requests").query(Integer.class).single()).isEqualTo(2);
+    }
+
+    @Test
+    void theButtonsAreRealFormsSoTheyWorkWithoutJavaScript() {
+        assertThat(mvc.get().uri("/orders/" + reference))
+                .bodyText()
+                .contains("action=\"/orders/" + reference + "/pay\"")
+                .contains("action=\"/practice/orders/" + reference + "/pay\"")
+                .contains("action=\"/practice/orders/" + reference + "/pay?result=1032\"");
+    }
+
+    @Test
+    void withoutJavaScriptPretendToPayShowsTheWholePageAgain() {
+        assertThat(mvc.post().uri("/practice/orders/" + reference + "/pay"))
+                .hasStatus3xxRedirection()
+                .hasRedirectedUrl("/orders/" + reference);
+
+        assertThat(mvc.get().uri("/orders/" + reference)).bodyText().contains("Paid", "W-REG-0001", "<html");
+    }
+
+    @Test
+    void withoutJavaScriptSendItAgainShowsTheWholePageAgain() {
+        assertThat(mvc.post().uri("/orders/" + reference + "/pay"))
+                .hasStatus3xxRedirection()
+                .hasRedirectedUrl("/orders/" + reference);
 
         assertThat(db.sql("select count(*) from stk_requests").query(Integer.class).single()).isEqualTo(2);
     }

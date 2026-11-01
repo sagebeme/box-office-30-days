@@ -39,14 +39,23 @@
                         and enter your M-Pesa PIN to pay <strong th:text="${order.amount.format()}">KES 3,000</strong>.
                     </p>
                 </div>
-                <button class="quiet" th:attr="hx-post=@{/orders/{r}/pay(r=${order.reference})}"
-                        hx-target="#payment" hx-swap="outerHTML">No prompt? Send it again</button>
+                <!-- Each button is a real form, so it works with JavaScript off; htmx just makes it smoother. -->
+                <form method="post" th:action="@{/orders/{r}/pay(r=${order.reference})}"
+                      th:attr="hx-post=@{/orders/{r}/pay(r=${order.reference})}" hx-target="#payment" hx-swap="outerHTML">
+                    <button class="quiet">No prompt? Send it again</button>
+                </form>
                 <div class="practice" th:if="${practice}">
                     <p>Practice mode: no real M-Pesa, no real money.</p>
-                    <button th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference})}"
-                            hx-target="#payment" hx-swap="outerHTML">Pretend to pay</button>
-                    <button class="quiet" th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference},result=1032)}"
-                            hx-target="#payment" hx-swap="outerHTML">Pretend to cancel</button>
+                    <form method="post" th:action="@{/practice/orders/{r}/pay(r=${order.reference})}"
+                          th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference})}"
+                          hx-target="#payment" hx-swap="outerHTML">
+                        <button>Pretend to pay</button>
+                    </form>
+                    <form method="post" th:action="@{/practice/orders/{r}/pay(r=${order.reference},result=1032)}"
+                          th:attr="hx-post=@{/practice/orders/{r}/pay(r=${order.reference},result=1032)}"
+                          hx-target="#payment" hx-swap="outerHTML">
+                        <button class="quiet">Pretend to cancel</button>
+                    </form>
                 </div>
             </th:block>
 

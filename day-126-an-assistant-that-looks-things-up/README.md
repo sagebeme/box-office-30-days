@@ -199,7 +199,7 @@ return ((Turn.Finished) turn).reply();
 
    It sits **after** the `refusal` and `max_tokens` checks, and that order is the point: a turn that stopped for any other reason never has its tools run.
 
-8. **Run all the tests.** `../../mvnw test`. You should see 448 tests in all and `BUILD SUCCESS`.
+8. **Run all the tests.** `../../mvnw test`. You should see 453 tests in all and `BUILD SUCCESS`.
 
 9. **Ask with lookups.** Follow "Run it and test it" below.
 
@@ -225,7 +225,7 @@ One test class only:
 ..\..\mvnw.cmd test "-Dtest=LookupLoopTest" "-Dsurefire.failIfNoSpecifiedTests=false"
 ```
 
-Success looks like this, with **214 tests** in `core` (including SalesTools 12, LookupLoop 5, SalesQuestions 8, SalesSnapshot 4), **51** in `cli` (including AnthropicClaude 13, AskCommand 8), **41** in `desktop` and **142** in `sync server`, **448** in all:
+Success looks like this, with **214 tests** in `core` (including SalesTools 12, LookupLoop 5, SalesQuestions 8, SalesSnapshot 4), **51** in `cli` (including AnthropicClaude 13, AskCommand 8), **41** in `desktop` and **147** in `sync server`, **453** in all:
 
 ```
 [INFO] Box Office core .................................... SUCCESS
@@ -341,7 +341,7 @@ To hide the lookup lines and keep only the answer, send `err` away: `2>/dev/null
 - [ ] Can say what `eager_input_streaming` changes, and what happens with broken JSON
 - [ ] Can say why every tool is read-only
 - [ ] Wrote the input check, `find_ticket`, the after-midnight rule, the loop, `tool(spec)` and the `tool_use` turn
-- [ ] All 448 tests pass
+- [ ] All 453 tests pass
 - [ ] Committed your work to Git (not `gate.db`, and never an API key)
 
 ## Next
