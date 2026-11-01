@@ -31,13 +31,13 @@ class ProductionTest {
         Map<String, Object> settings = new HashMap<>();
         settings.put("PORT", "0");
         settings.put("BOXOFFICE_DATA_DIR", data.toString());
-        settings.put("BOXOFFICE_ADMIN_KEY", "Vb8Q2nX7kLp4Rt9WmZ3sHc6J-prod");
+        settings.put("BOXOFFICE_ADMIN_KEY", "test-admin-key-made-up-for-tests-prod");
         settings.put("MPESA_MODE", "sandbox");
         settings.put("MPESA_CONSUMER_KEY", "sandbox-key");
         settings.put("MPESA_CONSUMER_SECRET", "sandbox-secret");
         settings.put("MPESA_PASSKEY", "sandbox-passkey");
         settings.put("MPESA_CALLBACK_BASE", "https://tickets.example.co.ke");
-        settings.put("MPESA_CALLBACK_SECRET", "h7Gq2LmX9pRt4Vw8Zb3Nc6Kd1Fs5Jy0A");
+        settings.put("MPESA_CALLBACK_SECRET", "made-up-callback-secret-for-tests-only");
         return settings;
     }
 

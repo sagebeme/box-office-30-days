@@ -74,8 +74,9 @@ class DarajaClientTest {
     void theTokenIsAskedForWithTheConsumerKeyAndSecret() {
         daraja.stkPush(twoRegular());
 
-        // base64("practice-key:practice-secret")
-        assertThat(safaricom.tokenAuthorizations()).containsExactly("Basic cHJhY3RpY2Uta2V5OnByYWN0aWNlLXNlY3JldA==");
+        String keyAndSecret = "practice-key:practice-secret";
+        assertThat(safaricom.tokenAuthorizations()).containsExactly(
+                "Basic " + java.util.Base64.getEncoder().encodeToString(keyAndSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
     }
 
     @Test

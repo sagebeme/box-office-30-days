@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 class StartupChecksTest {
 
-    private static final String GOOD_ADMIN_KEY = "Vb8Q2nX7kLp4Rt9WmZ3sHc6J";
-    private static final String GOOD_SECRET = "h7Gq2LmX9pRt4Vw8Zb3Nc6Kd1Fs5Jy0A";
+    private static final String GOOD_ADMIN_KEY = "test-admin-key-made-up-for-tests";
+    private static final String GOOD_SECRET = "made-up-callback-secret-for-tests-only";
 
     private static MpesaSettings mpesa(String mode, String base, String secret) {
         return new MpesaSettings(mode, "key", "secret", "passkey", "174379", "CustomerPayBillOnline",
@@ -44,7 +44,7 @@ class StartupChecksTest {
     @Test
     void theCallbackSecretMustBeSafeInAnAddress() {
         assertThat(StartupChecks.problems(GOOD_ADMIN_KEY,
-                mpesa("live", "https://tickets.example.co.ke", "h7Gq2LmX9pRt4Vw8/b3Nc6Kd1Fs5Jy0A?x")))
+                mpesa("live", "https://tickets.example.co.ke", "made-up/callback?secret-for-tests-only")))
                 .containsExactly("MPESA_CALLBACK_SECRET goes in an address: use only letters, digits, - and _");
     }
 
