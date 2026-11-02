@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Box Office in 30 Days</title>
+<meta name="description" content="Java, Part 2: build Box Office, an offline-first gate app for weekend events, over 30 days. It keeps selling when the Wi-Fi drops, takes M-Pesa and ships as an installer. Every day has tests.">
+<meta property="og:title" content="Box Office in 30 Days">
+<meta property="og:description" content="One real Java app in 30 days: a gate app that survives bad Wi-Fi and power cuts, syncs, takes M-Pesa and ships as an installer.">
+<meta name="theme-color" content="#f2ede3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#13111b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="navbar" aria-label="Main">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="stub" aria-hidden="true">30</span><span>Box Office</span><span class="sr-only">: home</span></a>
+    <ul class="nav-links">
+      <li><a href="#how">How a day works</a></li>
+      <li><a href="#route">The route</a></li>
+      <li class="keep"><a href="syllabus.html">Syllabus</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+<header class="hero">
+  <div class="container">
+    <div>
+      <span class="eyebrow">Java, Part 2 · Days 101–130 · runs on your own computer</span>
+      <h1>Box Office in <em>30&nbsp;Days</em></h1>
+      <p class="lede">One real app, built a day at a time: the gate laptop for Kilele Nights. It keeps selling when the Wi-Fi drops, never half-saves a sale when the power goes, syncs to a server, takes M-Pesa and ships as an installer.</p>
+      <div class="actions">
+        <a class="btn btn-gold" id="cta" href="day.html?day=101">Start Day 101 →</a>
+        <a class="btn btn-ghost" href="#route">See the route</a>
+      </div>
+      <p class="resume" id="resume" hidden></p>
+    </div>
+    <div class="term" aria-label="The finished Box Office command line selling tickets">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>gate A · Ngong Racecourse · 19:00</b></div>
+<pre id="gate-out" aria-live="polite"><span class="c">// Day 130: Box Office 1.0, at the gate</span>
+<span class="p">$</span> java -jar cli/target/boxoffice.jar --version
+Box Office 1.0.0
+<span class="p">$</span> java -jar cli/target/boxoffice.jar setup
+Kilele Nights is ready in gate.db</pre>
+      <div class="actions">
+        <button class="btn btn-ghost" type="button" id="run-gate">Sell some tickets</button>
+        <small>Plays a recorded run of the finished app</small>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="facts" aria-label="The course in numbers">
+  <ul class="container">
+    <li><b>30</b><span>Days, about 2–3 hours each</span></li>
+    <li><b>1</b><span>App, tested every day</span></li>
+    <li><b>6</b><span>Phases, from skeleton to installer</span></li>
+    <li><b>0</b><span>Cloud accounts needed</span></li>
+  </ul>
+</section>
+
+<section class="band" id="how" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">How a day works</span>
+      <h2 id="how-title">Yesterday's app, today's TODOs</h2>
+      <p>Every day's folder has a <code>starter</code> and a <code>solution</code> with the same tests. When the tests pass, the day is done and the app still runs.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Read the night</h3><p>Each day opens at the gate: a queue, a dropped connection, a power cut. That's what today's code is for.</p></li>
+      <li><h3>Run the starter's tests</h3><p><code>../../mvnw test</code> fails on purpose. The test names say what the gate should do.</p></li>
+      <li><h3>Fill in the TODOs</h3><p>Step by step, each one marked in the code. After every step, more tests go green.</p></li>
+      <li><h3>Check, then commit</h3><p>Tick the day's checklist here, compare with <code>solution/</code>, and commit your work.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band tone" id="needs" aria-labelledby="needs-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Kilele Nights · Sat 14 Nov · 18:00 to 04:00</span>
+      <h2 id="needs-title">Every requirement the gate has becomes a day</h2>
+      <p>One laptop at the gate, a queue, a USB scanner, venue Wi-Fi that drops every few minutes, and power that may go out mid-sale. Regular is KES 1,500 (500 places), VIP KES 5,000 (50).</p>
+    </div>
+    <ul class="needs">
+      <li><span>Remember every sale on its own disk, with no server</span><span class="days"><a href="day.html?day=104">104</a></span></li>
+      <li><span>Let the organiser's guest list in, and print the night's report</span><span class="days"><a href="day.html?day=105">105</a></span></li>
+      <li><span>Be fast at the gate: keyboard only, and USB scanners that type like a keyboard</span><span class="days"><a href="day.html?day=108">108</a><a href="day.html?day=110">110</a></span></li>
+      <li><span>Never freeze, even on a slow old laptop</span><span class="days"><a href="day.html?day=109">109</a></span></li>
+      <li><span>Never half-save a sale when the power goes</span><span class="days"><a href="day.html?day=111">111</a></span></li>
+      <li><span>Work offline and sync when the connection comes back</span><span class="days"><a href="day.html?day=115">115</a><a href="day.html?day=116">116</a><a href="day.html?day=117">117</a></span></li>
+      <li><span>Let two gates agree, and let the server settle the last ticket</span><span class="days"><a href="day.html?day=117">117</a><a href="day.html?day=120">120</a></span></li>
+      <li><span>Take M-Pesa from fans buying online</span><span class="days"><a href="day.html?day=122">122</a></span></li>
+      <li><span>Answer staff questions about the night, without guessing</span><span class="days"><a href="day.html?day=125">125</a><a href="day.html?day=126">126</a><a href="day.html?day=127">127</a></span></li>
+      <li><span>Install like real software and update itself</span><span class="days"><a href="day.html?day=128">128</a><a href="day.html?day=129">129</a><a href="day.html?day=130">130</a></span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" id="route" aria-labelledby="route-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The route</span>
+      <h2 id="route-title">Six phases, one app</h2>
+      <p>From <a id="first-day" href="day.html?day=101">Day 101</a> to <a id="last-day" href="day.html?day=130">Day 130</a>. The app you finish each phase with is the one the next phase starts from.</p>
+    </div>
+    <ol class="route" id="timeline"></ol>
+  </div>
+</section>
+
+<section class="band tone" id="kit" aria-labelledby="kit-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">What you need</span>
+      <h2 id="kit-title">A JDK and an editor</h2>
+      <p>For people who finished Part 1, <a href="https://github.com/sagebeme/100-java-basics-advance">100 Days of Java</a>. Everything runs on your laptop.</p>
+    </div>
+    <div class="kit">
+      <div><h3>A JDK, version 21 or newer</h3><p>Temurin 21 from <a href="https://adoptium.net">adoptium.net</a>, or your system's package manager. Check with <code>java -version</code>.</p></div>
+      <div><h3>Maven, already included</h3><p>The Maven wrapper (<code>mvnw</code>, <code>mvnw.cmd</code>) downloads the right version the first time you run it.</p></div>
+      <div><h3>An editor</h3><p>IntelliJ IDEA Community, VS Code with the Java extensions, or Eclipse. Open a day's <code>starter/pom.xml</code>.</p></div>
+      <div><h3>Git</h3><p>To keep your own daily commits. Optional: Scene Builder from Day 106, a USB scanner for Day 110, Docker for Day 124.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="container">
+    <h2 id="cta-title">The gate opens at Day 101</h2>
+    <p id="cta-text">A Maven project with four modules, tests that run, and CI. About 2 to 3 hours.</p>
+    <a class="btn btn-gold" id="cta-2" href="day.html?day=101">Start Day 101 →</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="cols">
+      <div>
+        <h4>Box Office in 30 Days</h4>
+        <p>Java, Part 2: one offline-first gate app, built over 30 days, with tests that say when each day is done. Made in Nairobi, so expect M-Pesa and bad venue Wi-Fi.</p>
+      </div>
+      <div>
+        <h4>Course</h4>
+        <ul>
+          <li><a href="syllabus.html">Full syllabus</a></li>
+          <li><a href="day.html?day=101">Day 101: Project skeleton</a></li>
+          <li><a href="syllabus.html#setup">Set up</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Code</h4>
+        <ul>
+          <li><a href="https://github.com/sagebeme/box-office-30-days">Source on GitHub</a></li>
+          <li><a href="https://adoptium.net">Get a JDK</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom">
+      <span>Made in Nairobi.</span>
+      <span>Progress is saved only in this browser.</span>
+    </div>
+  </div>
+</footer>
+<a class="to-top" href="#top" aria-label="Back to top">↑</a>
+
+<script src="assets/days.js"></script>
+<script src="assets/progress.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>

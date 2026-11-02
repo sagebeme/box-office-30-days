@@ -19,5 +19,7 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - name: The course website's day list matches the READMEs
+        run: java tools/SiteData.java --check
       - name: Verify every day
         run: tools/verify.sh

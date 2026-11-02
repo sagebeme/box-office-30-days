@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Syllabus · Box Office in 30 Days</title>
+<meta name="description" content="Every day of Box Office in 30 Days, by phase, with a search box.">
+<meta name="theme-color" content="#f2ede3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#13111b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="navbar" aria-label="Main">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="stub" aria-hidden="true">30</span><span>Box Office</span><span class="sr-only">: home</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#route">The route</a></li>
+      <li class="keep"><a href="syllabus.html" aria-current="page">Syllabus</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="container">
+    <ol class="crumbs"><li><a href="index.html">Home</a></li><li aria-current="page">Syllabus</li></ol>
+    <h1>The full syllabus</h1>
+    <p class="sub">30 days in 6 phases, Days 101 to 130. Each day's milestone, then the idea it teaches.</p>
+  </div>
+</header>
+
+<main id="main" class="container">
+  <div class="toolbar">
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M16 16l5 5"/></svg>
+      <span class="sr-only">Search the days</span>
+      <input type="search" id="q" placeholder="Search: M-Pesa, JavaFX, sync, Docker…" autocomplete="off">
+    </label>
+    <nav class="jump" id="jump" aria-label="Jump to a phase"></nav>
+  </div>
+  <p id="count" class="sr-only" role="status"></p>
+
+  <div id="phases"></div>
+  <div class="panel empty" id="empty" hidden>Nothing matches that. Try "sync", "JavaFX" or "M-Pesa".</div>
+
+  <section class="panel prose" id="setup" aria-labelledby="setup-title" style="margin:8px 0 64px">
+    <h2 id="setup-title">Set up once, in about ten minutes</h2>
+    <ol>
+      <li><strong>Install a JDK, version 21 or newer</strong>, for example Temurin 21 from <a href="https://adoptium.net">adoptium.net</a>. Check with <code>java -version</code>.</li>
+      <li><strong>Get the course:</strong>
+        <div class="code"><pre>git clone https://github.com/sagebeme/box-office-30-days.git
+cd box-office-30-days/day-101-project-skeleton/starter</pre></div>
+      </li>
+      <li><strong>Run the tests:</strong> <code>../../mvnw test</code> (on Windows, <code>..\..\mvnw.cmd test</code>). The first run downloads Maven and the libraries, so give it a minute. Some tests fail: that's today's work.</li>
+      <li><strong>Read the lesson</strong> on <a href="day.html?day=101">Day 101</a> and follow its steps until the tests pass.</li>
+    </ol>
+    <p>To read this site offline, run <code>jwebserver -p 8000</code> in the course folder (it comes with the JDK) and open <code>http://localhost:8000/site/</code>.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="bottom" style="margin:0;padding:0;border:0">
+      <span>Made in Nairobi.</span>
+      <span>Progress is saved only in this browser.</span>
+    </div>
+  </div>
+</footer>
+<a class="to-top" href="#top" aria-label="Back to top">↑</a>
+
+<script src="assets/days.js"></script>
+<script src="assets/progress.js"></script>
+<script src="assets/syllabus.js"></script>
+</body>
+</html>
