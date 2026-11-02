@@ -242,7 +242,7 @@ Depth is tone only: canvas-soft (down), canvas, sheet (up), night (the one dark 
 - **Buttons:** one primary (gold) per view; the rest are secondary (2px ink outline) or text links.
 - **Stub:** the day number on a gold ticket stub, tabular figures.
 - **Status:** pale tint with dark text of the same hue, sentence case: "Done", "Up next", "40%".
-- **Navigation:** wordmark (stub "30" + "Box Office"), three or four plain links, and one action: the light/dark button, outlined like a secondary button. It follows the system until pressed, then remembers the choice in this browser (`boxoffice30-theme`); a small script in the head applies it before the page paints.
+- **Navigation:** wordmark (stub "30" + "Box Office"), three or four plain links, and one action: the light/dark button, outlined like a secondary button. It follows the system until pressed, then remembers the choice in this browser (`boxoffice30-theme`); a small script in the head applies it before the page paints. The button stays hidden until its script has run. Pages load their CSS and scripts as `assets/…?v=N`: raise N in all three pages whenever an asset changes, so no browser pairs a new page with a cached old script.
 - **Footer:** the night band, the name at full width.
 
 States: buttons and links have hover, pressed and a 3px focus ring. The checklist is the working part: checked items fade to ink-mute with a line through. The lesson has a loading line and an error state that says how to fix it.

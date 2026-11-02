@@ -88,6 +88,7 @@
     });
     system.addEventListener("change", show);
     show();
+    button.hidden = false; // shown only once it works
   }
   document.addEventListener("DOMContentLoaded", themeToggle);
 

@@ -144,6 +144,7 @@ a.stub:hover { background: color-mix(in srgb, var(--gold) 82%, #fff) }
 .nav-links { align-items: center }
 /* Light or dark: follows the system until you choose, then remembers your choice in this browser. */
 .theme-toggle { font: 600 .95rem/1 var(--body); min-height: 40px; padding: 0 14px; background: transparent; color: var(--ink); border: 2px solid var(--ink); cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out) }
+.theme-toggle[hidden] { display: none }
 .theme-toggle:hover { border-color: var(--gate); color: var(--gate) }
 .theme-toggle:active { transform: translateY(1px) }
 
