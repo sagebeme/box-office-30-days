@@ -8,9 +8,7 @@
   phases.forEach(function (ph) {
     var a = document.createElement("a");
     a.href = "#phase-" + ph.n;
-    a.textContent = ph.n;
-    a.setAttribute("aria-label", "Phase " + ph.n + ": " + ph.name);
-    a.title = ph.name;
+    a.textContent = ph.n + ". " + ph.name;
     a.className = "ph-" + ph.n;
     $("jump").appendChild(a);
   });
@@ -18,14 +16,14 @@
   var container = $("phases");
   phases.forEach(function (ph) {
     var section = document.createElement("section");
-    section.className = "panel syllabus-phase ph-" + ph.n;
+    section.className = "syllabus-phase ph-" + ph.n;
     section.id = "phase-" + ph.n;
     section.setAttribute("aria-labelledby", "phase-" + ph.n + "-title");
     section.innerHTML =
-      '<div class="top"><div><h2 id="phase-' + ph.n + '-title">Phase ' + ph.n + ": " + P.esc(ph.name) + "</h2>" +
-      (ph.about ? "<p>" + P.esc(ph.about) + "</p>" : "") + "</div>" +
-      "<small>Days " + ph.first + "–" + ph.last + "</small></div>" +
-      '<div class="table-wrap" style="margin:0"><table class="rows"><thead><tr><th scope="col">Day</th><th scope="col">Milestone</th><th scope="col" class="b">The night</th><th scope="col"><span class="sr-only">Status</span></th></tr></thead><tbody></tbody></table></div>';
+      '<div class="top"><div class="container"><p class="when">Phase ' + ph.n + ", Days " + ph.first + " to " + ph.last + "</p>" +
+      '<h2 id="phase-' + ph.n + '-title">' + P.esc(ph.name) + "</h2>" +
+      (ph.about ? "<p>" + P.esc(ph.about) + "</p>" : "") + "</div></div>" +
+      '<div class="rows-wrap"><div class="container table-wrap"><table class="rows"><thead><tr><th scope="col">Day</th><th scope="col">Milestone</th><th scope="col" class="b">The night</th><th scope="col"><span class="sr-only">Status</span></th></tr></thead><tbody></tbody></table></div></div>';
     var tbody = section.querySelector("tbody");
     days.filter(function (d) { return d.phase === ph.n; }).forEach(function (d) {
       var p = P.percent(state, d);
@@ -35,9 +33,9 @@
       var tr = document.createElement("tr");
       tr.dataset.text = [d.day, d.title, d.topic, d.scene, d.brief, ph.name].join(" ").toLowerCase();
       tr.innerHTML =
-        '<td class="n">Day ' + d.day + "</td>" +
+        '<td class="n"><span class="stub" aria-label="Day ' + d.day + '">' + d.day + "</span></td>" +
         '<td class="p"><a href="' + P.dayUrl(d.day) + '">' + P.esc(d.title) + "</a>" +
-        '<span class="topic">' + P.esc(d.topic) + "</span></td>" +
+        '<span class="topic">' + P.inline(d.topic) + "</span></td>" +
         '<td class="b">' + P.inline(d.scene) + "</td>" +
         '<td class="s">' + status + "</td>";
       tbody.appendChild(tr);

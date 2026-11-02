@@ -7,12 +7,12 @@
 <meta name="description" content="Java, Part 2: build Box Office, an offline-first gate app for weekend events, over 30 days. It keeps selling when the Wi-Fi drops, takes M-Pesa and ships as an installer. Every day has tests.">
 <meta property="og:title" content="Box Office in 30 Days">
 <meta property="og:description" content="One real Java app in 30 days: a gate app that survives bad Wi-Fi and power cuts, syncs, takes M-Pesa and ships as an installer.">
-<meta name="theme-color" content="#f2ede3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#efede8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f121a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body id="top">
@@ -34,138 +34,143 @@
 <header class="hero">
   <div class="container">
     <div>
-      <span class="eyebrow">Java, Part 2 · Days 101–130 · runs on your own computer</span>
-      <h1>Box Office in <em>30&nbsp;Days</em></h1>
-      <p class="lede">One real app, built a day at a time: the gate laptop for Kilele Nights. It keeps selling when the Wi-Fi drops, never half-saves a sale when the power goes, syncs to a server, takes M-Pesa and ships as an installer.</p>
+      <h1>Box Office<br>in 30&nbsp;Days</h1>
+      <p class="lede">Java, Part&nbsp;2, Days 101 to 130. Build the gate laptop for one Saturday night at Ngong Racecourse: it keeps selling when the Wi-Fi drops, never half-saves a sale when the power goes, takes M-Pesa and ships as an installer.</p>
       <div class="actions">
-        <a class="btn btn-gold" id="cta" href="day.html?day=101">Start Day 101 →</a>
-        <a class="btn btn-ghost" href="#route">See the route</a>
+        <a class="btn btn-gold" id="cta" href="day.html?day=101">Start Day 101</a>
+        <a class="btn btn-line" href="#route">See the route</a>
       </div>
       <p class="resume" id="resume" hidden></p>
+      <ul class="facts" aria-label="The course in numbers">
+        <li><b>30</b><span>days, about 2 to 3 hours each</span></li>
+        <li><b>6</b><span>phases, from an empty project to an installer</span></li>
+        <li><b>1</b><span>app, its tests passing at the end of every day</span></li>
+        <li><b>0</b><span>accounts needed to pass every test</span></li>
+      </ul>
     </div>
-    <div class="term" aria-label="The finished Box Office command line selling tickets">
-      <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>gate A · Ngong Racecourse · 19:00</b></div>
+
+    <figure class="gate">
+      <div class="term">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>gate A · Ngong Racecourse · 19:00</b></div>
 <pre id="gate-out" aria-live="polite"><span class="c">// Day 130: Box Office 1.0, at the gate</span>
 <span class="p">$</span> java -jar cli/target/boxoffice.jar --version
 Box Office 1.0.0
 <span class="p">$</span> java -jar cli/target/boxoffice.jar setup
 Kilele Nights is ready in gate.db</pre>
-      <div class="actions">
-        <button class="btn btn-ghost" type="button" id="run-gate">Sell some tickets</button>
-        <small>Plays a recorded run of the finished app</small>
+        <div class="run">
+          <button class="btn btn-line" type="button" id="run-gate">Sell some tickets</button>
+          <small>A recorded run of the finished app</small>
+        </div>
       </div>
-    </div>
+      <div class="receipt-slot">
+        <div class="receipt" id="receipt">
+          <div class="receipt-paper">
+<pre id="receipt-text">KILELE NIGHTS
+Sat 14 Nov, 18:00
+--------------------------------
+Ticket  VIP-0001
+Type    VIP
+Buyer   Wanjiku Kamau
+Price   KES 5,000
+Sold    Sat 14 Nov, 21:00
+--------------------------------
+Show this at the gate.
+One entry per ticket.</pre>
+            <svg viewBox="0 0 23 23" role="img" aria-labelledby="receipt-qr-label"><title id="receipt-qr-label">QR code for VIP-0001</title><path id="receipt-qr" d="M1 1h7v1h-7zM11 1h1v1h-1zM13 1h1v1h-1zM15 1h7v1h-7zM1 2h1v1h-1zM7 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM21 2h1v1h-1zM1 3h1v1h-1zM3 3h3v1h-3zM7 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM15 3h1v1h-1zM17 3h3v1h-3zM21 3h1v1h-1zM1 4h1v1h-1zM3 4h3v1h-3zM7 4h1v1h-1zM13 4h1v1h-1zM15 4h1v1h-1zM17 4h3v1h-3zM21 4h1v1h-1zM1 5h1v1h-1zM3 5h3v1h-3zM7 5h1v1h-1zM10 5h1v1h-1zM12 5h2v1h-2zM15 5h1v1h-1zM17 5h3v1h-3zM21 5h1v1h-1zM1 6h1v1h-1zM7 6h1v1h-1zM10 6h3v1h-3zM15 6h1v1h-1zM21 6h1v1h-1zM1 7h7v1h-7zM9 7h1v1h-1zM11 7h1v1h-1zM13 7h1v1h-1zM15 7h7v1h-7zM9 8h1v1h-1zM11 8h1v1h-1zM1 9h3v1h-3zM5 9h5v1h-5zM11 9h1v1h-1zM13 9h3v1h-3zM19 9h1v1h-1zM1 10h2v1h-2zM8 10h1v1h-1zM11 10h2v1h-2zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h2v1h-2zM1 11h1v1h-1zM3 11h3v1h-3zM7 11h1v1h-1zM9 11h4v1h-4zM14 11h3v1h-3zM18 11h4v1h-4zM1 12h1v1h-1zM4 12h2v1h-2zM8 12h1v1h-1zM12 12h3v1h-3zM16 12h3v1h-3zM20 12h1v1h-1zM2 13h1v1h-1zM5 13h4v1h-4zM12 13h1v1h-1zM14 13h3v1h-3zM18 13h2v1h-2zM9 14h2v1h-2zM15 14h2v1h-2zM19 14h1v1h-1zM1 15h7v1h-7zM9 15h1v1h-1zM11 15h1v1h-1zM13 15h1v1h-1zM17 15h1v1h-1zM19 15h3v1h-3zM1 16h1v1h-1zM7 16h1v1h-1zM9 16h2v1h-2zM15 16h2v1h-2zM18 16h1v1h-1zM20 16h1v1h-1zM1 17h1v1h-1zM3 17h3v1h-3zM7 17h1v1h-1zM9 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM19 17h3v1h-3zM1 18h1v1h-1zM3 18h3v1h-3zM7 18h1v1h-1zM10 18h3v1h-3zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM1 19h1v1h-1zM3 19h3v1h-3zM7 19h1v1h-1zM9 19h2v1h-2zM12 19h1v1h-1zM14 19h2v1h-2zM17 19h1v1h-1zM19 19h1v1h-1zM21 19h1v1h-1zM1 20h1v1h-1zM7 20h1v1h-1zM9 20h1v1h-1zM11 20h4v1h-4zM16 20h1v1h-1zM18 20h1v1h-1zM20 20h2v1h-2zM1 21h7v1h-7zM9 21h2v1h-2zM12 21h1v1h-1zM14 21h2v1h-2zM17 21h1v1h-1zM19 21h1v1h-1zM21 21h1v1h-1z"/></svg>
+          </div>
+        </div>
+      </div>
+      <figcaption>What Box Office prints on an 80&nbsp;mm till roll, from Day 112. The QR is real: scan it and it reads <span id="receipt-code">VIP-0001</span>.</figcaption>
+    </figure>
   </div>
 </header>
 
-<section class="facts" aria-label="The course in numbers">
-  <ul class="container">
-    <li><b>30</b><span>Days, about 2–3 hours each</span></li>
-    <li><b>1</b><span>App, tested every day</span></li>
-    <li><b>6</b><span>Phases, from skeleton to installer</span></li>
-    <li><b>0</b><span>Cloud accounts needed</span></li>
-  </ul>
-</section>
-
-<section class="band" id="how" aria-labelledby="how-title">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">How a day works</span>
-      <h2 id="how-title">Yesterday's app, today's TODOs</h2>
-      <p>Every day's folder has a <code>starter</code> and a <code>solution</code> with the same tests. When the tests pass, the day is done and the app still runs.</p>
-    </div>
-    <ol class="steps">
-      <li><h3>Read the night</h3><p>Each day opens at the gate: a queue, a dropped connection, a power cut. That's what today's code is for.</p></li>
-      <li><h3>Run the starter's tests</h3><p><code>../../mvnw test</code> fails on purpose. The test names say what the gate should do.</p></li>
-      <li><h3>Fill in the TODOs</h3><p>Step by step, each one marked in the code. After every step, more tests go green.</p></li>
-      <li><h3>Check, then commit</h3><p>Tick the day's checklist here, compare with <code>solution/</code>, and commit your work.</p></li>
-    </ol>
-  </div>
-</section>
-
 <section class="band tone" id="needs" aria-labelledby="needs-title">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Kilele Nights · Sat 14 Nov · 18:00 to 04:00</span>
+    <div class="section-head reveal">
       <h2 id="needs-title">Every requirement the gate has becomes a day</h2>
-      <p>One laptop at the gate, a queue, a USB scanner, venue Wi-Fi that drops every few minutes, and power that may go out mid-sale. Regular is KES 1,500 (500 places), VIP KES 5,000 (50).</p>
+      <p>Kilele Nights runs from 18:00 to 04:00 on Saturday 14 November. One laptop at the gate, a queue, a USB scanner, venue Wi-Fi that drops every few minutes, and power that may go out mid-sale. Regular is KES 1,500 (500 places), VIP KES 5,000 (50).</p>
     </div>
-    <ul class="needs">
-      <li><span>Remember every sale on its own disk, with no server</span><span class="days"><a href="day.html?day=104">104</a></span></li>
-      <li><span>Let the organiser's guest list in, and print the night's report</span><span class="days"><a href="day.html?day=105">105</a></span></li>
-      <li><span>Be fast at the gate: keyboard only, and USB scanners that type like a keyboard</span><span class="days"><a href="day.html?day=108">108</a><a href="day.html?day=110">110</a></span></li>
-      <li><span>Never freeze, even on a slow old laptop</span><span class="days"><a href="day.html?day=109">109</a></span></li>
-      <li><span>Never half-save a sale when the power goes</span><span class="days"><a href="day.html?day=111">111</a></span></li>
-      <li><span>Work offline and sync when the connection comes back</span><span class="days"><a href="day.html?day=115">115</a><a href="day.html?day=116">116</a><a href="day.html?day=117">117</a></span></li>
-      <li><span>Let two gates agree, and let the server settle the last ticket</span><span class="days"><a href="day.html?day=117">117</a><a href="day.html?day=120">120</a></span></li>
-      <li><span>Take M-Pesa from fans buying online</span><span class="days"><a href="day.html?day=122">122</a></span></li>
-      <li><span>Answer staff questions about the night, without guessing</span><span class="days"><a href="day.html?day=125">125</a><a href="day.html?day=126">126</a><a href="day.html?day=127">127</a></span></li>
-      <li><span>Install like real software and update itself</span><span class="days"><a href="day.html?day=128">128</a><a href="day.html?day=129">129</a><a href="day.html?day=130">130</a></span></li>
+    <ul class="needs reveal">
+      <li><span class="need">Remember every sale on its own disk, with no server</span><span class="days"><a class="stub" href="day.html?day=104">104</a></span></li>
+      <li><span class="need">Let the organiser's guest list in, and print the night's report</span><span class="days"><a class="stub" href="day.html?day=105">105</a></span></li>
+      <li><span class="need">Be fast at the gate: keyboard only, and USB scanners that type like a keyboard</span><span class="days"><a class="stub" href="day.html?day=108">108</a><a class="stub" href="day.html?day=110">110</a></span></li>
+      <li><span class="need">Never freeze, even on a slow old laptop</span><span class="days"><a class="stub" href="day.html?day=109">109</a></span></li>
+      <li><span class="need">Never half-save a sale when the power goes</span><span class="days"><a class="stub" href="day.html?day=111">111</a></span></li>
+      <li><span class="need">Work offline and sync when the connection comes back</span><span class="days"><a class="stub" href="day.html?day=115">115</a><a class="stub" href="day.html?day=116">116</a><a class="stub" href="day.html?day=117">117</a></span></li>
+      <li><span class="need">Let two gates agree, and let the server settle the last ticket</span><span class="days"><a class="stub" href="day.html?day=117">117</a><a class="stub" href="day.html?day=120">120</a></span></li>
+      <li><span class="need">Take M-Pesa from fans buying online</span><span class="days"><a class="stub" href="day.html?day=122">122</a></span></li>
+      <li><span class="need">Answer staff questions about the night, without guessing</span><span class="days"><a class="stub" href="day.html?day=125">125</a><a class="stub" href="day.html?day=126">126</a><a class="stub" href="day.html?day=127">127</a></span></li>
+      <li><span class="need">Install like real software and update itself</span><span class="days"><a class="stub" href="day.html?day=128">128</a><a class="stub" href="day.html?day=129">129</a><a class="stub" href="day.html?day=130">130</a></span></li>
     </ul>
   </div>
 </section>
 
-<section class="band" id="route" aria-labelledby="route-title">
+<section class="band" id="how" aria-labelledby="how-title">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">The route</span>
-      <h2 id="route-title">Six phases, one app</h2>
-      <p>From <a id="first-day" href="day.html?day=101">Day 101</a> to <a id="last-day" href="day.html?day=130">Day 130</a>. The app you finish each phase with is the one the next phase starts from.</p>
+    <div class="section-head reveal">
+      <h2 id="how-title">Yesterday's app, today's TODOs</h2>
+      <p>Every day's folder has a <code>starter</code> and a <code>solution</code> with the same tests. When the tests pass, the day is done and the app still runs.</p>
     </div>
-    <ol class="route" id="timeline"></ol>
+    <div class="how reveal">
+<pre class="tree" aria-label="The folder for Day 122">day-122-pay-with-mpesa/
+├── README.md    <span class="c"># the night, the steps, the checklist</span>
+├── starter/     <span class="c"># yesterday's app, today's TODOs</span>
+│   ├── core/  cli/  desktop/  server/
+│   └── pom.xml
+└── solution/    <span class="c"># the same app, finished</span></pre>
+      <div class="how-steps">
+        <div><h3>Read the night</h3><p>Each day opens at the gate: a queue, a dropped connection, a power cut. That's what today's code is for.</p></div>
+        <div><h3>Run the starter's tests</h3><p><code>../../mvnw test</code> fails on purpose. The test names say what the gate should do.</p></div>
+        <div><h3>Fill in the TODOs</h3><p>Each one is marked in the code with its step. After every step, more tests go green.</p></div>
+        <div><h3>Check, then commit</h3><p>Tick the day's checklist here, compare with <code>solution/</code>, and commit your work.</p></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="band tone" id="kit" aria-labelledby="kit-title">
+<section class="band flush" id="route" aria-labelledby="route-title">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">What you need</span>
-      <h2 id="kit-title">A JDK and an editor</h2>
-      <p>For people who finished Part 1, <a href="https://github.com/sagebeme/100-java-basics-advance">100 Days of Java</a>. Everything runs on your laptop.</p>
+    <div class="section-head reveal">
+      <h2 id="route-title">Six phases through one night</h2>
+      <p>From <a id="first-day" href="day.html?day=101">Day 101</a> to <a id="last-day" href="day.html?day=130">Day 130</a>, coloured from sunset to 04:00. The app you finish each phase with is the one the next phase starts from.</p>
     </div>
-    <div class="kit">
-      <div><h3>A JDK, version 21 or newer</h3><p>Temurin 21 from <a href="https://adoptium.net">adoptium.net</a>, or your system's package manager. Check with <code>java -version</code>.</p></div>
-      <div><h3>Maven, already included</h3><p>The Maven wrapper (<code>mvnw</code>, <code>mvnw.cmd</code>) downloads the right version the first time you run it.</p></div>
+  </div>
+  <ol class="route" id="timeline"></ol>
+</section>
+
+<section class="band sheet" id="kit" aria-labelledby="kit-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 id="kit-title">A JDK and an editor</h2>
+      <p>For people who finished Part 1, <a href="https://github.com/sagebeme/100-java-basics-advance">100 Days of Java</a>. Everything runs on your own laptop.</p>
+    </div>
+    <div class="kit reveal">
+      <div><h3>A JDK, 21 or newer</h3><p>Temurin 21 from <a href="https://adoptium.net">adoptium.net</a>, or your system's package manager. Check with <code>java -version</code>.</p></div>
+      <div><h3>Maven, included</h3><p>The Maven wrapper (<code>mvnw</code>, <code>mvnw.cmd</code>) downloads the right version the first time you run it.</p></div>
       <div><h3>An editor</h3><p>IntelliJ IDEA Community, VS Code with the Java extensions, or Eclipse. Open a day's <code>starter/pom.xml</code>.</p></div>
       <div><h3>Git</h3><p>To keep your own daily commits. Optional: Scene Builder from Day 106, a USB scanner for Day 110, Docker for Day 124.</p></div>
     </div>
-  </div>
-</section>
-
-<section class="cta" aria-labelledby="cta-title">
-  <div class="container">
-    <h2 id="cta-title">The gate opens at Day 101</h2>
-    <p id="cta-text">A Maven project with four modules, tests that run, and CI. About 2 to 3 hours.</p>
-    <a class="btn btn-gold" id="cta-2" href="day.html?day=101">Start Day 101 →</a>
   </div>
 </section>
 </main>
 
 <footer class="footer">
   <div class="container">
-    <div class="cols">
-      <div>
-        <h4>Box Office in 30 Days</h4>
-        <p>Java, Part 2: one offline-first gate app, built over 30 days, with tests that say when each day is done. Made in Nairobi, so expect M-Pesa and bad venue Wi-Fi.</p>
-      </div>
-      <div>
-        <h4>Course</h4>
-        <ul>
-          <li><a href="syllabus.html">Full syllabus</a></li>
-          <li><a href="day.html?day=101">Day 101: Project skeleton</a></li>
-          <li><a href="syllabus.html#setup">Set up</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Code</h4>
-        <ul>
-          <li><a href="https://github.com/sagebeme/box-office-30-days">Source on GitHub</a></li>
-          <li><a href="https://adoptium.net">Get a JDK</a></li>
-        </ul>
-      </div>
+    <div class="go reveal">
+      <h2 id="cta-title">The gate opens at Day&nbsp;101</h2>
+      <p id="cta-text">A Maven project with four modules, tests that run, and CI. About 2 to 3 hours.</p>
+      <a class="btn btn-gold" id="cta-2" href="day.html?day=101">Start Day 101</a>
     </div>
+    <ul class="links">
+      <li><a href="syllabus.html">Full syllabus</a></li>
+      <li><a href="syllabus.html#setup">Set up</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">Source on GitHub</a></li>
+      <li><a href="https://adoptium.net">Get a JDK</a></li>
+    </ul>
+    <span class="wordmark" aria-hidden="true">Box Office</span>
     <div class="bottom">
-      <span>Made in Nairobi.</span>
+      <span>Java, Part 2. Made in Nairobi, so expect M-Pesa and bad venue Wi-Fi.</span>
       <span>Progress is saved only in this browser.</span>
     </div>
   </div>

@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Day · Box Office in 30 Days</title>
 <meta name="description" content="One day of Box Office in 30 Days: the night at the gate, the steps, and a checklist that saves your progress.">
-<meta name="theme-color" content="#f2ede3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#efede8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f121a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body id="top">
@@ -48,10 +48,10 @@
 
 <div class="container">
   <div class="lesson">
-    <main id="lesson" class="panel prose" tabindex="-1"><p>Loading the lesson…</p></main>
+    <main id="lesson" class="prose" tabindex="-1"><p>Loading the lesson…</p></main>
 
     <aside class="sidebar" aria-label="Today's progress">
-      <section class="panel" aria-labelledby="check-title" id="check-panel">
+      <section aria-labelledby="check-title" id="check-panel">
         <h2 id="check-title">Today's checklist</h2>
         <ul class="checklist" id="checklist"></ul>
         <div class="meter-row">
@@ -60,7 +60,7 @@
         </div>
         <p class="done-msg" id="done-msg" role="status" hidden></p>
       </section>
-      <section class="panel" aria-labelledby="run-title" id="run-panel">
+      <section aria-labelledby="run-title" id="run-panel">
         <h2 id="run-title">Run today's tests</h2>
         <div class="cmd" id="cmd"></div>
         <div class="cmd" id="cmd-win"></div>
@@ -75,10 +75,16 @@
   <nav class="pager" id="pager" aria-label="Other days"></nav>
 </div>
 
-<footer class="footer">
+<footer class="footer short">
   <div class="container">
-    <div class="bottom" style="margin:0;padding:0;border:0">
-      <span>Made in Nairobi.</span>
+    <ul class="links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="syllabus.html">Full syllabus</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">Source on GitHub</a></li>
+    </ul>
+    <span class="wordmark" aria-hidden="true">Box Office</span>
+    <div class="bottom">
+      <span>Java, Part 2. Made in Nairobi.</span>
       <span>Progress is saved only in this browser.</span>
     </div>
   </div>
