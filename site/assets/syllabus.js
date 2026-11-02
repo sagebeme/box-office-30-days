@@ -11,13 +11,14 @@
     a.textContent = ph.n;
     a.setAttribute("aria-label", "Phase " + ph.n + ": " + ph.name);
     a.title = ph.name;
+    a.className = "ph-" + ph.n;
     $("jump").appendChild(a);
   });
 
   var container = $("phases");
   phases.forEach(function (ph) {
     var section = document.createElement("section");
-    section.className = "panel syllabus-phase";
+    section.className = "panel syllabus-phase ph-" + ph.n;
     section.id = "phase-" + ph.n;
     section.setAttribute("aria-labelledby", "phase-" + ph.n + "-title");
     section.innerHTML =

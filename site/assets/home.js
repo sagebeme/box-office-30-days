@@ -57,7 +57,7 @@
     var pct = Math.round((finished / own.length) * 100);
     var isHere = ph.n === currentPhase;
     var li = document.createElement("li");
-    li.className = "stage" + (isHere ? " here" : "");
+    li.className = "stage ph-" + ph.n + (isHere ? " here" : "");
     li.innerHTML =
       '<span class="stop" aria-hidden="true">' + ph.n + "</span>" +
       '<div class="card">' +

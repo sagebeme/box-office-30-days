@@ -1,13 +1,17 @@
 /* Box Office in 30 Days: a night at the gate.
    The course is one event night at Kilele Nights, Ngong Racecourse; every day is a ticket. Days
    wear a ticket stub with a torn, perforated edge.
-   Palette: complementary on the painter's wheel, yellow against violet: the dusk sky over the
-   racecourse against the amber of stage lights and ticket paper.
-     60%  warm neutrals: ticket paper by day, a violet-tinted night in dark mode. Every neutral
+   Palette: a triad of the painter's primaries, red, yellow and blue, with the wheel's in-between
+   hues for the six phases.
+     60%  warm neutrals: ticket paper by day, a blue-tinted night in dark mode. Every neutral
           leans toward the light it sits in, so the page shares one light.
-     30%  dusk violet (--gate): headings, links, the route.
-     10%  ticket amber (--gold): stubs and the one primary button. Never text on light paper.
-   Green and red mean PASS and FAIL and nothing else. Shadows take the night's violet, never black.
+     30%  night blue (--gate): links, labels, the terminal. The sky the gate works under.
+     10%  ticket yellow (--gold): stubs and the one primary button. Never text on light paper.
+      a little stamp red (--stamp): the "you are here" stamp and quote rules, as if inked at the gate.
+   The night runs from 18:00 to 04:00, so the phases walk round the wheel from sunset to deep night:
+   red, orange, yellow, teal, blue, violet (--p1 to --p6). All six are grayed so they sit together,
+   and a phase colour always comes with its number, never on its own.
+   Green means PASS and nothing else. Shadows take the night's blue, never black.
    Contrast measured: every text pair is at least 4.5:1 in both modes.
    Type: Bricolage Grotesque for display, Instrument Sans for reading, JetBrains Mono for labels,
    commands and terminal output. */
@@ -16,21 +20,27 @@
   --bg: #f2ede3;
   --bg-2: #e8e1d3;
   --sheet: #faf7f0;
-  --ink: #211d2a;
-  --muted: #5d5768;
-  --line: #d9d0c1;
-  --gate: #3f3589;
-  --gate-soft: #e3dff1;
-  --gold: #d99a1e;
-  --gold-ink: #211d2a;
+  --ink: #1b2030;
+  --muted: #545a6b;
+  --line: #d8d0c0;
+  --gate: #24467d;
+  --gate-soft: #dce4f1;
+  --gold: #e0a91c;
+  --gold-ink: #1b2030;
+  --stamp: #ad3626;
   --pass: #2b7a4b;
-  --fail: #b3361e;
-  --night: #1c1930;
-  --night-2: #26223f;
-  --night-ink: #ece9f4;
-  --night-muted: #a29cbc;
-  --night-line: #3b3657;
-  --shadow: #1c193040;
+  --p1: #ad3626; --p1-soft: #f4dcd4;
+  --p2: #9c4f12; --p2-soft: #f5e1cc;
+  --p3: #7d5d00; --p3-soft: #f1e5bd;
+  --p4: #1b6763; --p4-soft: #d3e9e5;
+  --p5: #24467d; --p5-soft: #dce4f1;
+  --p6: #5b3a8c; --p6-soft: #e6ddf2;
+  --night: #121a2c;
+  --night-2: #1b2540;
+  --night-ink: #e9edf5;
+  --night-muted: #9aa6c0;
+  --night-line: #33405e;
+  --shadow: #121a2c40;
   --grain: .06;
   --grain-blend: multiply;
   --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
@@ -41,18 +51,30 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #13111b; --bg-2: #1a1725; --sheet: #1f1b2b; --ink: #ece8f2; --muted: #a9a3b8; --line: #322d43;
-    --gate: #b7aef2; --gate-soft: #2b2650; --gold: #e6aa34; --gold-ink: #211d2a; --pass: #74d19b; --fail: #ff8f7a;
-    --night: #0c0b13; --night-2: #171424; --night-ink: #ece9f4; --night-muted: #9c96b5; --night-line: #2e2a44;
+    --bg: #0f121a; --bg-2: #151a25; --sheet: #1a202d; --ink: #e8ebf2; --muted: #a2aabb; --line: #2b3345;
+    --gate: #93b4ec; --gate-soft: #1e2c48; --gold: #ebb637; --gold-ink: #1b2030; --stamp: #f08a74; --pass: #74d19b;
+    --p1: #f08a74; --p1-soft: #3b221e; --p2: #f0a46a; --p2-soft: #3a2a1c; --p3: #e6c35a; --p3-soft: #342d17;
+    --p4: #6cccc0; --p4-soft: #16332f; --p5: #93b4ec; --p5-soft: #1e2c48; --p6: #bfa5ef; --p6-soft: #2c2342;
+    --night: #0a0d15; --night-2: #141a28; --night-ink: #e9edf5; --night-muted: #95a0b8; --night-line: #28324a;
     --shadow: #00000080; --grain: .09; --grain-blend: soft-light; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #13111b; --bg-2: #1a1725; --sheet: #1f1b2b; --ink: #ece8f2; --muted: #a9a3b8; --line: #322d43;
-  --gate: #b7aef2; --gate-soft: #2b2650; --gold: #e6aa34; --gold-ink: #211d2a; --pass: #74d19b; --fail: #ff8f7a;
-  --night: #0c0b13; --night-2: #171424; --night-ink: #ece9f4; --night-muted: #9c96b5; --night-line: #2e2a44;
+  --bg: #0f121a; --bg-2: #151a25; --sheet: #1a202d; --ink: #e8ebf2; --muted: #a2aabb; --line: #2b3345;
+  --gate: #93b4ec; --gate-soft: #1e2c48; --gold: #ebb637; --gold-ink: #1b2030; --stamp: #f08a74; --pass: #74d19b;
+  --p1: #f08a74; --p1-soft: #3b221e; --p2: #f0a46a; --p2-soft: #3a2a1c; --p3: #e6c35a; --p3-soft: #342d17;
+  --p4: #6cccc0; --p4-soft: #16332f; --p5: #93b4ec; --p5-soft: #1e2c48; --p6: #bfa5ef; --p6-soft: #2c2342;
+  --night: #0a0d15; --night-2: #141a28; --night-ink: #e9edf5; --night-muted: #95a0b8; --night-line: #28324a;
   --shadow: #00000080; --grain: .09; --grain-blend: soft-light; color-scheme: dark;
 }
+
+/* Each phase wears its colour from the wheel; set by a ph-N class. */
+.ph-1 { --ph: var(--p1); --ph-soft: var(--p1-soft) }
+.ph-2 { --ph: var(--p2); --ph-soft: var(--p2-soft) }
+.ph-3 { --ph: var(--p3); --ph-soft: var(--p3-soft) }
+.ph-4 { --ph: var(--p4); --ph-soft: var(--p4-soft) }
+.ph-5 { --ph: var(--p5); --ph-soft: var(--p5-soft) }
+.ph-6 { --ph: var(--p6); --ph-soft: var(--p6-soft) }
 
 * { box-sizing: border-box }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
@@ -155,7 +177,7 @@ h3 { font-size: 1.2rem; font-weight: 600 }
 .steps li + li { border-left: 1px dashed var(--line) }
 .steps li:first-child { border-radius: 10px 0 0 10px }
 .steps li:last-child { border-radius: 0 10px 10px 0 }
-.steps li::before { content: counter(step); font: 700 .85rem/1 var(--mono); color: var(--gate); display: block; margin-bottom: 12px }
+.steps li::before { content: counter(step); font: 700 .85rem/1 var(--mono); color: var(--stamp); display: block; margin-bottom: 12px }
 .steps h3 { font-size: 1.05rem }
 .steps p { margin: 8px 0 0; color: var(--muted); font-size: .95rem }
 @media (max-width: 860px) {
@@ -183,13 +205,15 @@ h3 { font-size: 1.2rem; font-weight: 600 }
 .route { list-style: none; margin: 0; padding: 0; position: relative }
 .route::before { content: ""; position: absolute; left: 21px; top: 10px; bottom: 10px; border-left: 2px dashed var(--line) }
 .stage { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; margin-bottom: 18px }
-.stage .stop { position: relative; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sheet); border: 2px solid var(--line); font: 700 1rem/1 var(--mono); color: var(--muted) }
-.stage.here .stop { background: var(--gold); border-color: var(--gold); color: var(--gold-ink) }
+.stage .stop { position: relative; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--ph-soft, var(--sheet)); border: 2px solid var(--ph, var(--line)); font: 700 1rem/1 var(--mono); color: var(--ph, var(--muted)) }
+.stage.here .stop { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); box-shadow: 0 0 0 4px var(--ph-soft, var(--bg-2)) }
+.stage .card { border-left: 4px solid var(--ph, var(--line)) }
+.stage .card small { color: var(--ph, var(--muted)) }
 .card { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px }
 .card small { font: 500 .78rem/1.4 var(--mono); color: var(--muted); letter-spacing: .03em }
 .card h3 { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px }
 .card p { margin: 8px 0 0; color: var(--muted) }
-.here-tag { font: 600 .7rem/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 5px 8px; border-radius: 4px; background: var(--gate); color: var(--sheet) }
+.here-tag { font: 600 .7rem/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; padding: 5px 8px; border-radius: 4px; background: var(--stamp); color: var(--sheet) }
 .meter { display: flex; align-items: center; gap: 12px; margin-top: 14px; font: 500 .8rem/1 var(--mono); color: var(--muted) }
 .progress { flex: 1; height: 6px; border-radius: 3px; background: var(--bg-2); overflow: hidden; max-width: 260px }
 .progress span { display: block; height: 100%; width: 0; background: var(--pass); transition: width .3s ease }
@@ -204,6 +228,7 @@ summary { cursor: pointer; font: 600 .9rem/1.4 var(--body); color: var(--gate) }
 .label-done { background: var(--pass); color: var(--sheet) }
 .label-next { background: var(--gold); color: var(--gold-ink) }
 .label-web { background: var(--gate-soft); color: var(--gate) }
+.label-phase { background: var(--ph-soft, var(--bg-2)); color: var(--ph, var(--muted)) }
 
 /* What you need */
 .kit { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px }
@@ -234,7 +259,7 @@ summary { cursor: pointer; font: 600 .9rem/1.4 var(--body); color: var(--gate) }
 .page-head .title { display: flex; gap: 18px; align-items: flex-start }
 .page-head .title .stub { margin-top: .25em }
 .page-head .sub { color: var(--muted); margin: 10px 0 0; max-width: 46em }
-.scene { font-family: var(--display); font-size: 1.1rem; color: var(--ink); border-left: 3px solid var(--gold); padding-left: 14px; margin: 14px 0 0; max-width: 44em }
+.scene { font-family: var(--display); font-size: 1.1rem; color: var(--ink); border-left: 3px solid var(--ph, var(--stamp)); padding-left: 14px; margin: 14px 0 0; max-width: 44em }
 .labels { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px }
 
 .lesson { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; padding: 32px 0 24px; align-items: start }
@@ -274,7 +299,7 @@ summary { cursor: pointer; font: 600 .9rem/1.4 var(--body); color: var(--gate) }
 .prose p, .prose ul, .prose ol { margin: .7em 0 }
 .prose li { margin: .3em 0 }
 .prose li > p { margin: .3em 0 }
-.prose blockquote { margin: 1em 0; padding: 2px 0 2px 16px; border-left: 3px solid var(--gold); color: var(--muted) }
+.prose blockquote { margin: 1em 0; padding: 2px 0 2px 16px; border-left: 3px solid var(--stamp); color: var(--muted) }
 .prose :not(pre) > code { background: var(--bg-2); padding: .12em .38em; border-radius: 4px; overflow-wrap: anywhere }
 .prose hr { border: 0; border-top: 1px dashed var(--line); margin: 2em 0 }
 .prose strong { font-weight: 650 }
@@ -294,12 +319,12 @@ summary { cursor: pointer; font: 600 .9rem/1.4 var(--body); color: var(--gate) }
 /* Syntax colours for the night-violet code panel: amber keywords, lilac names, and strings in a
    soft green that only ever appears inside code. */
 .hljs-keyword, .hljs-literal, .hljs-built_in { color: #f2c94c }
-.hljs-string, .hljs-attr + .hljs-string { color: #9be3b5 }
-.hljs-number { color: #ffb38a }
-.hljs-comment, .hljs-meta { color: #9c96b5; font-style: italic }
-.hljs-title, .hljs-title.class_, .hljs-title.function_, .hljs-type { color: #c9c0ff }
-.hljs-attr, .hljs-attribute, .hljs-variable, .hljs-params { color: #e6d3ff }
-.hljs-tag, .hljs-name, .hljs-selector-tag { color: #c9c0ff }
+.hljs-string, .hljs-attr + .hljs-string { color: #f4a58a }
+.hljs-number { color: #ffd18a }
+.hljs-comment, .hljs-meta { color: #a8b4cc; font-style: italic }
+.hljs-title, .hljs-title.class_, .hljs-title.function_, .hljs-type { color: #8fc0ff }
+.hljs-attr, .hljs-attribute, .hljs-variable, .hljs-params { color: #d6e4ff }
+.hljs-tag, .hljs-name, .hljs-selector-tag { color: #8fc0ff }
 
 /* ----- syllabus ----- */
 .toolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 28px 0 20px }
@@ -308,8 +333,10 @@ summary { cursor: pointer; font: 600 .9rem/1.4 var(--body); color: var(--gate) }
 .search input { width: 100%; font: inherit; padding: 11px 14px 11px 40px; border: 1px solid var(--line); border-radius: 8px; background: var(--sheet); color: var(--ink) }
 .jump { display: flex; flex-wrap: wrap; gap: 6px }
 .jump a { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--sheet); font: 700 .85rem/1 var(--mono); color: var(--ink); text-decoration: none }
-.jump a:hover { border-color: var(--gate); color: var(--gate) }
-.syllabus-phase { margin-bottom: 20px; padding: 0; overflow: hidden }
+.jump a { border-color: var(--ph, var(--line)); color: var(--ph, var(--ink)); background: var(--ph-soft, var(--sheet)) }
+.jump a:hover { border-color: var(--ph, var(--gate)); box-shadow: 0 0 0 2px var(--ph, var(--gate)) }
+.syllabus-phase { margin-bottom: 20px; padding: 0; overflow: hidden; border-top: 4px solid var(--ph, var(--line)) }
+.syllabus-phase .top small { color: var(--ph, var(--muted)) }
 .syllabus-phase .top { display: flex; justify-content: space-between; gap: 16px; padding: 20px 24px 14px }
 .syllabus-phase .top p { margin: 6px 0 0; color: var(--muted); max-width: 52em }
 .syllabus-phase .top small { font: 500 .8rem/1.4 var(--mono); color: var(--muted); white-space: nowrap }

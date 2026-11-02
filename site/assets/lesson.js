@@ -24,7 +24,8 @@
   }
   $("crumb-phase").textContent = "Phase " + phase.n + ": " + phase.name;
   $("crumb-day").textContent = "Day " + n;
-  var labels = ['<span class="label">Phase ' + phase.n + " · Day " + (n - phase.first + 1) + " of " + (phase.last - phase.first + 1) + "</span>"];
+  document.body.classList.add("ph-" + phase.n);
+  var labels = ['<span class="label label-phase">Phase ' + phase.n + " · Day " + (n - phase.first + 1) + " of " + (phase.last - phase.first + 1) + "</span>"];
   if (n >= 119 && n <= 124) labels.push('<span class="label label-web">Web phase</span>');
   if (n === phase.last) labels.push('<span class="label">Phase milestone</span>');
   $("labels").innerHTML = labels.join("");
