@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+  The event page. Thymeleaf reads the th:... attributes on the server and
+  replaces them with what's in the Model; the browser never sees them.
+  th:text always escapes what it prints: a buyer called <script> shows up as
+  the word "<script>", not as code that runs.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${event.name} + ' · Tickets'">Tickets</title>
+    <link rel="stylesheet" href="/site.css">
+    <!--
+      Day 123: htmx settings. includeIndicatorStyles off: htmx would add a
+      <style> tag, which our Content-Security-Policy blocks. responseHandling:
+      swap in 429 "slow down" answers too, not just the ones that succeeded.
+    -->
+    <meta name="htmx-config"
+          content='{"includeIndicatorStyles":false,"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"429","swap":true},{"code":"[45]..","swap":false,"error":true}]}'>
+    <!-- From our own server (a webjar), not a CDN. -->
+    <script src="/webjars/htmx.org/2.0.4/dist/htmx.min.js" defer></script>
+</head>
+<body>
+<main>
+    <header>
+        <h1 th:text="${event.name}">Kilele Nights</h1>
+        <p class="when"><span th:text="${event.venue}">Ngong Racecourse</span> · <span th:text="${startsAt}">Sat 14 Nov, 18:00</span></p>
+    </header>
+
+    <!--
+      The "places left" piece. htmx asks for /events/{id}/places every 15
+      seconds and swaps this whole section (outerHTML) for the new one.
+    -->
+    <section id="places" th:fragment="places"
+             th:attr="hx-get=@{/events/{id}/places(id=${event.id})}"
+             hx-trigger="every 15s" hx-swap="outerHTML">
+        <h2>Tickets</h2>
+        <ul class="offers">
+            <li th:each="offer : ${event.offers}" th:classappend="${offer.soldOut()} ? 'sold-out'">
+                <span class="name" th:text="${offer.name}">Regular</span>
+                <span class="price" th:text="${offer.price.format()}">KES 1,500</span>
+                <span class="left" th:text="${offer.soldOut()} ? 'Sold out' : ${offer.left} + ' places left'">500 places left</span>
+            </li>
+        </ul>
+    </section>
+
+    <!--
+      The order form. With htmx, hx-post sends it in the background and the
+      answer (the order, or this form again with what to fix) replaces it.
+      Without JavaScript, method and action still post it the old way.
+    -->
+    <!-- Day 123: where a "slow down" answer goes (RateLimits sends HX-Retarget: #notice). -->
+    <p id="notice" class="problem" role="alert"></p>
+
+    <form id="order" th:fragment="order-form" method="post"
+          th:action="@{/events/{id}/orders(id=${event.id})}"
+          th:attr="hx-post=@{/events/{id}/orders(id=${event.id})}"
+          hx-target="this" hx-swap="outerHTML">
+        <h2>Buy tickets</h2>
+
+        <label for="type">Ticket</label>
+        <select id="type" name="type">
+            <option th:each="offer : ${event.offers}" th:value="${offer.code}"
+                    th:text="${offer.name} + ' · ' + ${offer.price.format()}"
+                    th:selected="${offer.code == form.type}" th:disabled="${offer.soldOut()}">Regular</option>
+        </select>
+        <p class="problem" th:if="${problems?.get('type')}" th:text="${problems.get('type')}"></p>
+
+        <label for="quantity">How many</label>
+        <input id="quantity" name="quantity" type="number" min="1" max="6" th:value="${form.quantity}">
+        <p class="problem" th:if="${problems?.get('quantity')}" th:text="${problems.get('quantity')}"></p>
+
+        <label for="buyer">Name on the tickets</label>
+        <input id="buyer" name="buyer" autocomplete="name" maxlength="60" th:value="${form.buyer}">
+        <p class="problem" th:if="${problems?.get('buyer')}" th:text="${problems.get('buyer')}"></p>
+
+        <label for="phone">M-Pesa number</label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="0712 345 678" th:value="${form.phone}">
+        <p class="problem" th:if="${problems?.get('phone')}" th:text="${problems.get('phone')}"></p>
+
+        <button type="submit">Hold my tickets</button>
+    </form>
+</main>
+</body>
+</html>

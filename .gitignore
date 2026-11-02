@@ -26,3 +26,7 @@ target/
 # The sync server's practice database (H2), from Day 119.
 *.mv.db
 *.trace.db
+
+# Code-signing certificates (Day 129): never commit one
+*.pfx
+*.p12
