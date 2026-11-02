@@ -1,0 +1,47 @@
+# Publishes the course website to GitHub Pages: the site/ folder and each day's README, nothing else.
+# Pages must be set to "GitHub Actions" (Settings → Pages → Build and deployment → Source).
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push replaces a deploy still waiting.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Put the website together
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: The course website's day list matches the READMEs
+        run: java tools/SiteData.java --check
+      - name: Build the site folder
+        run: tools/build-pages.sh _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}site/
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
