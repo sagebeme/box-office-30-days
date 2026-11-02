@@ -42,9 +42,12 @@
   --shadow: #121a2c33;
   --grain: .06;
   --grain-blend: multiply;
-  --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Apple's own faces, from the visitor's system: SF Pro on a Mac, iPhone or iPad, and the closest
+     system face elsewhere (Segoe UI on Windows, the desktop's font on Linux). SF can't be served
+     from a website, so there's nothing to download. */
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --wrap: 1180px;
   --frame: 16px;
   --section: clamp(96px, 12vw, 176px);
@@ -137,7 +140,12 @@ a.stub:hover { background: color-mix(in srgb, var(--gold) 82%, #fff) }
 .nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; font-size: 1rem }
 .nav-links a { color: var(--ink); text-decoration: none; display: inline-block; padding: 10px 0 }
 .nav-links a:hover, .nav-links a[aria-current] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px }
-@media (max-width: 680px) { .nav-links li:not(.keep) { display: none } }
+@media (max-width: 680px) { .nav-links li:not(.keep) { display: none } .nav-links { gap: 18px } }
+.nav-links { align-items: center }
+/* Light or dark: follows the system until you choose, then remembers your choice in this browser. */
+.theme-toggle { font: 600 .95rem/1 var(--body); min-height: 40px; padding: 0 14px; background: transparent; color: var(--ink); border: 2px solid var(--ink); cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out) }
+.theme-toggle:hover { border-color: var(--gate); color: var(--gate) }
+.theme-toggle:active { transform: translateY(1px) }
 
 /* ----- entrance: home sections rise once, heading then text then picture ----- */
 .js .reveal > * { opacity: 0; transform: translateY(24px) }

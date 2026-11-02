@@ -10,9 +10,7 @@
 <meta name="theme-color" content="#efede8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f121a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>try { var t = localStorage.getItem("boxoffice30-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body id="top">
@@ -26,6 +24,7 @@
       <li><a href="#route">The route</a></li>
       <li class="keep"><a href="syllabus.html">Syllabus</a></li>
       <li><a href="https://github.com/sagebeme/box-office-30-days">GitHub</a></li>
+      <li class="keep"><button class="theme-toggle" type="button" id="theme-toggle" aria-pressed="false">Dark</button></li>
     </ul>
   </div>
 </nav>

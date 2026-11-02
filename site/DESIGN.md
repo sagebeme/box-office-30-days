@@ -32,46 +32,46 @@ colors:
   phase-6-soft: "#e6ddf2"
 typography:
   display-xl:
-    fontFamily: "'Bricolage Grotesque', 'Arial Narrow', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', sans-serif"
     fontSize: 6.6rem
     fontWeight: 400
     lineHeight: 0.95
     letterSpacing: -0.035em
   heading-lg:
-    fontFamily: "'Bricolage Grotesque', 'Arial Narrow', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', sans-serif"
     fontSize: 3.4rem
     fontWeight: 400
     lineHeight: 1.02
     letterSpacing: -0.025em
   heading-md:
-    fontFamily: "'Bricolage Grotesque', 'Arial Narrow', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', sans-serif"
     fontSize: 1.45rem
     fontWeight: 450
     lineHeight: 1.15
     letterSpacing: -0.01em
   body-md:
-    fontFamily: "'Instrument Sans', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', sans-serif"
     fontSize: 1.125rem
     fontWeight: 400
     lineHeight: 1.6
   button-md:
-    fontFamily: "'Instrument Sans', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', sans-serif"
     fontSize: 1.05rem
     fontWeight: 600
     lineHeight: 1.2
   caption:
-    fontFamily: "'Instrument Sans', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', sans-serif"
     fontSize: 0.9rem
     fontWeight: 400
     lineHeight: 1.45
   stub:
-    fontFamily: "'Bricolage Grotesque', 'Arial Narrow', system-ui, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', sans-serif"
     fontSize: 0.95em
     fontWeight: 500
     lineHeight: 1.45
     fontFeature: tnum
   code:
-    fontFamily: "'JetBrains Mono', ui-monospace, monospace"
+    fontFamily: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
     fontSize: 0.86em
     fontWeight: 400
     lineHeight: 1.65
@@ -193,7 +193,7 @@ A reading site for a 30-day Java course in which you build one app, the gate lap
 ### Key characteristics (the signature moves)
 
 1. **The till roll.** The receipt is the only picture on the home page and the only place outside code where a monospace face appears, because that's how a thermal printer prints. Don't add other illustrations, icons or stock decoration.
-2. **Display at weight 400.** All headings are Bricolage Grotesque at 400 (heading-md 450), tracked tight. Don't set display type bold.
+2. **Display at weight 400.** All headings are SF Pro Display at 400 (heading-md 450), tracked tight. Don't set display type bold.
 3. **The night as six flat fields.** The route is six full-width bands, one per phase, each in its phase's pale tint, in the order of the night. Don't put phases in cards.
 4. **Square corners.** Radius 0 everywhere. The only shaped edges are real ones: the stub's perforation and the receipt's torn foot. Don't introduce a soft radius.
 5. **Tone, not lines.** Sections are separated by a change of ground, never by rules, dashed lines, borders or resting shadows. Rules exist only between table rows and around inputs.
@@ -214,6 +214,8 @@ A triad of the painter's primaries (red, yellow, blue) at 60-30-10, with the whe
 Every text pair measures at least 4.5:1 in both modes.
 
 ## Typography
+
+Apple's system faces: SF Pro Display for headings, SF Pro Text for reading, SF Mono for code and the receipt. They come from the visitor's own system (SF can't be served from a website), so Apple devices show SF and others show their closest system face: Segoe UI on Windows, the desktop font on Linux. Nothing is downloaded.
 
 Display and heading sizes are fluid; the tokens hold the largest size, and the table gives the full range.
 
@@ -240,7 +242,7 @@ Depth is tone only: canvas-soft (down), canvas, sheet (up), night (the one dark 
 - **Buttons:** one primary (gold) per view; the rest are secondary (2px ink outline) or text links.
 - **Stub:** the day number on a gold ticket stub, tabular figures.
 - **Status:** pale tint with dark text of the same hue, sentence case: "Done", "Up next", "40%".
-- **Navigation:** wordmark (stub "30" + "Box Office") and three or four plain links, on the canvas, no blur, no bar line.
+- **Navigation:** wordmark (stub "30" + "Box Office"), three or four plain links, and one action: the light/dark button, outlined like a secondary button. It follows the system until pressed, then remembers the choice in this browser (`boxoffice30-theme`); a small script in the head applies it before the page paints.
 - **Footer:** the night band, the name at full width.
 
 States: buttons and links have hover, pressed and a 3px focus ring. The checklist is the working part: checked items fade to ink-mute with a line through. The lesson has a loading line and an error state that says how to fix it.

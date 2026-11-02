@@ -67,6 +67,30 @@
   }
   document.addEventListener("DOMContentLoaded", backToTop);
 
+  // Light or dark. With nothing saved the page follows the system; the button saves the other one.
+  var THEME_KEY = "boxoffice30-theme";
+  function themeToggle() {
+    var button = document.getElementById("theme-toggle");
+    if (!button) return;
+    var root = document.documentElement;
+    var system = window.matchMedia("(prefers-color-scheme: dark)");
+    var isDark = function () { return root.dataset.theme ? root.dataset.theme === "dark" : system.matches; };
+    var show = function () {
+      var dark = isDark();
+      button.textContent = dark ? "Light" : "Dark";
+      button.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      button.setAttribute("aria-pressed", String(dark));
+    };
+    button.addEventListener("click", function () {
+      root.dataset.theme = isDark() ? "light" : "dark";
+      try { localStorage.setItem(THEME_KEY, root.dataset.theme); } catch (e) { /* private window: not remembered */ }
+      show();
+    });
+    system.addEventListener("change", show);
+    show();
+  }
+  document.addEventListener("DOMContentLoaded", themeToggle);
+
   window.BOX_PROGRESS = {
     REPO: REPO, load: load, save: save, ticks: ticks, percent: percent, isDone: isDone,
     nextDay: nextDay, byNumber: byNumber, dayUrl: dayUrl, esc: esc, inline: inline
