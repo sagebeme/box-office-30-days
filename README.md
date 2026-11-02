@@ -171,6 +171,8 @@ A JavaFX app gate staff can run all night without it freezing, losing a sale or 
 
 ### Phase 3 · Days 114–118 · Concurrency and the network
 
+Many things at once, over a network that drops: SMS to every buyer, retries on bad Wi-Fi, and two gates that keep selling with no internet.
+
 - [Day 114](day-114-bulk-sms-reminders): Bulk SMS reminders (virtual threads, Africa's Talking sandbox)
 - [Day 115](day-115-surviving-bad-wifi): A client that survives bad Wi-Fi (`HttpClient` timeouts, retries, backoff)
 - [Day 116](day-116-queue-now-sync-later): Queue now, sync later (the outbox pattern)
@@ -178,6 +180,8 @@ A JavaFX app gate staff can run all night without it freezing, losing a sale or 
 - [Day 118](day-118-the-night-we-oversold): The night we oversold (race conditions, locks, atomics, many-thread tests)
 
 ### Phase 4 · Days 119–124 · Sync server and ticket site (the one web phase)
+
+A server the gates sync to, a public ticket site that takes M-Pesa, a security pass, and a Docker image ready to deploy.
 
 - [Day 119](day-119-sync-api-with-device-login): Sync API with device login (Spring Boot, tokens per gate laptop)
 - [Day 120](day-120-two-gates-sell-the-last-ticket): Two gates sell the last ticket (conflict resolution, idempotency)
@@ -188,11 +192,15 @@ A JavaFX app gate staff can run all night without it freezing, losing a sale or 
 
 ### Phase 5 · Days 125–127 · AI in the app
 
+Staff ask the laptop about the night in plain words. Claude answers from the real numbers, looks things up, and is tested like any other feature.
+
 - [Day 125](day-125-ask-about-tonights-sales): Ask about tonight's sales (the Anthropic Java SDK, streaming)
 - [Day 126](day-126-an-assistant-that-looks-things-up): An assistant that can look things up (tool use over Box Office data)
 - [Day 127](day-127-evals): Evals (test the AI feature in JUnit)
 
 ### Phase 6 · Days 128–130 · Ship it
+
+Installers people can download, a pipeline that builds them for Windows, Mac and Linux, and an app that updates itself.
 
 - [Day 128](day-128-installers): Installers small enough for a data bundle (`jpackage`, `jlink`, WiX on Windows)
 - [Day 129](day-129-release-pipeline): A release pipeline (CI builds for Windows, Mac and Linux, GitHub Releases, code signing)
