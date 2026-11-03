@@ -30,3 +30,6 @@ target/
 # Code-signing certificates (Day 129): never commit one
 *.pfx
 *.p12
+
+# GitHub Pages build (tools/build-pages.sh)
+_site/
