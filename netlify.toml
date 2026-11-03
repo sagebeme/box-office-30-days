@@ -1,0 +1,20 @@
+# Netlify: the course website in site/ is plain static files, and site/assets/days.js is
+# committed. There's nothing to install or build. CI checks that days.js is up to date.
+[build]
+  publish = "."
+  command = "echo 'The course site is static: nothing to build'"
+
+[[redirects]]
+  from = "/"
+  to = "/site/"
+  status = 302
+
+[[headers]]
+  for = "/README.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+  for = "/*/README.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"

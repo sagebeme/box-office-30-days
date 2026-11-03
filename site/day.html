@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Day · Box Office in 30 Days</title>
+<meta name="description" content="One day of Box Office in 30 Days: the night at the gate, the steps, and a checklist that saves your progress.">
+<meta name="theme-color" content="#efede8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f121a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>try { var t = localStorage.getItem("boxoffice30-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="assets/style.css?v=2">
+</head>
+<body id="top">
+<a class="skip" href="#lesson">Skip to the lesson</a>
+
+<nav class="navbar" aria-label="Main">
+  <div class="container">
+    <a class="brand" href="index.html"><span class="stub" aria-hidden="true">30</span><span>Box Office</span><span class="sr-only">: home</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#route">The route</a></li>
+      <li class="keep"><a href="syllabus.html">Syllabus</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">GitHub</a></li>
+      <li class="keep"><button class="theme-toggle" type="button" id="theme-toggle" aria-pressed="false" hidden>Dark</button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="container">
+    <ol class="crumbs">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#route" id="crumb-phase">Phase</a></li>
+      <li aria-current="page" id="crumb-day">Day</li>
+    </ol>
+    <div class="title">
+      <span class="stub big" aria-hidden="true" id="badge">101</span>
+      <div>
+        <h1 id="title">Loading…</h1>
+        <p class="sub" id="topic" hidden></p>
+        <p class="scene" id="scene" hidden></p>
+        <div class="labels" id="labels"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="lesson">
+    <main id="lesson" class="prose" tabindex="-1"><p>Loading the lesson…</p></main>
+
+    <aside class="sidebar" aria-label="Today's progress">
+      <section aria-labelledby="check-title" id="check-panel">
+        <h2 id="check-title">Today's checklist</h2>
+        <ul class="checklist" id="checklist"></ul>
+        <div class="meter-row">
+          <div class="progress" id="meter" role="progressbar" aria-label="Today's progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="bar"></span></div>
+          <span id="pct">0%</span>
+        </div>
+        <p class="done-msg" id="done-msg" role="status" hidden></p>
+      </section>
+      <section aria-labelledby="run-title" id="run-panel">
+        <h2 id="run-title">Run today's tests</h2>
+        <div class="cmd" id="cmd"></div>
+        <div class="cmd" id="cmd-win"></div>
+        <p class="small-note">From the course folder. They fail until you finish today's steps.</p>
+        <ul class="side-links">
+          <li><a id="gh-folder" href="#">This day's folder on GitHub</a></li>
+          <li><a id="gh-solution" href="#">The solution, after you've tried</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+  <nav class="pager" id="pager" aria-label="Other days"></nav>
+</div>
+
+<footer class="footer short">
+  <div class="container">
+    <ul class="links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="syllabus.html">Full syllabus</a></li>
+      <li><a href="https://github.com/sagebeme/box-office-30-days">Source on GitHub</a></li>
+    </ul>
+    <span class="wordmark" aria-hidden="true">Box Office</span>
+    <div class="bottom">
+      <span>Java, Part 2. Made in Nairobi.</span>
+      <span>Progress is saved only in this browser.</span>
+    </div>
+  </div>
+</footer>
+<a class="to-top" href="#top" aria-label="Back to top">↑</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.0.13/lib/marked.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="assets/days.js?v=2"></script>
+<script src="assets/progress.js?v=2"></script>
+<script src="assets/lesson.js?v=2"></script>
+</body>
+</html>
