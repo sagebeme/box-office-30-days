@@ -414,6 +414,22 @@ Both end with exit code 1, so a workflow step that runs them stops there. Delete
 - **`cli`, `desktop` and `sync server` are `SKIPPED`**: `core` failed first. Finish steps 2 to 4.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/release/ConventionalCommit.java` (or `SemVer.java`, `ReleaseNotes.java`, `solution/.github/workflows/release.yml`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Since `v1.0.0`, the commits are `fix: receipts print the right date`, `feat: the gate checks for updates`, `docs: a new README` and `fix(desktop): the total lagged one sale behind`. What's the next version? Add `feat(sync)!: gates need a venue key` and what is it then?
+2. Which of these does `ConventionalCommit` read as `feat`, and which as `other`: `Feat: dark mode`, `feat:no space`, `Merge pull request #1 from sagebeme/feat/days-111-120`? Why aren't the `other` ones thrown away?
+3. Spot the bug: `SemVer.compareTo` compares `toString()` values. A gate on 1.9.0 checks for updates when 1.10.0 is out. What does it say?
+4. You tag `v1.1.0` but forget to change the version in `pom.xml`, which still says `1.0.0`. What does the pipeline do, and why is that the right thing?
+
+<details><summary>Answers</summary>
+
+1. `1.1.0`: one release, one bump, and the biggest wins (the feature beats the fixes; docs move nothing). With a breaking change, `2.0.0`.
+2. `Feat: dark mode` is `feat` (the type is lower-cased with `Locale.ROOT`). The other two don't fit the pattern, so they're `other`. They stay in, so a release never silently loses a commit; they just don't move the version.
+3. "Up to date". As text, `"1.10.0"` sorts before `"1.9.0"`, so the newer release looks older and the gate never updates. Compare major, minor and patch as numbers.
+4. The first job stops: `The tag is v1.1.0 but pom.xml says 1.0.0. Set the version first.` Otherwise an installer called 1.1.0 would say 1.0.0 inside, and the update check would be confused for ever after.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what 1.0.1, 1.1.0 and 2.0.0 each promise, coming from 1.0.0
