@@ -466,6 +466,22 @@ Couldn't pull from http://127.0.0.1:8100: The other gate has a different venue k
 - **`Web server failed to start. Port 8080 was already in use.`**: yesterday's server is still running somewhere. Stop it with Ctrl+C.
 - **Still stuck?** Open `solution/server/src/main/java/com/boxoffice/server/RateLimiter.java` (or `CallerIp.java`, `SaleChecks.java`, `SecurityHeaders.java`, `solution/core/src/main/java/com/boxoffice/core/lan/GateFeedServer.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The order limit is 10 per minute per address, as a token bucket. A family orders 3 times in a minute; a script orders 500 times. What does each see? A bucket has 0.4 tokens and one drips back every 30 seconds: how long is the next request told to wait?
+2. Why are M-Pesa prompts limited per phone number and not per IP address?
+3. The server is behind one proxy, with `trusted-proxies` set to 1. A script sends `X-Forwarded-For: 196.201.214.200`, the proxy adds `41.90.2.2`, and the remote address is `10.0.0.5`. Who does the server think is calling? What goes wrong with the setting at 0, and at 2?
+4. A stolen gate laptop with a good token sends a sale with a buyer called `Otieno`, a new line, then `PAID IN FULL`. Why does the server refuse it, when the token is fine?
+
+<details><summary>Answers</summary>
+
+1. The family never notices. The script empties the bucket in a second, then gets one order every 6 seconds and `429` for the rest. The wait is (1 − 0.4) × 30 = 18 seconds (`Math.ceil` rounds up, so it is never 0).
+2. The point is to stop someone making Kamau's phone ring all night. A stranger can send orders from many addresses, but Kamau has one number, so the limit (3 prompts every 10 minutes) goes on the number, whoever asks.
+3. `41.90.2.2`: count from the end of the chain and skip the one trusted proxy. At 0, every fan looks like the proxy and shares one bucket. At 2, the server believes `196.201.214.200`, which the script wrote, so anyone gets a fresh bucket with a made-up address, or claims to be Safaricom.
+4. A token proves which gate is talking, not that what it sends is sensible: tokens get stolen and code has bugs. A control character in a name forges a second line on receipts, CSV exports and logs, so `SaleChecks` refuses it with a `400` before anything is saved.
+
+</details>
+
 ## Checklist
 
 - [ ] Can explain a token bucket, and why a burst is fine and a flood isn't

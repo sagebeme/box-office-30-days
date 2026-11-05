@@ -464,6 +464,22 @@ Stop the server with Ctrl+C. `sync-server-db.mv.db` is in `.gitignore`.
 - **`Web server failed to start. Port 8080 was already in use.`**: yesterday's server is still running. Stop it with Ctrl+C.
 - **Still stuck?** Open `solution/server/src/main/java/com/boxoffice/server/Payments.java` (or `MpesaCallback.java`, or `mpesa/StkPassword.java`, `mpesa/DarajaClient.java`, `mpesa/StkCallback.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The STK push answers in a second or two. Why can't it say whether Otieno paid, and what joins the push to the answer that comes later?
+2. The server runs in a data centre on UTC. A push is sent at 15:30:05 UTC on 14 November. What `Timestamp` goes with it, and what happens if you format the server's own clock instead?
+3. Safaricom sends the same "paid" callback twice, a second apart. Why doesn't Otieno end up with four tickets for two places?
+4. The callback secret in the address is wrong, or the body is rubbish, or our database is down. What does `/mpesa/callback/...` answer in each case, and why?
+
+<details><summary>Answers</summary>
+
+1. When the push answers, he hasn't typed his PIN yet: it only says "prompt sent". Safaricom posts the result to our callback later. The `CheckoutRequestID` from the push, saved with the order's reference, comes back in the callback and joins them up.
+2. `20261114183005`, the time on a Nairobi clock (UTC+3). Formatting the server's UTC clock gives `20261114153005`, which doesn't match Nairobi time, and Daraja refuses the push.
+3. Settling is idempotent: only an order still `AWAITING_PAYMENT` is changed. The second callback finds it `PAID` and returns `ALREADY_SETTLED`, doing nothing. The row lock means two copies at the same moment can't both see "waiting".
+4. `200 {"ResultCode":0,"ResultDesc":"Accepted"}`, every time. Any other answer makes Safaricom send it again and again, and a different answer for a wrong secret tells a stranger they've found something. Problems go to the log instead: a warning, or an error for our own failure.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say how an STK push and its callback fit together, and what joins them up

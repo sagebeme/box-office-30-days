@@ -313,6 +313,22 @@ It answers `{"token":"...","gate":"B"}`, with 43 random characters where the dot
 - **A `WARN` that H2 2.4.240 is `newer than the version Flyway has been verified with`**: harmless. Flyway and H2 work fine together here.
 - **Still stuck?** Open `solution/server/src/main/java/com/boxoffice/server/DeviceLogin.java` (or `Tokens.java`, `Sales.java`, `solution/core/src/main/java/com/boxoffice/core/sync/HttpSyncClient.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The server keeps a SHA-256 hash of each gate's token, not the token. What does that protect against, and why is a plain fast hash fine here when it wouldn't be for a person's password?
+2. Predict the status code: a request to `/sync/sales` with no `Authorization` header; one with a token the server never issued; gate B, with B's good token, sending ticket `A-REG-0001`; a request to `/health` with no token.
+3. Gate A's laptop is stolen from the gate table at 23:00. What does the organiser do so the thief can't send sales as gate A, and why does that work?
+4. Why does `server/pom.xml` import Spring Boot's BOM in `dependencyManagement` instead of using `spring-boot-starter-parent` as its parent?
+
+<details><summary>Answers</summary>
+
+1. Someone who copies the `devices` table gets hashes, which can't be turned back into tokens, so they still can't log in. A password is short and guessable, so an attacker can try billions of guesses against a fast hash. A token is 32 random bytes from `SecureRandom`: there's nothing to guess.
+2. `401`, `401`, `403` and `200`. No token or an unknown one means "who are you?". B is known but the ticket isn't B's, so it's "not yours". `/health` isn't under `/sync/**`, so `DeviceLogin` never runs for it.
+3. Register gate A again with the admin key from a laptop the organiser trusts. That makes a new token and the old one stops working, so the stolen laptop's syncs get `401`.
+4. Our parent pom is our own (Day 101), and a pom has only one parent. Importing the BOM still gives every Spring Boot library its tested version, so the starters need no version.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what Spring Boot does when it starts, and what constructor injection is

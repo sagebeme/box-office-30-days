@@ -431,6 +431,22 @@ Stop the server with Ctrl+C. `sync-server-db.mv.db` is in `.gitignore`. Delete i
 - **`Web server failed to start. Port 8080 was already in use.`**: yesterday's server is still running somewhere. Stop it with Ctrl+C, or add `--server.port=9090` and use `9090` in the addresses.
 - **Still stuck?** Open `solution/server/src/main/java/com/boxoffice/server/Orders.java` (or `Places.java`, `TicketSite.java`, `solution/server/src/main/resources/templates/event.html`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The order form has a plain `method="post"` and `action` as well as `hx-post`. Otieno's old phone fails to download htmx on the matatu's patchy data. What happens when he presses "Hold my tickets"?
+2. After a plain-browser order, the server answers `302` to `/orders/8CKS-H2GA` instead of the order page itself. What goes wrong without the redirect when Otieno presses reload?
+3. A fan types `<script>alert(1)</script>` as their name. What does the next person who opens that order page see, and which part of the template makes it safe?
+4. Spot the bug: `Places.taken` counts held places with `select count(*) from orders where ... status = 'AWAITING_PAYMENT'`. One fan holds 6 VIP places. How many places does the site think are held?
+
+<details><summary>Answers</summary>
+
+1. The browser posts the form the old way and gets a whole page back. His tickets are held all the same. That's progressive enhancement: the plain HTML works on its own, and htmx only makes it nicer.
+2. Reload would post the form again and hold a second order. With the redirect, reload fetches the order page with a GET, which changes nothing.
+3. The letters themselves, shown as text. `th:text` escapes what it prints, so the script never runs. Never print what a fan typed with `th:utext`.
+4. One, not 6: `count(*)` counts orders, not places. Add up the quantity, with `coalesce(sum(quantity), 0)` so no orders gives 0 and not `null`.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what a server-rendered page is, and what Thymeleaf does with `th:text`
