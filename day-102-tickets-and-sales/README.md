@@ -156,6 +156,22 @@ Success looks like this, with **19 tests** (BoxOffice 3, Gate 7, SaleOutcome 3, 
 - **`NoSuchElementException: No value present`**: you called `.get()` on an empty `Optional`. Check `isEmpty()` first, or use `map(...).orElse(...)`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/Gate.java` (or `SaleOutcome.java`, `TicketType.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. `describe()` switches over `SaleOutcome` with no `default`. Why is that safer than adding a `default` case?
+2. Predict: an event has one VIP place. You call `gate.sell("VIP", "Wanjiku")`, then `gate.sell("VIP", "Kamau")`, then `gate.remaining("VIP")`. What do the three calls give back?
+3. Spot the bug: in `sell`, someone moves the `remaining(typeCode) == 0` check above the "does the event sell this type?" check. What does `gate.sell("VVIP", "Kamau").describe()` say now, and why?
+4. Why does `TicketType` refuse a negative capacity in its compact constructor, instead of leaving `Gate` to check it?
+
+<details><summary>Answers</summary>
+
+1. The interface is sealed, so Java knows every kind of outcome. With no `default`, adding a fourth outcome later stops `describe()` compiling until you handle it. A `default` would quietly swallow the new kind.
+2. `Sold` (ticket `VIP-0001`), then `SoldOut("VIP")`, then `0`.
+3. `"VVIP is sold out"`. `remaining` gives 0 for a type the event doesn't sell, so the sold-out check matches first. The fan should hear `"Rejected: No ticket type called VVIP"`: check the type exists before counting what is left.
+4. The constructor runs before the object exists, so a bad `TicketType` can never be made anywhere. Every piece of code that gets one can trust it, not only the code in `Gate`.
+
+</details>
+
 ## Checklist
 
 - [ ] `TicketType` refuses a blank code and a negative capacity

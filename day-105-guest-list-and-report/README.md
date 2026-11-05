@@ -239,6 +239,22 @@ The database file `gate.db` appears in the folder you run the commands from. Run
 - **The report's first line shows a strange character instead of `·`** on Windows: your terminal isn't using UTF-8. Try Windows Terminal, or run `chcp 65001` first in an old console. The tests don't care; it's only the screen.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/GuestListCsv.java` (or `SalesReport.java`, `solution/cli/src/main/java/com/boxoffice/cli/ImportGuestsCommand.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does the guest-list parser use `line.split(",", -1)` instead of `line.split(",")`? What goes wrong with `Achieng,` without the `-1`?
+2. The organiser's file from Excel clearly starts with `name,type`, yet the gate says `Line 1: the first line should be name,type`. What is going on?
+3. `import-guests` admits 2 of 3 guests. What exit code does it return, and why would a script running it care?
+4. Spot the bug: `ReportCommand` ends with `out.print(report.render())` and no `out.flush()`, and `main` then calls `System.exit`. What might the organiser see?
+
+<details><summary>Answers</summary>
+
+1. Without `-1`, Java drops the empty last column, so `"Achieng,"` gives one column and the error says `expected 2 columns ... found 1`. With `-1` it gives two columns, and the error correctly says the guest needs a ticket type.
+2. Excel puts an invisible byte-order mark at the very start of a UTF-8 CSV. `strip()` doesn't remove it, so the line isn't equal to the header. The parser drops the mark on line 1 before anything else.
+3. `1`. Only `0` means it worked. A script, or CI, reads the exit code, not the text, to decide whether to carry on, so a partial import must not look like a success.
+4. Nothing, or only part of the report. `print` leaves text waiting in a buffer, and `System.exit` doesn't wait for the buffer to be written out.
+
+</details>
+
 ## Checklist
 
 - [ ] Can explain why `cli` is its own module that depends on `core`
@@ -249,6 +265,36 @@ The database file `gate.db` appears in the folder you run the commands from. Run
 - [ ] Built `cli/target/boxoffice.jar` and sold a ticket from the terminal
 - [ ] Can say what exit codes 0, 1 and 2 mean here
 - [ ] Committed your work to Git (not `gate.db` or `guests.csv` with real names)
+
+## Phase 1 recap
+
+Phase 1, *Foundations for real software*, built the gate's rules before any window: a project that builds the same everywhere, a domain model that can't hold bad values, money and time that add up, sales that survive a restart, and a command line the organiser can use.
+
+**Key ideas**
+
+- One parent pom picks the versions; each module asks for what it needs. CI runs the same build on a clean machine.
+- Records with compact constructors refuse bad values before an object exists. A sealed interface lists every outcome, and a switch with no `default` won't compile if one is missed.
+- Money is a `long` of cents with exact arithmetic. A moment is an `Instant`, shown in `Africa/Nairobi` only for people, and the time comes from a `Clock` that tests can fix.
+- Every sale goes to SQLite the moment it happens, through `PreparedStatement`s with `?`. Tables change only through new Flyway migrations.
+- Files from outside (the guest list) are checked line by line, with errors that name the line. A command's exit code says whether it worked.
+
+**Self-test**
+
+1. Which part of the gate stops a ticket type with capacity `-5` from ever existing, and which stops it selling at 04:00?
+2. Why do tests pass a `Clock` and a `@TempDir` instead of using the real time and a real `gate.db`?
+3. A gate laptop already has a `gate.db`. You need a new column. What do you write, and what must you never touch?
+
+<details><summary>Answers</summary>
+
+1. `TicketType`'s compact constructor throws for a negative capacity. `Gate.sell` reads the time from its `Clock` and refuses a sale that isn't before the event's end.
+2. So every run gives the same answer: the same time at 3pm and at 3am, and a fresh, empty database for each test, never one left over by another test.
+3. A new migration, `V2__....sql`, with `alter table ... add column`. Never edit `V1` once it has run: Flyway sees the change and refuses to start.
+
+</details>
+
+**Stretch exercise**
+
+Add an `export-sales sales.csv` command to the CLI that writes every ticket sold for the event to a CSV the organiser can open in Excel: code, type, buyer, price in shillings and the time in Nairobi time. Decide for yourself what happens to a buyer's name with a comma in it, what the exit code is when the file can't be written, and how a test proves the file reads back correctly. No steps and no solution: it's yours.
 
 ## Next
 

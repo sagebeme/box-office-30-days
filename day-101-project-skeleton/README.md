@@ -177,6 +177,22 @@ It checks the course as it was given to you. Once you have finished a day, it wi
 - **`NullPointerException` in `welcome`**: check for `null` before calling `isBlank()`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/BoxOffice.java`, read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does `core/pom.xml` ask for JUnit and AssertJ without a `<version>`, and where does the version come from?
+2. Spot the bug: `if (eventName.isBlank() || eventName == null) throw ...`. What happens when someone calls `welcome(null)`?
+3. JUnit and AssertJ have `<scope>test</scope>`. What would change if they didn't?
+4. You arrive at the venue, open a brand-new laptop with Java 21 and run `../../mvnw test` for the first time. The venue Wi-Fi is down. What happens, and how do you avoid it?
+
+<details><summary>Answers</summary>
+
+1. The parent pom's `dependencyManagement` picks one version of each library for every module. A module just names what it needs, so all modules use the same version and you change it in one place.
+2. It throws a `NullPointerException`, not the `IllegalArgumentException` the test expects: `isBlank()` runs on `null` before the `null` check is reached. Check `eventName == null` first.
+3. They would be packed into the app and shipped with it, though only the tests use them. `test` scope keeps them out of the app.
+4. It hangs on "Downloading": the first run fetches Maven and the libraries. Run it once at home, with internet. After that the wrapper and libraries are on the laptop and later runs work offline.
+
+</details>
+
 ## Checklist
 
 - [ ] `java -version` shows 21 or newer

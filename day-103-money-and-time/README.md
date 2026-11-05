@@ -164,6 +164,22 @@ Success looks like this, with **35 tests** (BoxOffice 3, Gate 10, Money 8, Nairo
 - **`addsUpTheTakings` says `expected: KES 8,000 but was: KES 0`**: you called `total.plus(...)` but didn't store the result. `Money` never changes; write `total = total.plus(...)`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/Money.java` (or `NairobiTime.java`, `Gate.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does the gate keep money as a `long` of cents instead of a `double` of shillings?
+2. Predict what `format()` gives for `Money.ofCents(5)`, `Money.ofCents(150_000)` and `Money.ofCents(150_050)`.
+3. Spot the bug: `Money total = Money.ZERO; for (Ticket t : sold) { total.plus(t.price()); } return total;`. What does `takings()` return after three sales?
+4. The gate laptop's clock is set to London time. A Regular ticket is sold at 21:05 in Nairobi. What time does the gate show for the sale, and does it still stop selling at 04:00 Nairobi time?
+
+<details><summary>Answers</summary>
+
+1. A `double` can't hold most decimal amounts exactly (`0.1 + 0.2` is `0.30000000000000004`), so errors build up over hundreds of sales. Whole cents in a `long` add up exactly, and `Math.addExact` throws rather than wrapping round if a number gets too big.
+2. `"KES 0.05"`, `"KES 1,500"` and `"KES 1,500.50"`. The cents always get two digits (`%02d`), and they're left off when there are none.
+3. `KES 0`. `Money` can't change: `plus` returns a new value, and the loop throws it away. Write `total = total.plus(t.price())`.
+4. `Sat 14 Nov, 21:05`. The sale is stored as an `Instant`, which is the same moment everywhere, and `NairobiTime` puts it on the `Africa/Nairobi` clock only to show it. The 04:00 cut-off compares two `Instant`s, so the laptop's time zone never comes into it. At exactly 04:00 the gate already says no.
+
+</details>
+
 ## Checklist
 
 - [ ] Can explain why the gate never uses `double` for money
