@@ -223,6 +223,22 @@ That's venue Wi-Fi coming back after a router restart. Stop `jwebserver` with Ct
 - **`waitsAsLongAsTheServerAsks` fails now and then, with `Expecting actual: [0.5S] to contain exactly (and in same order): [2S]`**, and passes when you run it again: on a busy laptop, the test's first answer took longer than its 1 s time limit, so it counted as "no answer in time" instead of a 429. Close other heavy programs and run it again. If it fails every time, check that you didn't change `send`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/net/ResilientHttp.java` (or `RetryPolicy.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does every request get a request timeout as well as the client's connect timeout?
+2. Predict `RetryPolicy.delayBefore` with a first delay of 500 ms and a cap of 8 s, for attempts 2, 3, 4 and 7, with `roll` = 1.0. What does `roll` = 0.0 give for attempt 3?
+3. The gate POSTs "sell this ticket" with no `Idempotency-Key`, and the answer never comes (timeout). Why does `ResilientHttp` refuse to send it again, while it happily resends a GET?
+4. Twenty gate laptops lose the Wi-Fi at the same moment when the router restarts. What does jitter change about how they come back?
+
+<details><summary>Answers</summary>
+
+1. The connect timeout only covers the other computer picking up. A server that picks up and then says nothing would keep the gate waiting for ever; the request timeout caps the wait for the answer.
+2. 0.5 s, 1 s, 2 s and 8 s (16 s capped at `maxDelay`). With `roll` 0.0, attempt 3 waits half its backoff: 0.5 s.
+3. With no answer, the server may have done the work and only the answer got lost, so a second POST could sell the ticket twice. A GET only reads, so repeating it can't do harm. A POST with an `Idempotency-Key` would be resent, because the server can spot the repeat.
+4. Without it they'd all retry at 0.5 s, again at 1.5 s, and so on, hitting the router at the same instant each time. Each waits a random amount between half and all of the backoff, so their retries spread out.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why every request needs a time limit

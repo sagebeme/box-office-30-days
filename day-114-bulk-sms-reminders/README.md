@@ -250,6 +250,22 @@ The sandbox doesn't send to real phones. To see a text arrive, open the sandbox'
 - **Each number says `HTTP 401`**: Africa's Talking didn't accept the key. Check you copied the whole sandbox key, and that `AT_USERNAME` is `sandbox` (or not set).
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/sms/ReminderSender.java` (or `AfricasTalkingSms.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Sending one text takes about half a second, nearly all of it waiting. Why does that make reminders a job for many threads, and why virtual threads rather than a pool of platform threads?
+2. Spot the bug: `permits.acquire(); SmsResult r = gateway.send(phone, message); permits.release(); return r;`. The gateway throws for ten bad numbers. What happens to the other 290 texts?
+3. Predict: `new Semaphore(10)` and 100 texts with a fake gateway that takes 0.5 s each. Roughly how long does `sendAll` take, and what's the most texts in flight at once?
+4. Why does `RemindCommand` read the key from `AT_API_KEY` in the environment instead of a constant in the code?
+
+<details><summary>Answers</summary>
+
+1. While a text waits for the network, the laptop does nothing, so 100 texts waiting at the same time take about as long as one. A virtual thread is so cheap that you can give every text its own; platform threads cost about a megabyte each and you'd have to keep a small pool.
+2. With no `finally`, each throw keeps its permit. After ten, the bowl is empty, every other text waits for a permit that never comes, and the program hangs. Release in `finally`, and catch `RuntimeException` inside the job so a bad number becomes `SmsResult.failed` and the rest carry on.
+3. About 5 seconds (10 rounds of 0.5 s), never more than 10 at once. Without the semaphore it would be about half a second, and the gateway would see 100 at once and might block you.
+4. Anyone with the key can send texts on your account. A key in the code ends up in Git and on GitHub, where bots search for keys all day. An environment variable lives only in your terminal.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why waiting for the network is a job for many threads

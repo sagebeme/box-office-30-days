@@ -372,6 +372,22 @@ Fifty places, 51 tickets. Nothing in two offline laptops can prevent this: neith
 - **`serve-feed` stops with `java.net.BindException: Address already in use`**: a feed is already running on 8100, maybe in another terminal. Stop it, or use `--port 8101`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/lan/PeerPuller.java` (or `TicketStore.java`, `Gate.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why do the gates' ticket codes get a prefix like `A-` and `B-` once they share sales?
+2. Gate A has sold 3 Regular tickets and has copied in 5 from gate B. What is A's next Regular code, and how many Regular places does it think are sold? Which method answers each question?
+3. A pull from gate A is cut off halfway when the Wi-Fi drops, and the next pull gets some of the same sales again. Why does gate B not end up with two copies?
+4. Why do copied sales go into `tickets` with `insertCopiedTicket` and not through `recordSale`?
+
+<details><summary>Answers</summary>
+
+1. Without it both gates sell a `REG-0001`. Once B copies A's, two different tickets share a code and the scanner can't tell them apart. A prefix makes every code unique, and a gate with no id keeps the old codes.
+2. `A-REG-0004`, counted by `countIssuedHere` (only this gate's own codes), and 8 sold, counted by `countSold` (every gate's tickets). Mixing them up gives gaps in A's numbers, or lets both gates sell every place.
+3. `applyPeerSale` checks the sale's key in `peer_sales` and skips one it already has, but still moves the cursor past it. The copied tickets and the cursor are saved in one transaction, so they move together or not at all.
+4. `recordSale` leaves an outbox note. A copied sale with a note would go back out in B's feed (an echo) and to the sync server from B as well as A. Each sale has one owner, and only the owner sends it on.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why each gate needs its own id
