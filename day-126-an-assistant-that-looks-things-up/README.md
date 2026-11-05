@@ -330,6 +330,22 @@ To hide the lookup lines and keep only the answer, send `err` away: `2>/dev/null
 - **`Set ANTHROPIC_API_KEY ...`, `refused the key (HTTP 401)` or `Can't reach the Anthropic API`**: see Day 125's "When you're stuck".
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/ai/SalesTools.java` (or `SalesQuestions.java`, `solution/cli/src/main/java/com/boxoffice/cli/AnthropicClaude.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Claude asks for `find_ticket` with `{"code": "'; drop table tickets; --"}`. What does the gate do, and why does a bad input go back as a failed result instead of throwing?
+2. Why does the loop in `SalesQuestions.ask` stop after five rounds of lookups?
+3. A turn stops with `max_tokens`, and its last block is a `tool_use` for `sales_between`. Why must the gate not run it?
+4. Kamau types "refund VIP-0031" at 23:15. What can Claude do about it, and why are all three tools read-only?
+
+<details><summary>Answers</summary>
+
+1. `SalesTools.run` checks it like any input from outside: it doesn't match `[A-Za-z0-9-]{3,20}`, so the result is `failed(...)` with `is_error: true` and nothing touches `gate.db`. Claude reads what was wrong and usually asks again properly; an exception would end the whole question with a stack trace.
+2. A real question needs one or two rounds. A confused model could keep asking for ever, and every round costs money and time while a customer waits, so after five it says "ask something narrower".
+3. Out of room, the `tool_use` block's input may be cut off halfway. Only a turn that stopped with `tool_use` has calls that are complete and meant to run.
+4. Nothing that changes the night: no tool can sell, refund or change a ticket, so Claude tells him to do it on the gate screen. Claude can misread a question ("refund him" for "can I refund him?"); with read-only tools, the worst a wrong answer can do is be wrong.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what happens in one round of tool use, from `tool_use` to `tool_result`

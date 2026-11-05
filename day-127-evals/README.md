@@ -348,6 +348,22 @@ It prints the scorecard either way, and fails below 6 of 8. Everyday `mvnw test`
 - **`LiveEvalTest` is skipped even with the key set**: `BOXOFFICE_LIVE_EVALS` must be exactly `yes`, set in the same terminal.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/ai/eval/EvalRunner.java` (or `Graders.java`, `GateEvals.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does an eval check `mentionsNumber(47)` instead of `isEqualTo("47 VIP tickets are left.")`?
+2. Predict: does `mentionsNumber(47)` pass on "470 left", "There are 47 VIP places left" and "KES 1,547 taken"? Why would `contains("47")` be wrong?
+3. The guesser answers "About 30, I think." to every question, and still passes `full-phone`. What does that teach you about reading a score?
+4. Last week the real Claude scored 8 of 8. After you reworded the prompt, it scores 5 of 8. The bar is 80%. What do you do, and why isn't the bar 100%?
+
+<details><summary>Answers</summary>
+
+1. Claude words a correct answer differently each time, so a whole-sentence check fails good answers. A grader checks one fact, and leaves the wording free.
+2. Fail, pass, fail. `numbersIn` takes the longest run of digits (with thousands commas), so it finds 470 and 1,547, never 47. `contains("47")` would pass all three.
+3. A leak check only shows an answer wasn't harmful, not that it was good: a useless answer is perfectly safe. That's why cases pair "never mentions" with "mentions", and why you read the scorecard case by case, not just the percentage.
+4. Treat the drop as your change breaking something: read which cases failed and why, and fix the prompt (or a too-narrow grader) before you ship. The bar is below 100% because one odd but fine wording can fail a narrow grader; what matters is a drop.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what an eval is, and how it's different from a unit test
@@ -360,6 +376,37 @@ It prints the scorecard either way, and fails below 6 of 8. Everyday `mvnw test`
 - [ ] All 476 tests pass, with `LiveEvalTest` skipped
 - [ ] Ran `eval` and read its output (with your own key, if you have one)
 - [ ] Committed your work to Git (not `gate.db`, and never your API key or a `.env` file)
+
+## Phase 5 recap
+
+Phase 5, *AI in the app*, let the staff ask about the night in plain words: Claude answers from real counts, looks things up with read-only tools, and is tested with evals like any other feature.
+
+**Key ideas**
+
+- The program counts; Claude reads the question and words the answer. The prompt carries the facts, in `<facts>` tags, with "answer from these facts only".
+- Whatever goes in a prompt or a tool result leaves the laptop: counts, "Wanjiku K." and "phone ending 678", never a full name or number.
+- Stream the answer, but read the stop reason before trusting it: a refusal, or an answer cut short by `max_tokens`.
+- Tool use is a bounded loop: Claude asks, the gate checks the input like anything from outside, runs a read-only lookup, and sends the result back. Claude's own turns go back exactly as they came.
+- Evals ask fixed questions on nights set up just so, and grade one fact at a time. The eval set has tests of its own, the bar sits below 100%, and every real bug becomes a new case.
+- Keys come from the environment; tests use a pretend API on your own laptop, so they cost nothing.
+
+**Self-test**
+
+1. Name two things in this phase that make sure Claude never says a buyer's full phone number, and one that checks it stays that way.
+2. Why do both the tool inputs (Day 126) and a gate's sale (Day 123) get checked, though each came from "our own" side?
+3. You switch `AnthropicClaude.MODEL` to a newer model. What do you run, and what are you looking for?
+
+<details><summary>Answers</summary>
+
+1. The snapshot holds no phones (Day 125), and `find_ticket` only gives the last three digits (Day 126). The `full-phone` eval checks neither form of the number appears (Day 127).
+2. Neither can be trusted just because of where it came from. Claude's inputs follow from what a person typed, and eager input streaming skips the API's own schema check; a gate's token can be stolen and code has bugs.
+3. `eval` against the real Claude, before and after the change, comparing the scorecards case by case. You're looking for a drop, not a perfect score.
+
+</details>
+
+**Stretch exercise**
+
+Add a fourth read-only tool, `busiest_hour`, that tells Claude which hour of the night sold the most tickets of each type, and the evals that prove it's used and used well: a case where the answer needs it, a case where the facts are enough and no lookup should run, and one where the hours cross midnight. Decide how the tool's inputs are checked and what a failed result says. No steps and no solution: it's yours.
 
 ## Next
 

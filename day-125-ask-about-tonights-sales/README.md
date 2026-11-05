@@ -385,6 +385,22 @@ The first is a wrong or deleted key. The second comes after the SDK has tried a 
 - **`Can't reach the Anthropic API. Check the internet connection`**: no internet, or `ANTHROPIC_BASE_URL` is set in your terminal from somewhere. Unset it: only the tests use it.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/ai/SalesSnapshot.java` (or `SalesQuestions.java`, `solution/cli/src/main/java/com/boxoffice/cli/AnthropicClaude.java`, `AskCommand.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does the program count the tickets and send Claude the counts, instead of just asking Claude "how many VIP are left?"
+2. Why does `SalesSnapshot.facts()` hold no buyer names or phone numbers, and why does it have a `Now:` line?
+3. An answer streams in as `Regular has 497 left and` and stops, with the stop reason `max_tokens`. Why does `replyFrom` give back `CutShort` instead of `Answered`, and what would go wrong if it didn't?
+4. The venue internet drops just as Otieno presses Enter on a question. What does `ask` print, and does anything about the night's sales change?
+
+<details><summary>Answers</summary>
+
+1. A language model is good at reading the question and wording the answer, not at counting. With no facts it makes up a likely-sounding number. The program counts from `gate.db` and the prompt carries the counts to Claude.
+2. Whatever goes in the prompt leaves the laptop for Anthropic's servers, and buyers gave their phone for a text about their ticket, not for that. Counts answer today's questions. Claude has no clock, so without `Now:` it can't answer "how long until the doors close?".
+3. The answer is cut off mid-sentence. Shown as if complete, "497 left and" reads like a finished answer with a missing part nobody notices, and the staff act on it. `CutShort` lets the screen say so.
+4. `Can't reach the Anthropic API. Check the internet connection` (from `AnthropicIoException`, after the SDK's own retries). Nothing changes: asking only reads the facts, and the gate keeps selling as before.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why the counts come from `gate.db` and not from Claude
