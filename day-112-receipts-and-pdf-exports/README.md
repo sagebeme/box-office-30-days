@@ -188,6 +188,22 @@ Saved report.pdf
 - **Ctrl+P and Ctrl+S do nothing on a Mac**: use Cmd+P and Cmd+S.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/Receipt.java` (or `PdfExport.java`, `solution/cli/src/main/java/com/boxoffice/cli/ReportCommand.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does `Receipt.forTicket` return a `List<String>` instead of writing the PDF itself?
+2. Spot the bug: `writeLines` starts with `newLineAtOffset(MARGIN, 0)`. Where does the text end up, and why?
+3. A guest from the organiser's list asks for a receipt. What does the `Price` line say, and why not `KES 0`?
+4. The gate has no printer tonight and the buyer wants proof of payment. What does Ctrl+P say, and what do you do instead? Why is there no automated test for printing?
+
+<details><summary>Answers</summary>
+
+1. The same lines go to the PDF and to the printer, so the words are written once. And a list of strings can be tested with no PDF or printer at all.
+2. At the bottom edge of the page, or off it. A PDF page measures in points from the bottom-left corner, so the first line needs a big y near the top (`top`), and each line after it a smaller one.
+3. `Price   Guest`. The receipt checks for `Money.ZERO` and writes `Guest`: a guest didn't pay, and `KES 0` reads like a mistake.
+4. `No printer found. Save a PDF instead (Ctrl+S).` Save the PDF and send it to the buyer, QR code and all. Printing opens the system's print dialog, which a test can't click, and the CI machine has no printer, so that code is kept small and tried by hand.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why `Receipt` returns lines instead of a PDF

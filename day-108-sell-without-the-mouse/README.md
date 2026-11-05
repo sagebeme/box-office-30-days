@@ -177,6 +177,22 @@ Success looks like this, with **73 tests** in `core` (including Gate 16, Migrati
 - **Enter does nothing**: the form isn't ready. Read the line under the Sell button.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/PhoneNumbers.java` (or `solution/desktop/src/main/java/com/boxoffice/desktop/SaleForm.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why is the phone number added with a new `V2__add_buyer_phone.sql` instead of an extra line in `V1__create_tables.sql`? What happens to the tickets a gate sold on Day 107?
+2. Predict what `PhoneNumbers.normalise` gives for `"0712-345-678"`, `"+254 712 345 678"` and `"020 222 2222"`.
+3. Spot the bug: the code checks `startsWith("254")` before `startsWith("+254")`. Which numbers break, and why?
+4. Why does the controller listen for F1, F2 and Esc with an event filter on the root, instead of a key handler on the name box?
+
+<details><summary>Answers</summary>
+
+1. V1 has already run on every gate laptop. Flyway would see that the file changed and refuse to start. V2 runs once, on top, and `alter table ... default ''` gives the old tickets an empty phone, so no sale is lost.
+2. `Optional[254712345678]`, `Optional[254712345678]` and `Optional.empty` (a landline: what's left after the `0` doesn't start with 7 or 1).
+3. Any number typed with `+254`. A `"+254..."` string doesn't start with `"254"` (the first character is `+`), so it falls through to the other checks and comes back empty. Check `"+254"` first.
+4. A filter on the root sees every key press first, whichever field has the focus. F2 picks VIP even while the cursor is in the phone box, and `consume()` stops the field acting on the key as well.
+
+</details>
+
 ## Checklist
 
 - [ ] Wrote the V2 migration, and can say why you never change V1

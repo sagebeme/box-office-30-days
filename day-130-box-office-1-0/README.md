@@ -358,6 +358,22 @@ The course gave you the steps until now. This one is yours. Pick one feature, sm
 
 Write your feature's own README in the same shape as the course's: the brief, new words, steps, when you're stuck. If you can explain it to someone at the gate, you understand it.
 
+## Check yourself
+
+1. Why does `core/pom.xml` filter only `version.properties` and copy the SQL migrations untouched? What would happen on the night if a migration were filtered?
+2. The venue Wi-Fi drops halfway through `update --download`. What is in the folder afterwards, and why does that matter?
+3. It's 16:30 on Saturday 14 November and someone runs `update --download` on gate A. What happens? And why does that check use `realClock` and not the practice clock?
+4. `SHA256SUMS` matches the downloaded installer. What has that proved, and what hasn't it?
+
+<details><summary>Answers</summary>
+
+1. Filtering rewrites anything that looks like `${...}` or `@...@`. Flyway keeps a checksum of every migration it ran, in `gate.db`; one changed byte in an old migration and Flyway refuses to start ("Migrations have failed validation"). A gate that won't start, because of a build setting.
+2. Only `BoxOffice-1.1.0.msi.part` (or nothing). The download goes to a `.part` file and only gets its real name after the checksum matches, so a file with the installer's name is always a checked one and nobody double-clicks half an installer.
+3. It refuses: `The night is on: updates wait until Kilele Nights ends at Sun 15 Nov, 04:00`. The night counts from two hours before the doors open (16:00) until 04:00, and checking is still allowed. The practice clock always says 19:00 on the night, so asked "is the night on?" it would always say yes.
+4. That you have exactly the file the release published: not half of it, not a corrupted or swapped copy. It hasn't proved the release itself is good: someone who took over the repository would publish a matching `SHA256SUMS` too. Only code signing covers that.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say how `${project.version}` gets into the app, and why the SQL migrations are never filtered
@@ -370,6 +386,37 @@ Write your feature's own README in the same shape as the course's: the brief, ne
 - [ ] Ran `update` against the real GitHub and read its answer
 - [ ] Picked one feature of your own, and wrote its first test
 - [ ] Committed your work to Git (not `gate.db`, not a downloaded `installers/` folder, and never a key or certificate)
+
+## Phase 6 recap
+
+Phase 6, *Ship it*, turned a project you run from a terminal into software people download: installers with their own small Java, a pipeline that builds them on three systems from one tag, and an app that knows its version and fetches the next one safely.
+
+**Key ideas**
+
+- jpackage wraps the jar and a jlink runtime of only the modules you use (plus the ones jdeps can't see) into an installer for the system it runs on. Leaving things out is what makes it small.
+- An installed app keeps its data in the system's own folder for app data, never next to the app. The Windows upgrade id never changes.
+- Semantic Versioning says what a number promises; Conventional Commits let a program pick it. Versions compare as numbers.
+- One tag starts the release: three machines in a matrix run every test and build their installer, then one job with write permission publishes the notes, `SHA256SUMS` and the files. Signing happens only with a secret.
+- The version comes from the pom by filtering one file, never the migrations. An update check asks GitHub, downloads to `.part`, checks the checksum before the real name, never during the night, and never installs itself.
+- Checksums catch a broken download; only signing catches a bad release.
+
+**Self-test**
+
+1. Follow `feat: the gate checks for updates` from your commit to a gate laptop. Which days' pieces does it pass through?
+2. Gate B runs Box Office 1.0.0 on an old MacBook. 1.1.0 is published. What does `update` say, what does `update --download` do at 11:00 on Sunday, and what does the person at the laptop still have to do?
+3. Why does every one of these refuse rather than carry on: a tag that doesn't match the pom, a release with no `SHA256SUMS`, `update --download` at 17:00 on the night?
+
+<details><summary>Answers</summary>
+
+1. The tag starts the pipeline (Day 129), which reads the commit to pick 1.1.0, runs the tests and builds each system's installer with Day 128's profile, then publishes it with the notes and `SHA256SUMS`. The gate's `update` finds it on GitHub, compares versions and downloads the right installer, checked (Day 130).
+2. `Box Office 1.1.0 is out (you have 1.0.0)` and the notes. At 11:00 on Sunday the night is over, so it downloads the `.dmg` to a `.part` file, checks it and renames it. The person closes Box Office and runs the installer themselves, opening it once with right-click > Open because it isn't signed.
+3. Each time, carrying on would hand someone a quiet problem at a bad moment: an installer whose version lies, a file nobody can check, or a gate that can't sell while it updates. Refusing early, with a plain message, is cheaper than a broken night.
+
+</details>
+
+**Stretch exercise**
+
+Add Fedora to the release: the pipeline also builds an `.rpm` on Linux, `SHA256SUMS` lists it, and `update` on a Linux laptop downloads the `.rpm` or the `.deb`, whichever that laptop uses. Decide how the app tells the two kinds of Linux apart, what happens when it can't, and how the tests prove it on a laptop that is neither. No steps and no solution: it's yours, after the course's own "One feature of your own".
 
 ## Next
 

@@ -156,6 +156,22 @@ Success looks like this, with **103 tests** in `core`, **10** in `cli` and **41*
 - **F5 does nothing in the real window**: click on the window first, so it has the keyboard. On some laptops, F5 needs the Fn key too.
 - **Still stuck?** Open `solution/desktop/src/main/java/com/boxoffice/desktop/DashboardController.java` (or `SaleForm.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. UI tests catch real bugs. Why not test every rule through the screen, then?
+2. Spot the bug: in `onKey`, the F5 check comes after `if (key.isFunctionKey())`. What does pressing F5 do?
+3. At 22:40 a volunteer types `Achieng` while Otieno's sale is still saving. With `clearIfStill`, what's in the name box when Otieno's sale lands? What if the form had still held `Otieno`?
+4. A UI test passes on its own and fails in the full run now and then. What is the likely cause, and the fix?
+
+<details><summary>Answers</summary>
+
+1. They're slow: each opens a window, types and waits, a second or more, against milliseconds for a unit test. The rules are tested fast in `GateTest` and `SaleFormTest`. UI tests cover the few things only the screen can show, such as where the cursor starts and what Enter does.
+2. Nothing useful. F5 is a function key, so it goes to `form.pick(5)`, which does nothing when there are two types, and the refresh never runs. The specific check must come first.
+3. `Achieng` stays, because the form no longer holds what was sold. If it still held `Otieno` (and the same phone), it would clear, ready for the next person.
+4. A flaky test that looks at the screen before JavaFX has handled the key presses, or before the sale saved on its worker. Wait first: `WaitForAsyncUtils.waitForFxEvents()`, or `waitFor(...)` with a time limit until the condition is true.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what a UI test is, and why there are only a few
@@ -167,6 +183,37 @@ Success looks like this, with **103 tests** in `core`, **10** in `cli` and **41*
 - [ ] The title bar says `Box Office v1 · Kilele Nights`
 - [ ] (Stretch) Wrote one UI test of your own
 - [ ] Committed your work to Git (not `gate.db`)
+
+## Phase 2 recap
+
+Phase 2, *The desktop app*, put a window on the gate's rules: a dashboard, a live sales table, selling and check-in from the keyboard, a screen that never freezes, sales that survive a power cut, receipts on paper or PDF, and UI tests that drive the real window.
+
+**Key ideas**
+
+- The model holds what the screen shows; the controller only binds to it. That is what lets most screen logic be tested with no window.
+- Properties, bindings and observable lists keep labels and tables up to date by themselves. A binding only works itself out again when something it watches changes.
+- The FX thread never waits and is the only one that changes the screen. Slow work goes to a `Task` on one worker thread, and the result comes back in `setOnSucceeded` or `setOnFailed`.
+- "Only once" and "all or nothing" belong in the database: one conditional `update` for check-in, and one transaction per sale, with WAL and `synchronous = full` for power cuts.
+- `core` stays free of JavaFX (QR codes as booleans, receipts as lines), so the CLI and later a server can use it.
+- A few UI tests check the keyboard flow; they must wait for JavaFX before they look.
+
+**Self-test**
+
+1. The power goes in the middle of a four-ticket sale while the window says "Saving…". Which two days' work decide what the gate shows when it comes back?
+2. Why does `onScan` call `event.consume()`, and why does the F5 check come before `isFunctionKey()`? What's the common idea?
+3. Name one thing you tested with a unit test and one you could only test through the screen.
+
+<details><summary>Answers</summary>
+
+1. Day 109 saved the sale on a worker thread, so the window stayed alive. Day 111 saved it in one transaction, so after the restart the sale is either all there or not there at all, never half.
+2. Both make sure the right handler, and only that one, deals with a key: `consume()` stops the scan's Enter also pressing Sell, and the specific F5 case must come before the general function-key case.
+3. For example: phone-number clean-up or the form's "what's missing" message (unit tests); the cursor starting in the name box, or Enter selling and emptying the form (UI tests).
+
+</details>
+
+**Stretch exercise**
+
+Add a search to the sales table: **Ctrl+F** puts the cursor in a search box, typing part of a buyer's name or a ticket code shows only the matching rows, and Esc clears it and returns to the name box. It must work from the keyboard alone, never freeze on a slow disk, and keep working after F5 and after a new sale. Write at least one UI test for it. No steps and no solution: it's yours.
 
 ## Next
 

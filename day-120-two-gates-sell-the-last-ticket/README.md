@@ -309,6 +309,22 @@ Stop the server with Ctrl+C. `a.db`, `b.db` and `sync-server-db.mv.db` are all i
 - **`Web server failed to start. Port 8080 was already in use.`**: Day 119's server is still running somewhere. Stop it with Ctrl+C.
 - **Still stuck?** Open `solution/server/src/main/java/com/boxoffice/server/Sales.java` (or `solution/core/src/main/java/com/boxoffice/core/sync/OutboxSender.java`, `HttpSyncClient.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why is the rule "the first sale to reach the server gets the place" and not "the sale with the earliest `sold_at` wins"?
+2. Gates A and B send the last VIP place at the same moment. Without `for update`, what does the server answer each, and why doesn't Day 118's `ReentrantLock` help here?
+3. Wanjiku's oversold sale gets `409`, and the answer is lost on the Wi-Fi. Gate B sends it again with the same key, after the organiser has freed a VIP place. What must the server answer, and why?
+4. Why does the outbox stop at a `401` but mark a `409` and move on? And what happens to Wanjiku, already inside, dancing?
+
+<details><summary>Answers</summary>
+
+1. To judge by `sold_at`, the server would have to wait until every gate had synced before answering anyone, and a gate may be offline for hours. Laptop clocks also disagree. "First to reach the server" can be answered the moment a sale arrives, and the answer never changes.
+2. `201` to both: both requests count 49 and see 1 left, so the server keeps 51 tickets. A `ReentrantLock` only works inside one program; the database is what every request shares, so the lock goes there, on the type's row, until the transaction commits.
+3. `409` again. Idempotency means the same request gets the same answer, so the server looks for its earlier verdict first, which is why the oversold sale is saved. Otherwise gate B would be told two different things about one sale.
+4. A `401` means nothing will work until someone registers, so stop and try later, in order. A `409` is a final decision about one sale; stopping would hold every later sale behind it for ever. Wanjiku's ticket still works at the gate, and `conflicts` tells staff to offer her a refund or another ticket type.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why the server decides, and why "first to reach the server" and not "earliest sold"

@@ -193,6 +193,22 @@ The first time you open an old `gate.db` today, Flyway adds V4 to it. `gate.db-w
 - **`The gate program ended without printing MID_SALE`**: the second program stopped before it wrote the second ticket, so the test never got its moment to pull the plug. Today's code doesn't change `CrashingGate` or `Gate`: if you edited either by accident, compare it with the same file in `solution/`.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/TicketStore.java`, read `open` and `inTransaction` once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The Kamau family buys four tickets in one sale. The power goes after the second is saved. With today's transaction, what is in `gate.db` when the laptop comes back, and why is that better than two tickets?
+2. Spot the bug: `inTransaction` turns auto-commit off and commits, but sets `setAutoCommit(true)` only after `commit()` in the `try`, with no `finally`. Which sales go missing, and when?
+3. A program crash and a power cut both stop the gate. Which one does a transaction protect against on its own, and what does `pragma synchronous = full` add?
+4. You back up the gate by copying only `gate.db` to a USB stick while the app is running. What might you miss?
+
+<details><summary>Answers</summary>
+
+1. None of the family's sale. The transaction was never committed, so SQLite throws it away the next time it opens the file. A missing sale is easy (they buy again); a half sale means the money and the tickets don't agree and nobody knows which two people are turned away.
+2. If a group sale fails, the `catch` rolls back and rethrows, and auto-commit stays off. Every later single sale then waits for a commit that never comes, and they all vanish when the app closes.
+3. A transaction covers a crash: nothing half done is kept. A power cut can also lose committed data still in the disk cache. `synchronous = full` makes SQLite wait until the disk says the data is really on it.
+4. Recent sales still in `gate.db-wal`. While the app is open, new changes go to the log first and only reach `gate.db` at a checkpoint. Copy all three files together (or close the app first), and never delete the `-wal` and `-shm` files while it runs.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say in one sentence what a transaction is
