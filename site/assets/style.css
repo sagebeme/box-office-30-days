@@ -370,3 +370,13 @@ table.rows .s { text-align: right; padding-right: 0 }
 .setup li { margin: 1em 0 }
 .band.flush { padding-bottom: 0 }
 .rows-wrap .table-wrap { margin: 0 auto }
+.ready { background: var(--sheet) }
+.before { list-style: none; padding: 0; max-width: 40em; margin-top: 24px }
+.before li { display: flex; justify-content: space-between; gap: 16px; margin: 0; padding: 12px 0; border-bottom: 1px solid var(--line) }
+.before li:last-child { border-bottom: 0 }
+.before a { white-space: nowrap }
+.carry { background: var(--sheet) }
+.carry textarea { display: block; width: 100%; max-width: 40em; margin-top: 20px; font: .95rem/1.5 var(--mono); padding: 12px 14px; border: 2px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; word-break: break-all }
+.carry textarea:focus { border-color: var(--gate); outline: none }
+.carry-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px }
+.carry-status { min-height: 1.6em; color: var(--muted) }
