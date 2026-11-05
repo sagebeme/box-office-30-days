@@ -34,6 +34,7 @@
   $("cmd-win").innerHTML = '<span class="c">' + P.esc("# Windows") + "</span>\n" + P.esc("..\\..\\mvnw.cmd test");
   $("gh-folder").href = TREE + day.path;
   $("gh-solution").href = TREE + day.path + "/solution";
+  $("gh-edit").href = P.REPO + "/edit/main/" + day.path + "/README.md";
 
   var lesson = $("lesson");
 
@@ -76,6 +77,12 @@
 
   function enhance() {
     lesson.querySelectorAll("a[href]").forEach(rewrite);
+
+    // "Watch the video: (not recorded yet)" is a note for the author, not the learner. A line with a
+    // real video link stays.
+    lesson.querySelectorAll("p").forEach(function (p) {
+      if (/^Watch the video:/.test(p.textContent.trim()) && !p.querySelector("a")) p.remove();
+    });
 
     // The opening scene is already in the page head.
     var quote = lesson.querySelector("blockquote");
