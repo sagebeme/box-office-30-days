@@ -11,8 +11,7 @@ on:
 jobs:
   verify:
     name: Every day's solution passes, every starter fails
-    # Pinned: Days 110-130 (JavaFX UI tests) started failing when ubuntu-latest moved to Ubuntu 26.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -22,17 +21,5 @@ jobs:
           cache: maven
       - name: The course website's day list matches the READMEs
         run: java tools/SiteData.java --check
-      - name: "TEMP: machine details"
-        run: |
-          nproc; free -m | head -2; locale | head -3; fc-list | wc -l; cat /etc/os-release | head -2; java -version
-          echo "DISPLAY=${DISPLAY:-unset}"; ls /tmp/.X11-unix 2>/dev/null || true
-      - name: "TEMP: Day 110 desktop tests with full output"
-        run: |
-          cd day-110-qr-tickets-and-scanner-check-in/solution
-          echo "=== Monocle (as now)"
-          ../../mvnw -q -B test -pl desktop -am -Dtest=CheckInScreenTest -Dsurefire.failIfNoSpecifiedTests=false 2>&1 | grep -E "Tests run:|but was" | head -5 || true
-          echo "=== Xvfb + GTK"
-          xvfb-run -a ../../mvnw -B test -pl desktop -am -Dtest=CheckInScreenTest -Dsurefire.failIfNoSpecifiedTests=false -Dtestfx.headless=false -Dglass.platform=gtk -Dmonocle.platform= -Dprism.order=sw 2>&1 | grep -E "Tests run:|but was|ERROR|Exception" | head -20 || true
       - name: Verify every day
-        if: false
         run: tools/verify.sh
