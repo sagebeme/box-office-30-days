@@ -48,8 +48,6 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
-        stage.getScene().addEventFilter(javafx.scene.input.MouseEvent.ANY, e -> { });
-        stage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> { });
         stage.show();
     }
 
@@ -64,8 +62,20 @@ class CheckInScreenTest {
         }
     }
 
+    /**
+     * Moves to the node, lets the window catch up, then clicks. On a fast machine the robot can
+     * otherwise press the button before the window knows where the mouse is, and the click misses.
+     */
+    private void click(FxRobot robot, String query) {
+        robot.moveTo(query);
+        WaitForAsyncUtils.waitForFxEvents();
+        robot.clickOn(query);
+        WaitForAsyncUtils.waitForFxEvents();
+    }
+
     private void scan(FxRobot robot, String code) {
-        robot.clickOn("#scanField").write(code).type(KeyCode.ENTER);
+        click(robot, "#scanField");
+        robot.write(code).type(KeyCode.ENTER);
         WaitForAsyncUtils.waitForFxEvents();
     }
 
@@ -75,8 +85,10 @@ class CheckInScreenTest {
 
     @Test
     void ctrlTwoOpensCheckInWithTheCursorInTheScanBox(FxRobot robot) {
-        robot.clickOn("#buyerField");
-        robot.press(KeyCode.CONTROL).type(KeyCode.DIGIT2).release(KeyCode.CONTROL);
+        click(robot, "#buyerField");
+        robot.press(KeyCode.CONTROL);
+        WaitForAsyncUtils.waitForFxEvents(); // the window must know Ctrl is down before 2 arrives
+        robot.type(KeyCode.DIGIT2).release(KeyCode.CONTROL);
         WaitForAsyncUtils.waitForFxEvents();
 
         assertThat(robot.lookup("#scanField").queryAs(TextField.class).isFocused()).isTrue();
@@ -84,7 +96,7 @@ class CheckInScreenTest {
 
     @Test
     void scanningAGoodTicketLetsThemIn(FxRobot robot) {
-        robot.clickOn("Check in  (Ctrl+2)");
+        click(robot, "Check in  (Ctrl+2)");
 
         scan(robot, "VIP-0001");
 
@@ -95,7 +107,7 @@ class CheckInScreenTest {
 
     @Test
     void theScanBoxEmptiesItselfForTheNextTicket(FxRobot robot) {
-        robot.clickOn("Check in  (Ctrl+2)");
+        click(robot, "Check in  (Ctrl+2)");
 
         scan(robot, "VIP-0001");
 
@@ -104,7 +116,7 @@ class CheckInScreenTest {
 
     @Test
     void scanningTheSameTicketAgainIsCaught(FxRobot robot) {
-        robot.clickOn("Check in  (Ctrl+2)");
+        click(robot, "Check in  (Ctrl+2)");
 
         scan(robot, "VIP-0001");
         scan(robot, "vip-0001");
@@ -117,7 +129,7 @@ class CheckInScreenTest {
 
     @Test
     void aFakeTicketIsRefused(FxRobot robot) {
-        robot.clickOn("Check in  (Ctrl+2)");
+        click(robot, "Check in  (Ctrl+2)");
 
         scan(robot, "VIP-9999");
 
