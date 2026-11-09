@@ -18,7 +18,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
@@ -49,16 +48,9 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
+        System.err.println("TEMP screen " + javafx.stage.Screen.getPrimary().getBounds() + " scale " + javafx.stage.Screen.getPrimary().getOutputScaleX());
         stage.show();
-    }
-
-    /**
-     * Wait until the window has been laid out and drawn before the robot touches it. The robot clicks
-     * at screen positions, so on a slow machine it could otherwise click before the tabs are in place.
-     */
-    @BeforeEach
-    void waitForTheWindow() {
-        WaitForAsyncUtils.waitForFxEvents(5);
+        System.err.println("TEMP stage " + stage.getX() + "," + stage.getY() + " renderScale " + stage.getRenderScaleX() + " outputScale " + stage.getOutputScaleX());
     }
 
     @AfterEach
