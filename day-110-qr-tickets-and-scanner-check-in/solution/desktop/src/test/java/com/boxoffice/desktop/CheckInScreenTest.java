@@ -35,8 +35,6 @@ class CheckInScreenTest {
 
     private static final Clock NINE_PM = Clock.fixed(Instant.parse("2026-11-14T18:00:00Z"), ZoneOffset.UTC);
 
-    private final java.util.List<String> seen = java.util.Collections.synchronizedList(new java.util.ArrayList<>());
-    private javafx.scene.control.TabPane tabPane;
     private Path folder;
     private TicketStore store;
 
@@ -50,28 +48,11 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
-        javafx.event.EventHandler<javafx.event.Event> rec = e -> {
-            if (e.getEventType() == javafx.scene.input.MouseEvent.MOUSE_PRESSED
-                    || e.getEventType() == javafx.scene.input.KeyEvent.KEY_PRESSED) {
-                Object t = e.getTarget();
-                String where = t instanceof javafx.scene.Node n ? n.getClass().getSimpleName() + "#" + n.getId() : String.valueOf(t.getClass().getSimpleName());
-                String extra = e instanceof javafx.scene.input.MouseEvent m ? " at " + m.getScreenX() + "," + m.getScreenY()
-                        : " key " + ((javafx.scene.input.KeyEvent) e).getCode() + " ctrl=" + ((javafx.scene.input.KeyEvent) e).isControlDown();
-                seen.add(e.getEventType() + " " + where + extra);
-            }
-        };
-        stage.getScene().addEventFilter(javafx.event.Event.ANY, rec);
         stage.show();
-        tabPane = (javafx.scene.control.TabPane) stage.getScene().lookup("#tabs");
-        tabPane.getSelectionModel().selectedItemProperty().addListener((o, a, b) -> seen.add("TAB -> " + b.getText()));
     }
 
     @AfterEach
     void closeTheStoreAndTidyUp() throws IOException {
-        synchronized (seen) { seen.forEach(x -> System.err.println("TEMP " + x)); }
-        javafx.scene.Node hdr = robotLookupHeader();
-        System.err.println("TEMP header bounds " + (hdr == null ? null : hdr.localToScreen(hdr.getBoundsInLocal())));
-        System.err.println("TEMP ---- end of test");
         store.close();
         // @TempDir doesn't work with @Start, so this test makes and deletes its own folder.
         try (var files = Files.walk(folder)) {
@@ -79,11 +60,6 @@ class CheckInScreenTest {
                 Files.delete(path);
             }
         }
-    }
-
-    private javafx.scene.Node robotLookupHeader() {
-        return tabPane.lookupAll(".tab").stream().filter(n -> n.toString().contains("Check in")).findFirst()
-                .orElse(tabPane.lookupAll(".tab").stream().reduce((a, b) -> b).orElse(null));
     }
 
     private void scan(FxRobot robot, String code) {
