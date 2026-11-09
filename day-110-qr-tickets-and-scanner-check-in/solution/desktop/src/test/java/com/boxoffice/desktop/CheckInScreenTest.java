@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
@@ -48,16 +49,16 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
-        stage.getScene().addEventFilter(javafx.scene.input.MouseEvent.ANY, e -> {
-            if (e.getEventType() != javafx.scene.input.MouseEvent.MOUSE_MOVED) System.err.println("TEMP mouse " + e.getEventType() + " at " + e.getScreenX() + "," + e.getScreenY() + " on " + e.getTarget());
-        });
-        stage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> System.err.println("TEMP key " + e.getCode() + " ctrl=" + e.isControlDown() + " on " + e.getTarget()));
-        System.err.println("TEMP stage at " + stage.getX() + "," + stage.getY() + " screen " + javafx.stage.Screen.getPrimary().getBounds());
         stage.show();
-        System.err.println("TEMP focus after show: " + stage.isFocused());
-        stage.toFront();
-        stage.requestFocus();
-        System.err.println("TEMP focus after requestFocus: " + stage.isFocused());
+    }
+
+    /**
+     * Wait until the window has been laid out and drawn before the robot touches it. The robot clicks
+     * at screen positions, so on a slow machine it could otherwise click before the tabs are in place.
+     */
+    @BeforeEach
+    void waitForTheWindow() {
+        WaitForAsyncUtils.waitForFxEvents(5);
     }
 
     @AfterEach
@@ -72,17 +73,7 @@ class CheckInScreenTest {
     }
 
     private void scan(FxRobot robot, String code) {
-        var field = robot.lookup("#scanField").queryAs(TextField.class);
-        var tabs = robot.lookup(".tab-pane").queryAs(javafx.scene.control.TabPane.class);
-        System.err.println("TEMP before click: tab=" + tabs.getSelectionModel().getSelectedItem().getText()
-                + " visible=" + field.isVisible() + " bounds=" + field.localToScreen(field.getBoundsInLocal())
-                + " mouse=" + robot.point(field).query());
-        robot.clickOn("#scanField");
-        System.err.println("TEMP after click: owner=" + field.getScene().getFocusOwner() + " focused=" + field.isFocused());
-        robot.write(code);
-        WaitForAsyncUtils.waitForFxEvents();
-        System.err.println("TEMP after write: text='" + field.getText() + "'");
-        robot.type(KeyCode.ENTER);
+        robot.clickOn("#scanField").write(code).type(KeyCode.ENTER);
         WaitForAsyncUtils.waitForFxEvents();
     }
 
