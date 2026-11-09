@@ -48,6 +48,11 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
+        stage.getScene().addEventFilter(javafx.scene.input.MouseEvent.ANY, e -> {
+            if (e.getEventType() != javafx.scene.input.MouseEvent.MOUSE_MOVED) System.err.println("TEMP mouse " + e.getEventType() + " at " + e.getScreenX() + "," + e.getScreenY() + " on " + e.getTarget());
+        });
+        stage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> System.err.println("TEMP key " + e.getCode() + " ctrl=" + e.isControlDown() + " on " + e.getTarget()));
+        System.err.println("TEMP stage at " + stage.getX() + "," + stage.getY() + " screen " + javafx.stage.Screen.getPrimary().getBounds());
         stage.show();
         System.err.println("TEMP focus after show: " + stage.isFocused());
         stage.toFront();
