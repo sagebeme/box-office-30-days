@@ -25,6 +25,8 @@ else
 fi
 
 fail() { echo "  FAIL  $1"; failed=1; }
+# In CI the log files are thrown away, so print the end of a failing one.
+show_log() { [ -n "${CI:-}" ] && [ -f "$1" ] && { echo "  ---- last 60 lines of $(basename "$1") ----"; tail -n 60 "$1" | sed 's/^/  | /'; }; }
 pass() { echo "  ok    $1"; }
 
 for day in "${days[@]}"; do
@@ -49,11 +51,13 @@ for day in "${days[@]}"; do
     pass "solution passes its tests"
   else
     fail "solution fails its tests (see .verify-$day-solution.log)"
+    show_log "$root/.verify-$day-solution.log"
   fi
 
   # 3. The starter compiles, and its tests fail until the TODOs are done.
   if ! "$mvnw" -q -B -f "$starter/pom.xml" test-compile > "$root/.verify-$day-starter.log" 2>&1; then
     fail "starter does not compile (see .verify-$day-starter.log)"
+    show_log "$root/.verify-$day-starter.log"
   elif "$mvnw" -q -B -f "$starter/pom.xml" test -Dsurefire.failIfNoSpecifiedTests=false > /dev/null 2>&1; then
     fail "the untouched starter passes its tests, so they check nothing"
   else

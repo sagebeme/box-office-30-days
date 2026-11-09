@@ -11,7 +11,8 @@ on:
 jobs:
   verify:
     name: Every day's solution passes, every starter fails
-    runs-on: ubuntu-latest
+    # Pinned: Days 110-130 (JavaFX UI tests) started failing when ubuntu-latest moved to Ubuntu 26.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
