@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javafx.application.Platform;
+import org.testfx.api.FxToolkit;
 
 /**
  * Runs bits of a test on the JavaFX thread, the way the real app runs clicks.
@@ -25,10 +26,12 @@ final class FxThread {
         if (started) {
             return;
         }
+        // Start JavaFX the way TestFX does, not with Platform.startup: if this ran first, TestFX's
+        // robot couldn't click or press keys in the screen tests that come after it.
         try {
-            Platform.startup(() -> { });
-        } catch (IllegalStateException alreadyRunning) {
-            // Another test class started it first: fine.
+            FxToolkit.registerPrimaryStage();
+        } catch (TimeoutException e) {
+            throw new AssertionError("JavaFX didn't start in time", e);
         }
         // Keep JavaFX running between tests even though no window is open.
         Platform.setImplicitExit(false);
