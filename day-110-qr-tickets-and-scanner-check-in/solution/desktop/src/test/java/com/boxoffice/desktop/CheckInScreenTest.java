@@ -49,6 +49,10 @@ class CheckInScreenTest {
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
         stage.show();
+        System.err.println("TEMP focus after show: " + stage.isFocused());
+        stage.toFront();
+        stage.requestFocus();
+        System.err.println("TEMP focus after requestFocus: " + stage.isFocused());
     }
 
     @AfterEach
