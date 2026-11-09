@@ -48,9 +48,9 @@ class CheckInScreenTest {
 
         DashboardModel model = new DashboardModel(gate, Runnable::run);
         stage.setScene(new Scene(BoxOfficeApp.loadDashboard(model), 900, 600));
-        System.err.println("TEMP screen " + javafx.stage.Screen.getPrimary().getBounds() + " scale " + javafx.stage.Screen.getPrimary().getOutputScaleX());
+        stage.getScene().addEventFilter(javafx.scene.input.MouseEvent.ANY, e -> { });
+        stage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> { });
         stage.show();
-        System.err.println("TEMP stage " + stage.getX() + "," + stage.getY() + " renderScale " + stage.getRenderScaleX() + " outputScale " + stage.getOutputScaleX());
     }
 
     @AfterEach
