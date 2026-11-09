@@ -67,7 +67,17 @@ class CheckInScreenTest {
     }
 
     private void scan(FxRobot robot, String code) {
-        robot.clickOn("#scanField").write(code).type(KeyCode.ENTER);
+        var field = robot.lookup("#scanField").queryAs(TextField.class);
+        var tabs = robot.lookup(".tab-pane").queryAs(javafx.scene.control.TabPane.class);
+        System.err.println("TEMP before click: tab=" + tabs.getSelectionModel().getSelectedItem().getText()
+                + " visible=" + field.isVisible() + " bounds=" + field.localToScreen(field.getBoundsInLocal())
+                + " mouse=" + robot.point(field).query());
+        robot.clickOn("#scanField");
+        System.err.println("TEMP after click: owner=" + field.getScene().getFocusOwner() + " focused=" + field.isFocused());
+        robot.write(code);
+        WaitForAsyncUtils.waitForFxEvents();
+        System.err.println("TEMP after write: text='" + field.getText() + "'");
+        robot.type(KeyCode.ENTER);
         WaitForAsyncUtils.waitForFxEvents();
     }
 
