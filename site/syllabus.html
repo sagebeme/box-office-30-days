@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0f121a" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <script>try { var t = localStorage.getItem("boxoffice30-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
-<link rel="stylesheet" href="assets/style.css?v=2">
+<link rel="stylesheet" href="assets/style.css?v=3">
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -48,6 +48,24 @@
   <div id="phases"></div>
   <div class="container empty" id="empty" hidden>Nothing matches that. Try "sync", "JavaFX" or "M-Pesa".</div>
 
+  <section class="setup ready" id="ready" aria-labelledby="ready-title">
+   <div class="container prose">
+    <h2 id="ready-title">Ready for Day 101?</h2>
+    <p>This is Part 2. It expects the Java from <a href="https://github.com/sagebeme/100-java-basics-advance">100 Days of Java, Part 1</a>. If one of these feels shaky, redo that day first.</p>
+    <ul class="before">
+      <li><span>Records, lists and maps</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day12">Day 12</a></li>
+      <li><span>Reading and writing files</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day24">Day 24</a></li>
+      <li><span>Streams and lambdas</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day26">Day 26</a></li>
+      <li><span>Exceptions and JSON</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day30">Day 30</a></li>
+      <li><span>Dates and times</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day32">Day 32</a></li>
+      <li><span>Calling a REST API with HttpClient</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day33">Day 33</a></li>
+      <li><span>A JavaFX window with controls</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day27">Day 27</a></li>
+      <li><span>A database from Java</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day38">Day 38</a></li>
+      <li><span>Spring Boot and a REST API</span> <a href="https://github.com/sagebeme/100-java-basics-advance/tree/main/day55">Day 55</a></li>
+    </ul>
+   </div>
+  </section>
+
   <section class="setup" id="setup" aria-labelledby="setup-title">
    <div class="container prose">
     <h2 id="setup-title">Set up once, in about ten minutes</h2>
@@ -61,6 +79,20 @@ cd box-office-30-days/day-101-project-skeleton/starter</pre></div>
       <li><strong>Read the lesson</strong> on <a href="day.html?day=101">Day 101</a> and follow its steps until the tests pass.</li>
     </ol>
     <p>To read this site offline, run <code>jwebserver -p 8000</code> in the course folder (it comes with the JDK) and open <code>http://localhost:8000/site/</code>.</p>
+   </div>
+  </section>
+
+  <section class="setup carry" id="carry" aria-labelledby="carry-title">
+   <div class="container prose">
+    <h2 id="carry-title">Take your progress to another browser</h2>
+    <p>Your ticks live only in this browser. Copy the code here, then paste it on the other computer and press Load.</p>
+    <label for="carry-code" class="sr-only">Progress code</label>
+    <textarea id="carry-code" rows="3" spellcheck="false" placeholder="BOX30:…"></textarea>
+    <div class="carry-buttons">
+      <button class="btn btn-line" type="button" id="carry-copy">Copy my code</button>
+      <button class="btn btn-line" type="button" id="carry-load">Load a code</button>
+    </div>
+    <p id="carry-status" class="carry-status" role="status"></p>
    </div>
   </section>
 </main>
@@ -81,8 +113,8 @@ cd box-office-30-days/day-101-project-skeleton/starter</pre></div>
 </footer>
 <a class="to-top" href="#top" aria-label="Back to top">↑</a>
 
-<script src="assets/days.js?v=2"></script>
-<script src="assets/progress.js?v=2"></script>
-<script src="assets/syllabus.js?v=2"></script>
+<script src="assets/days.js?v=3"></script>
+<script src="assets/progress.js?v=3"></script>
+<script src="assets/syllabus.js?v=3"></script>
 </body>
 </html>

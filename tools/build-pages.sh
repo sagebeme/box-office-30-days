@@ -3,6 +3,7 @@
 #   site/            the website itself
 #   day-*/README.md  the lessons, which the website fetches as they are
 #   index.html       sends the address with no path to site/
+#   404.html         the page for an address that doesn't exist
 # Nothing else from the repository is published. Run it locally and serve the folder with
 #   jwebserver -d "$PWD/_site"
 set -euo pipefail
@@ -18,6 +19,7 @@ for day in day-*/; do
   mkdir -p "$out/$day"
   cp "$day/README.md" "$out/$day/README.md"
 done
+cp 404.html "$out/404.html"
 cat > "$out/index.html" <<'HTML'
 <!doctype html>
 <meta charset="utf-8">

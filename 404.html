@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not at this gate · Box Office in 30 Days</title>
+<meta name="robots" content="noindex">
+<!-- Self-contained on purpose: a 404 can be served at any path, so relative links to assets/ break.
+     The colours are the site's tokens (site/DESIGN.md). -->
+<style>
+  :root { --bg: #efede8; --ink: #1b2030; --muted: #4f5566; --gate: #24467d; --gold: #e0a91c; color-scheme: light }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0f121a; --ink: #e8ebf2; --muted: #a2aabb; --gate: #93b4ec; --gold: #ebb637; color-scheme: dark } }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--ink);
+         font: 400 1.125rem/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif }
+  main { width: min(40rem, 100% - 32px); padding: 48px 0 }
+  .stub { display: inline-block; background: var(--gold); color: #1b2030; padding: .1em .6em; font-weight: 500; font-variant-numeric: tabular-nums }
+  h1 { font: 400 clamp(2.4rem, 7vw, 4.2rem)/1 -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif; letter-spacing: -.03em; margin: 24px 0 0 }
+  p { margin: 20px 0 0 }
+  .muted { color: var(--muted) }
+  a { color: var(--gate); text-underline-offset: 3px }
+  .go { display: inline-block; margin-top: 32px; background: var(--gold); color: #1b2030; padding: 14px 24px; font-weight: 600; text-decoration: none }
+</style>
+</head>
+<body>
+<main>
+  <span class="stub">404</span>
+  <h1>That ticket isn't valid at this gate</h1>
+  <p>There's no page at this address. It may have moved, or the link has a typo.</p>
+  <a class="go" id="home" href="/box-office-30-days/site/">Go to the course</a>
+  <p class="muted">Or see <a id="syllabus" href="/box-office-30-days/site/syllabus.html">every day in the syllabus</a>.</p>
+</main>
+<script>
+  // GitHub Pages serves the course under /box-office-30-days/; Netlify and Vercel serve it at the root.
+  (function () {
+    var base = location.pathname.indexOf("/box-office-30-days/") === 0 ? "/box-office-30-days/" : "/";
+    document.getElementById("home").href = base + "site/";
+    document.getElementById("syllabus").href = base + "site/syllabus.html";
+  })();
+</script>
+</body>
+</html>
