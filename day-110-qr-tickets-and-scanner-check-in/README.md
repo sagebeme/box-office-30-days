@@ -176,6 +176,22 @@ Success looks like this, with **85 tests** in `core` (including CheckIn 7, QrCod
 - **The scanner beeps but nothing happens in the window**: the cursor isn't in the scan box. Press Ctrl+2.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/Gate.java` (or `CheckInOutcome.java`, `solution/desktop/src/main/java/com/boxoffice/desktop/DashboardController.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does `QrCodes` in `core` return a `boolean[][]` and not a JavaFX image?
+2. Two door staff scan the same screenshot of `VIP-0001` at the same moment on one gate. Why can't both get green?
+3. Predict what `gate.checkIn` gives, in order, for `"VIP-0001"`, `" vip-0001 \n"`, `"VIP-9999"` and `""`, on a gate that has sold `VIP-0001` and nothing has come in yet.
+4. Spot the bug: `onScan` calls `model.checkIn(...)` and `scanField.clear()` but not `event.consume()`. What happens when the scanner presses Enter?
+
+<details><summary>Answers</summary>
+
+1. `core` is the gate's rules, used by the CLI and maybe a web page one day. An image type would make every one of them need JavaFX. `desktop` turns the booleans into pixels itself.
+2. `update ... set checked_in_at = ? where ... and checked_in_at is null` checks and changes in one statement. The first changes 1 row (`Admitted`); the second finds it already set, changes 0 rows and gets `AlreadyIn`. Reading first and writing in a second step could let both in.
+3. `Admitted`; `AlreadyIn` (the code is stripped and upper-cased, so it's the same ticket); `NotFound("VIP-9999")`, which says `No such ticket: VIP-9999`; and `NotFound("")`, which says `Nothing was scanned`.
+4. The Enter also reaches the Sell button, the window's default button, so a scan can try to sell a ticket on the Sell tab as well.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why `QrCodes` returns `boolean[][]`, not a JavaFX image

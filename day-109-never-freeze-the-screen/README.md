@@ -158,6 +158,22 @@ java -jar desktop/target/boxoffice-desktop.jar --slow-disk    # every sale takes
 - **The window closes but the terminal doesn't come back**: a non-daemon thread is keeping Java alive. `BoxOfficeApp` makes the worker a daemon; check you didn't change it.
 - **Still stuck?** Open `solution/desktop/src/main/java/com/boxoffice/desktop/DashboardModel.java`, read `sell` once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Name the two rules of the JavaFX application thread, and say which one the Day 108 `sell` broke on a slow disk.
+2. Spot the bug: inside `save`'s `call()`, someone adds `message.set(outcome.describe())`. Why is that wrong, even if the tests still pass?
+3. Why does the gate use `Executors.newSingleThreadExecutor` and not a pool of four worker threads?
+4. The old laptop's disk fails halfway through a save, and the store throws. What does the person at the gate see, and what would they see if `setOnFailed` were missing?
+
+<details><summary>Answers</summary>
+
+1. Never make it wait (no slow disk, network or `Thread.sleep`), and only it may change what's on screen. Waiting for `gate.db` on the FX thread broke the first rule, so the window froze.
+2. `call()` runs on the worker thread, and `message` is bound to a label, so that changes the screen from the wrong thread (`Not on FX application thread`, or a table that sometimes doesn't update). Most tests run the task on the FX thread, so they may not notice. Put it in `setOnSucceeded`.
+3. With one thread, sales are saved one at a time in the order they were made, so `VIP-0001` is always saved before `VIP-0002` and two saves never fight over the same ticket number.
+4. `Couldn't save the sale: ...`, and the Sell button works again because `busy` goes back to `false`. Without `setOnFailed`, `busy` would stay `true` and the gate would be stuck on "Saving…" all night.
+
+</details>
+
 ## Checklist
 
 - [ ] Ran the starter with `--slow-disk` and felt the freeze

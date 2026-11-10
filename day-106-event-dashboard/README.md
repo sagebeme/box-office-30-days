@@ -197,6 +197,22 @@ To build a jar while some tests still fail, skip them: `../../mvnw package -Dski
 - **Sales say 19:00 on 14 November, whatever today is?** Like the CLI, the app uses `SampleEvent.practiceClock()` from Day 105: a clock set to the night of the event, so practice sales aren't rejected for being after it ended.
 - **Still stuck?** Open `solution/desktop/src/main/java/com/boxoffice/desktop/DashboardModel.java` (or `DashboardController.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. `DashboardModel` never touches a label. What does keeping the screen and the model apart let you do that you couldn't do otherwise?
+2. Spot the bug: after a Scene Builder session, the FXML says `<Label fx:id="takingsLabel" .../>` but the controller still has `@FXML private Label takings;`. What happens when the window opens?
+3. Why does the jar start from a three-line `Main` class instead of `BoxOfficeApp`, which extends `Application`?
+4. The window is open. You sell a VIP ticket from the CLI on the same `gate.db`. Does the dashboard show `49 of 50 left` straight away? Why or why not?
+
+<details><summary>Answers</summary>
+
+1. Test what the window shows without opening a window. The tests call `refresh()` and read the model's properties, which runs anywhere, CI included. The controller only binds labels to those properties.
+2. The loader can't match the field to an `fx:id`, so `takings` stays `null` and `initialize()` fails with a `NullPointerException` (a `LoadException` from `dashboard.fxml`). Field names and `fx:id`s must be spelled the same.
+3. If the main class extends `Application`, Java checks for JavaFX on the module path and stops with `JavaFX runtime components are missing`, though JavaFX is inside the jar. A plain `Main` that calls `Application.launch(...)` skips that check.
+4. No. The window reads the database when it opens. Close it and open it again (from Day 107, it also reads again after each sale it makes itself).
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why JavaFX no longer needs a downloaded SDK

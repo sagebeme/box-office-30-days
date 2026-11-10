@@ -185,6 +185,22 @@ The tests make their `gate.db` files inside `@TempDir` folders, so nothing is le
 - **`Validate failed: Migrations have failed validation`** (when you run the app on a real `gate.db` later): someone edited `V1__create_tables.sql` after it ran. Put the file back, and add a `V2` file for the change.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/TicketStore.java`, read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does `recordSale` use `?` and `setString` instead of building the SQL with `"... values ('" + buyer + "')"`? Give a real name that shows the problem.
+2. The power goes out at 22:00. Which sales are still there when the laptop starts again, and why?
+3. Spot the bug: the organiser wants phone numbers, so you add a `phone` column to `V1__create_tables.sql`. What happens on a gate laptop that already has a `gate.db`, and what should you have done?
+4. Predict: after `select count(*) ...`, you call `row.next()` and then `row.getInt(0)`. What happens?
+
+<details><summary>Answers</summary>
+
+1. The `'` in a name like `Ng'ang'a` ends the SQL text early and the insert fails with a syntax error. Someone could also type SQL into a name on purpose (SQL injection). With `?`, the driver sends the value apart from the SQL, so any name is safe.
+2. Every sale whose `recordSale` finished. Each sale is written to the SQLite file the moment it happens, not kept in a list, and opening the same `gate.db` again reads it back with `tickets(...)`.
+3. Flyway notices that a migration it already ran has changed and refuses to start (`Migrations have failed validation`). Never edit a migration that has run: put `V1` back and add `V2__add_phone.sql`.
+4. It fails with `column 0 out of bounds`. JDBC counts columns and `?` placeholders from 1, so it's `getInt(1)`.
+
+</details>
+
 ## Checklist
 
 - [ ] Can explain why the gate uses SQLite and not a database server

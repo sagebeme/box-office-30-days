@@ -404,6 +404,22 @@ Open the `.dmg` in `desktop/target/installer/` and drag BoxOffice to Application
 - **The installed app shows no sales from your `java -jar` nights**: that's right. Installed, it uses the app-data folder's `gate.db`, not the one in your project folder. Copy the file there (with the app closed) if you want those sales.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/AppPaths.java` or `solution/desktop/pom.xml`, read the part you need once, close it, then write your own from memory.
 
+## Check yourself
+
+1. jdeps lists the modules Box Office uses, so why does the jlink list also name `jdk.crypto.ec` by hand? What happens at the gate if it's left out?
+2. Installed, why can't `gate.db` stay next to the app any more? Where does it go on a Windows laptop whose user is `wanjiku`, and on Linux with no `XDG_DATA_HOME`?
+3. Spot the bug: for version 1.1, someone changes `--win-upgrade-uuid` to a new value. What does Otieno see after installing 1.1 on gate A's Windows laptop?
+4. Why does `AppPaths.dataFolder` take the system's name, the environment and the home folder as arguments, instead of reading `os.name` itself?
+
+<details><summary>Answers</summary>
+
+1. No class of ours names it: Java finds it while an HTTPS connection is set up, so jdeps can't see it. Without it the app starts fine, then fails on its first HTTPS sync with the server.
+2. The app lives in a folder like `C:\Program Files\BoxOffice` or `/opt/boxoffice`: the gate staff can't write there, and an update replaces it. It goes in `C:\Users\wanjiku\AppData\Local\BoxOffice` (`%LOCALAPPDATA%`), and in `~/.local/share/boxoffice` on Linux.
+3. Two "BoxOffice" entries: Windows uses the upgrade id to know 1.1 is the same app as 1.0, so with a new id it installs 1.1 beside 1.0 instead of replacing it. The id must never change.
+4. So one laptop can test all three systems: `AppPathsTest` passes in Windows' and macOS's answers on Linux. It returns `String`s because a Linux `Path` can't hold a path like `C:\Users`.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what jpackage makes, and the difference between an app image and an installer

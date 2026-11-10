@@ -309,6 +309,22 @@ The first time it answers `{"result":"accepted"}`, the second time `{"result":"d
 - **`practice-server` stops with `java.net.BindException: Address already in use`**: something already listens on 8099, often a practice server in another terminal you forgot. Stop it, or use `--port 8100` (and `sync --server http://127.0.0.1:8100`).
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/sync/OutboxSender.java` (or `TicketStore.java`, `HttpSyncClient.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why is the outbox note saved in the same transaction as the sale, instead of in a second step or by calling the server during the sale?
+2. Spot the bug: in `sendWaiting`, the `catch` records the failure with `markSyncFailed` and then carries on to the next entry instead of returning. What can the server end up seeing?
+3. A sale reaches the server, but the Wi-Fi drops before the answer comes back. The next `sync` sends it again. Why isn't it saved twice?
+4. The Wi-Fi has been down for forty minutes and 212 sales have been made. What happens to them, and what does the person at the gate notice?
+
+<details><summary>Answers</summary>
+
+1. In a second step, a power cut between the two leaves a sale the server never hears about. Calling the server during the sale means no internet, no sale. In one transaction, the sale and its note are saved together or not at all, and the sending can wait.
+2. Sales out of order: sale 3 can reach the server before sale 2. (And the starter's tests can loop for ever on the same failed sale.) Stop at the first failure and leave the rest for the next round.
+3. Its idempotency key, a UUID made once when the sale was saved, goes with every send. The server has seen that key and answers `duplicate` without saving it again. The key is also what lets `ResilientHttp` resend the POST at all.
+4. Each one sits in the outbox with `sent_at` empty. When the Wi-Fi is back, `sync` sends them oldest first, 50 at a time. At the gate, nothing: selling never waits for the internet.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what the outbox pattern is, and why the note is in the sale's transaction

@@ -448,6 +448,22 @@ It builds the image, makes a volume called `<folder>_server-data`, reads `.env` 
 - **After a new container, `sync` says `The server doesn't know this laptop. Run register first`**: the new container has no volume, or a different one. Use the same `-v boxoffice-data:/data` every time.
 - **Still stuck?** Open `solution/server/src/main/resources/application-prod.properties` (or `application.properties`, `StartupChecks.java`, `PaymentsHealthIndicator.java`, `solution/Dockerfile`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. The database goes down for a minute at 21:00. Why is it in the readiness check and not in liveness? What would the platform do if it were in liveness?
+2. Spot the bug: to save typing on the server, someone adds `ENV BOXOFFICE_ADMIN_KEY=...` to the Dockerfile. What's wrong with that, and where does the key belong?
+3. You ship a new version: stop the old container, start a new one. What keeps every sale, order and registered gate, and what does `server.shutdown=graceful` do for Otieno, halfway through placing an order?
+4. Someone starts the production image with `MPESA_MODE=stub` left over from testing. What happens, and why is that better than starting?
+
+<details><summary>Answers</summary>
+
+1. Restarting the server won't bring the database back: it would throw away a server that's fine and start one that's just as stuck. "Not ready" makes the platform stop sending fans for now and ask again in a few seconds. In liveness, it would restart the server again and again for nothing.
+2. Anything in the Dockerfile is baked into the image, and images are easy to copy and share, so the key is given away (and the Dockerfile is in Git). Secrets come from environment variables, from a `.env` file that is ignored by Git and kept out of the image by `.dockerignore`, passed with `--env-file`.
+3. The named volume `boxoffice-data` at `/data`, which lives outside any container, so the H2 database is still there. Graceful shutdown stops new requests and finishes the ones in flight, for up to 20 seconds, so his order isn't cut off.
+4. `StartupChecks` refuses to start (`MPESA_MODE is stub: no practice payments in production`). Running would put "Pretend to pay" buttons on the real site, which means free tickets for anyone. Better to find out when you deploy than on the night.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say the difference between liveness and readiness, and why the database is only in readiness
@@ -459,6 +475,37 @@ It builds the image, makes a volume called `<folder>_server-data`, reads `.env` 
 - [ ] All 403 tests pass
 - [ ] Built the image, ran it as `boxoffice`, saw readiness say `UP`, and synced a sale that survived a new container
 - [ ] Committed your work to Git (not `.env`, `gate.db`, `sync-server-db.mv.db` or a `prod-data` folder, and never your admin key or M-Pesa keys)
+
+## Phase 4 recap
+
+Phase 4, *Sync server and ticket site*, was the one web phase: a Spring Boot server the gates log in to and sync with, a rule for the last ticket when two gates sold it offline, a public ticket site, M-Pesa payments, a security pass for the open internet, and a Docker image ready to deploy.
+
+**Key ideas**
+
+- Each gate has its own random token; the server keeps only its hash. `401` means "who are you?", `403` means "that isn't yours".
+- The server is the one place that sees every sale, so it settles the last ticket: first to arrive wins, the loser gets `409`, and a repeat with the same key gets the same verdict. `select ... for update` is the lock every request shares.
+- Server-rendered pages work with no JavaScript; htmx asks for fragments on top. Post, redirect, get. `th:text` escapes what fans type.
+- M-Pesa answers later, on a callback. Settle idempotently on `CheckoutRequestID`, check the amount, keep whole shillings, and always answer `Accepted`. Callbacks aren't signed: a secret address, Safaricom's IP list and the order match must all pass.
+- Before the public comes in: rate limits (per address, and per phone for prompts), the real caller counted from the end of `X-Forwarded-For`, every field a gate sends checked, security headers, and no start with weak secrets.
+- In production: profiles, secrets from the environment, liveness versus readiness, a non-root container, a volume for the data, HTTPS in front.
+
+**Self-test**
+
+1. Name three places in this phase where the same request can arrive twice, and what makes each one safe.
+2. Otieno pays at minute 9:58 and Safaricom's callback arrives at 10:30, after the reconciler expired his order. What happens to his money and his order?
+3. Which of these can a stranger fake, and what does the server use instead: the `X-Forwarded-For` header, the callback's `Amount`, a gate's `Authorization` header?
+
+<details><summary>Answers</summary>
+
+1. A gate's sync (the idempotency key: saved once, same verdict); Safaricom's callback (only an order still waiting is changed, under a row lock); a plain-browser form post on reload (the redirect to a GET page).
+2. The order is `FLAGGED` with `Paid after the order ran out`, keeping the receipt. Nothing is lost or forgotten, but a person must give him tickets if there are places, or refund him. An STK query before expiring would catch it.
+3. All three can be sent by anyone. The server trusts only the entries its own proxies wrote at the end of `X-Forwarded-For`; it compares the amount with the order it sent a prompt for; and it looks the bearer token up by hash, then checks the tickets' codes belong to that gate.
+
+</details>
+
+**Stretch exercise**
+
+Give the organiser a sales page on the server: `/admin/night`, protected by the admin key, that shows takings and places left per ticket type, split by gate and by the website, plus every flagged order with what went wrong. It must never show a full phone number, must work with no JavaScript, must not be cached, and must be fast with 50,000 tickets in the database. Test it with `MockMvcTester`, including a request with no key. No steps and no solution: it's yours.
 
 ## Next
 

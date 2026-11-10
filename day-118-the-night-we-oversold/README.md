@@ -209,6 +209,22 @@ Success looks like this, with **173 tests** in `core` (including Rush 5, SharedC
 - **The same `PRIMARY KEY` errors, even though both methods call `lock()`**: check you're using the `saleLock` field at the top of `Gate`, not a `ReentrantLock saleLock = new ReentrantLock();` written inside the method. A lock made inside the method is a new lock on every call, so every till gets its own and it stops nobody.
 - **Still stuck?** Open `solution/core/src/main/java/com/boxoffice/core/Gate.java` (or `TicketStore.java`, `Turnstile.java`), read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Twenty tills, one VIP place left. Without the lock, walk through how two tills both end up making `VIP-0050`. What stops the second one being saved, and why is that not enough?
+2. Spot the bug: `saleLock.unlock()` is the last line before the final `return` in `issue`, not in a `finally`. What happens the first time a till hits `SoldOut`?
+3. Spot the bug: someone writes `ReentrantLock saleLock = new ReentrantLock();` as the first line of `issue`, then locks it. Does it stop the oversell? Why?
+4. Why does `inside++` lose people at the turnstile, and why doesn't making `inside` `volatile` fix it?
+
+<details><summary>Answers</summary>
+
+1. Till 3 asks "any left?" and hears 1. Before it saves, till 7 asks and also hears 1. Both count 49 VIP tickets and make `VIP-0050`. The `tickets` primary key refuses the second save, so the till crashes with a `StoreException`. That's a last line of defence, not a plan: without the key it would be 51 of 50, and even with it a buyer in the queue gets an error. The lock makes check, number and save one step.
+2. The early `return` skips the `unlock()`, so that till keeps the lock for ever and every other till waits at `lock()` for ever. Put `unlock()` in `finally`, which runs on every return and every throw.
+3. No. A lock made inside the method is a new lock on every call, so every till gets its own and nobody ever waits. Use the one `saleLock` field shared by the whole `Gate`.
+4. `++` is three steps: read, add one, write back. Two threads both read 41 and both write 42. `volatile` makes each thread see the latest value but still leaves three steps. `LongAdder.increment()` adds as one step that can't be split.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say what a race condition is, with the "1 VIP left" story
@@ -220,6 +236,36 @@ Success looks like this, with **173 tests** in `core` (including Rush 5, SharedC
 - [ ] Can explain how the latch and the hook make the race happen every run
 - [ ] All 237 tests pass, more than once
 - [ ] Committed your work to Git (not `gate.db`)
+
+## Phase 3 recap
+
+Phase 3, *Concurrency and the network*, taught the gate to do many things at once over a network that drops: texts to every buyer, a client that retries safely, sales queued for a server that may be miles away, two gates sharing sales over the venue router, and a gate that can't oversell when twenty tills hit it together.
+
+**Key ideas**
+
+- Waiting on the network is a job for many threads. Virtual threads make one per job cheap; a `Semaphore` caps how many are in flight, released in `finally`.
+- Every request has a time limit. Retries back off, with jitter, and only what's safe to repeat is repeated: a GET, or a POST that carries an idempotency key.
+- The outbox pattern: the sale and its "tell the server" note are saved in one transaction, then sent later, oldest first, stopping at the first failure.
+- Gate ids keep codes unique across gates. Copying a peer's sale is idempotent by key, and copied sales are never passed on, so there is no echo.
+- "Check, then act" is a race. A shared lock (`unlock()` in `finally`), `synchronized` on every method that shares a connection, and `LongAdder` for counts make it safe, and latches and hooks make the race happen in a test every time.
+
+**Self-test**
+
+1. The same idempotency key shows up on Day 115, Day 116 and Day 117. What does it let each of `ResilientHttp`, the sync server and `applyPeerSale` do?
+2. Gate A and gate B can't reach each other, and each has one VIP place left. Does today's code stop both selling it? What does?
+3. Which of these can lose data or count wrong when many threads run them, and why: `inside++`, the Day 110 check-in `update`, `if (remaining == 0) ... else save`?
+
+<details><summary>Answers</summary>
+
+1. `ResilientHttp` may resend the POST after a timeout or a 500; the server spots a repeat and doesn't save it twice; `applyPeerSale` skips a sale it already copied.
+2. No. The lock works inside one laptop. Two gates that can't talk to each other can both sell the last place: sharing sales makes it rare, not impossible. Day 120 settles it on the server.
+3. `inside++` loses counts (three steps). The `if (remaining == 0)` check-then-act oversells without a lock. The check-in `update` is safe: the check and the change are one SQL statement.
+
+</details>
+
+**Stretch exercise**
+
+Make the gate send its outbox by itself: a background job that runs `sync` every 30 seconds while the window is open, never on the FX thread, never two rounds at once, and backing off when the server stays unreachable. Show "12 sales waiting to sync" somewhere on the dashboard, kept up to date. Write a test that proves a sale made while a round is sending is not lost and not sent twice. No steps and no solution: it's yours.
 
 ## Next
 

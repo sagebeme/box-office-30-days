@@ -155,6 +155,22 @@ The `WARNING: Unsupported JavaFX configuration` line at startup is harmless, as 
 - **The CLI sale doesn't appear in the window**: that's expected until the window reads the file again. Sell one in the window, or close and reopen it.
 - **Still stuck?** Open `solution/desktop/src/main/java/com/boxoffice/desktop/DashboardModel.java`, read it once, close it, then write your own from memory.
 
+## Check yourself
+
+1. Why does each column use a lambda like `cell -> new ReadOnlyStringWrapper(cell.getValue().code())` instead of `new PropertyValueFactory<>("code")`?
+2. Spot the bug: `soldCount = Bindings.createStringBinding(() -> sales.size() + " sold");`. The table fills up as you sell. What does the count show?
+3. Predict: `gate.ticketsSold()` gives `REG-0001, REG-0002, VIP-0001`. Which row is at the top of the table, and which line of `refresh()` decides it?
+4. A buyer gives no name and the gate refuses the sale. What changes on screen, and why doesn't `sell` call `refresh()` for it?
+
+<details><summary>Answers</summary>
+
+1. `PropertyValueFactory` looks for `getCode()` or `codeProperty()`. A record only has `code()`, so the column would stay empty, with no error at all. The lambda calls `code()` itself.
+2. `0 sold`, for ever. The binding watches nothing, so it never works itself out again. Pass `sales` as the second argument so it runs again whenever the list changes.
+3. `VIP-0001`. `refresh()` calls `.reversed()` on the oldest-first list before mapping each ticket to a row.
+4. Only the message under the button: `Rejected: A ticket needs a buyer's name`. Nothing was sold, so the table, the takings and what's left haven't changed and there is nothing to read again.
+
+</details>
+
 ## Checklist
 
 - [ ] Can say why `PropertyValueFactory` shows empty cells for a record
