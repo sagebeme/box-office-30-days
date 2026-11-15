@@ -83,6 +83,8 @@ box-office-30-days/
 4. **Run the tests until they're green**: `../../mvnw test` from the day's `starter/` folder.
 5. **Run the app** when the day has one, and commit your work.
 
+Every day follows the same ten habits, from "know what done means before you type" to "a bug gets a failing test first": they're in [How we write code in this course](CODING-RULES.md), one screen long.
+
 To run just one test class:
 
 ```bash

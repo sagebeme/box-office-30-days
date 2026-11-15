@@ -131,6 +131,8 @@ assertThatThrownBy(() -> BoxOffice.welcome("   "))
 
 5. **Run all the tests again.** `../../mvnw test`. You should see `Tests run: 3, Failures: 0, Errors: 0` and `BUILD SUCCESS`.
 
+6. **Read [How we write code in this course](../CODING-RULES.md).** One screen, ten habits you'll use every day from now on: the same ones as Part 1, plus the two checks to run before you call a day done.
+
 ## Run it and test it
 
 From the day's `starter` folder:
