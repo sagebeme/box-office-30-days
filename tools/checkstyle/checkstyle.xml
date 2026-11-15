@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  The course's Checkstyle rules, run by tools/check-style.sh.
+
+  Not a style guide: nothing here is about spaces, line length or naming.
+  Each rule catches a mistake that hides a bug or misleads a reader, and
+  the whole course already passes every one. Add a rule only if that stays
+  true; never reformat thousands of files to please a checker.
+-->
+<module name="Checker">
+    <property name="severity" value="error"/>
+    <property name="charset" value="UTF-8"/>
+
+    <!-- The few places that break a rule on purpose, each with its reason. -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/suppressions.xml"/>
+    </module>
+
+    <module name="TreeWalker">
+
+        <!-- Errors -->
+
+        <!-- A catch that does nothing hides the failure. Leave a comment saying why it's fine. -->
+        <module name="EmptyCatchBlock"/>
+        <!-- Catch the exception you expect, so a wrong key or a full disk still goes up.
+             RuntimeException is allowed: the course catches it only at edges that must
+             keep going or roll back (a transaction, a batch of texts, the M-Pesa callback
+             that must always answer 200), and always says so in a comment. -->
+        <module name="IllegalCatch">
+            <property name="illegalClassNames"
+                      value="Error, Exception, Throwable, java.lang.Error, java.lang.Exception, java.lang.Throwable"/>
+        </module>
+        <!-- printStackTrace() writes to a console nobody reads at the gate: log it or let it go up. -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="\.printStackTrace\("/>
+            <property name="ignoreComments" value="true"/>
+            <property name="message" value="Log the exception or let it go up instead of printStackTrace()."/>
+        </module>
+
+        <!-- Imports: an unused or duplicate one misleads the reader about what a file uses. -->
+        <module name="UnusedImports"/>
+        <module name="RedundantImport"/>
+        <module name="AvoidStarImport"/>
+
+        <!-- Classic bugs the compiler lets through. -->
+        <module name="EqualsHashCode"/>
+        <module name="CovariantEquals"/>
+        <module name="StringLiteralEquality"/>
+        <module name="EmptyStatement"/>
+        <module name="FallThrough"/>
+        <module name="DefaultComesLast"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="MissingOverride"/>
+
+        <!-- Easy to misread. -->
+        <module name="NeedBraces"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="OneStatementPerLine"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="UpperEll"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="ModifierOrder"/>
+        <module name="PackageDeclaration"/>
+    </module>
+</module>

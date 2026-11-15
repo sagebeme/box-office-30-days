@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<!-- Rules from checkstyle.xml that some files break on purpose. Keep each one narrow. -->
+<suppressions>
+    <!-- The desktop tests' FxThread catches Throwable on the JavaFX thread to hand any
+         failure, assertion errors included, back to the test that's waiting for it.
+         Catching less would leave the test hanging until its timeout instead of failing. -->
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]com[\\/]boxoffice[\\/]desktop[\\/]FxThread\.java$"
+              checks="IllegalCatch"/>
+    <!-- A starter keeps the imports its TODOs will need, so the learner doesn't have to
+         hunt for them. They're used once the day's work is done (the solution is checked). -->
+    <suppress files="[\\/]starter[\\/].*\.java$" checks="UnusedImports"/>
+</suppressions>

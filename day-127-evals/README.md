@@ -139,7 +139,7 @@ That second test is the lesson of the day. `full-phone` only checks what must **
 
 **Code graders, and model graders later.** Every grader today is a few lines of Java: fast, free, and the same answer every time. Some things are hard to check in code: "is this answer polite?", "does it explain the refund steps clearly?". For those, teams use **LLM as judge**: a second model reads the answer and grades it against written rules. It's powerful, but it costs a call per grade and the judge can be wrong too, so it needs its own checks. It's a good idea for later; today, code graders are enough.
 
-**A case per bug.** When the assistant gets something wrong on a real night, don't just fix the prompt. First write a case that fails the way it failed, then fix it, and watch the case pass. The case stays in `GateEvals` for ever, so that bug can never come back quietly. That's how the set grows from 8 to 30.
+**A case per bug.** When the assistant gets something wrong on a real night, don't just fix the prompt. First write a case that fails the way it failed, then fix it, and watch the case pass. The case stays in `GateEvals` for ever, so that bug can never come back quietly. That's how the set grows from 8 to 30. (It's habit 5 in [How we write code in this course](../CODING-RULES.md), for prompts as well as code.)
 
 ## Steps
 

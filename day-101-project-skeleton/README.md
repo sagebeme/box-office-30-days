@@ -131,6 +131,8 @@ assertThatThrownBy(() -> BoxOffice.welcome("   "))
 
 5. **Run all the tests again.** `../../mvnw test`. You should see `Tests run: 3, Failures: 0, Errors: 0` and `BUILD SUCCESS`.
 
+6. **Read [How we write code in this course](../CODING-RULES.md).** One screen, ten habits you'll use every day from now on: the same ones as Part 1, plus the two checks to run before you call a day done.
+
 ## Run it and test it
 
 From the day's `starter` folder:
@@ -157,7 +159,7 @@ Success looks like this, with **3 tests**:
 [INFO] BUILD SUCCESS
 ```
 
-**What CI does.** When this repository is pushed to GitHub, the file `.github/workflows/ci.yml` tells GitHub to start a fresh Linux machine, install Java 21 and run `tools/verify.sh`. For every day, that script checks three things: `starter/` and `solution/` have the same tests, the solution passes them, and the untouched starter compiles but fails them. You can run it yourself from the top of the repository (macOS/Linux, or Git Bash on Windows):
+**What CI does.** When this repository is pushed to GitHub, the file `.github/workflows/ci.yml` tells GitHub to start a fresh Linux machine, install Java 21 and run two scripts. `tools/check-style.sh` looks for mistakes that hide bugs, such as an empty `catch`. Then `tools/verify.sh` checks three things for every day: `starter/` and `solution/` have the same tests, the solution passes them, and the untouched starter compiles but fails them. You can run it yourself from the top of the repository (macOS/Linux, or Git Bash on Windows):
 
 ```
 tools/verify.sh 101

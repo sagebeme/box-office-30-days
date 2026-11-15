@@ -69,7 +69,8 @@ box-office-30-days/
 │   │       └── src/test/...         today's tests, already written
 │   └── solution/                    the same project, finished
 ├── tools/verify.sh                  checks every day, the way CI does
-└── .github/workflows/ci.yml         CI: runs tools/verify.sh on every push
+├── tools/check-style.sh             Checkstyle: catches mistakes that hide bugs
+└── .github/workflows/ci.yml         CI: runs both scripts on every push
 ```
 
 **`starter/` is yesterday's finished app plus today's TODOs.** So you can join at any day, and a bad day never leaves you behind: tomorrow starts from the solution, not from your copy.
@@ -81,6 +82,8 @@ box-office-30-days/
 3. **Do the steps in order.** Every TODO in the code says what goes there.
 4. **Run the tests until they're green**: `../../mvnw test` from the day's `starter/` folder.
 5. **Run the app** when the day has one, and commit your work.
+
+Every day follows the same ten habits, from "know what done means before you type" to "a bug gets a failing test first": they're in [How we write code in this course](CODING-RULES.md), one screen long.
 
 To run just one test class:
 
@@ -225,6 +228,12 @@ tools/verify.sh
 tools/verify.sh 104 105
 ```
 
-CI runs the same script on every push and pull request.
+`tools/check-style.sh` runs Checkstyle over every day's Java code. It doesn't check formatting, only a short list of mistakes that hide bugs (catching `Exception`, an empty `catch`, `printStackTrace()`, unused imports and a few more); `tools/checkstyle/checkstyle.xml` says why each rule is there. It needs bash and Java 21, and fetches the pinned Checkstyle through the Maven wrapper the first time:
+
+```bash
+tools/check-style.sh
+```
+
+CI runs both scripts on every push and pull request.
 
 The course pins Java 21, the LTS most machines already have; everything also runs on Java 25.

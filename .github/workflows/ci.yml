@@ -1,4 +1,5 @@
-# Runs the same check you can run on your own machine: tools/verify.sh.
+# Runs the same checks you can run on your own machine: tools/check-style.sh
+# and tools/verify.sh.
 # For every day it checks that the solution passes the tests, and that the
 # untouched starter compiles but fails them.
 name: CI
@@ -21,5 +22,7 @@ jobs:
           cache: maven
       - name: The course website's day list matches the READMEs
         run: java tools/SiteData.java --check
+      - name: Checkstyle finds no mistakes that hide bugs
+        run: tools/check-style.sh
       - name: Verify every day
         run: tools/verify.sh
