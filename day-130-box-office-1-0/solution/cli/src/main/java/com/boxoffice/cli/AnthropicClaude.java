@@ -147,17 +147,18 @@ final class AnthropicClaude implements Claude, AutoCloseable {
         private Message streamOrNull(Consumer<String> onText) {
             try {
                 return stream(onText);
-            } catch (Exception e) {
-                // The SDK reads each lookup's input with a strict JSON parser, and lets the parser's
-                // error out as it is. Catch only that: a wrong key or a rate limit must still go up.
-                if (e instanceof JsonProcessingException) {
-                    return null;
-                }
-                throw e;
+            } catch (JsonProcessingException e) {
+                // Catch only that: a wrong key or a rate limit must still go up.
+                return null;
             }
         }
 
-        private Message stream(Consumer<String> onText) {
+        /**
+         * The SDK reads each lookup's input with a strict JSON parser, and lets the parser's
+         * error out as it is without declaring it (the SDK is written in Kotlin). Declaring it
+         * here is what lets streamOrNull catch exactly that error and nothing else.
+         */
+        private Message stream(Consumer<String> onText) throws JsonProcessingException {
             MessageAccumulator accumulator = MessageAccumulator.create();
             try (StreamResponse<RawMessageStreamEvent> stream =
                          client.messages().createStreaming(params(system, tools, conversation))) {
